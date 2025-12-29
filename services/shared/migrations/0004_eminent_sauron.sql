@@ -1,0 +1,1 @@
+ALTER TABLE "solana_transactions" DROP COLUMN "data";

@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1766856340203,
+      "tag": "0000_faithful_captain_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766995455761,
+      "tag": "0001_regular_scorpion",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766996559859,
+      "tag": "0002_slim_retro_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766996572609,
+      "tag": "0003_hesitant_forgotten_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766996605196,
+      "tag": "0004_eminent_sauron",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1766997041819,
+      "tag": "0005_optimal_inertia",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1767011540552,
+      "tag": "0006_overconfident_the_captain",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1767025517357,
+      "tag": "0007_funny_oracle",
+      "breakpoints": true
+    }
+  ]
+}

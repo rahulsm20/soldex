@@ -3,7 +3,13 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-const CopyToClipboard = ({ text }: { text: string }) => {
+/**
+ * Component to copy text to clipboard with a popover confirmation.
+ * @param text Text to be copied
+ * @param title (Optional) Title for the copy button
+ * @returns
+ */
+const CopyToClipboard = ({ text, title }: { text: string; title?: string }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -14,7 +20,7 @@ const CopyToClipboard = ({ text }: { text: string }) => {
 
   return (
     <Popover open={copied}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild title={title || "Copy to clipboard"}>
         <Button
           variant="outline"
           size="icon"

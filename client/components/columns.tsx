@@ -15,12 +15,15 @@ export const TransactionColumns: ColumnDef<TransactionType>[] = [
           href={`https://solscan.io/tx/${row.original.signature}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 dark:text-blue-400 hover:underline"
+          className="hover:underline"
         >
           {row.original.signature.slice(0, 5)}...
           {row.original.signature.slice(-5)}
         </Link>
-        <CopyToClipboard text={row.original.signature} />
+        <CopyToClipboard
+          title={"Copy signature to clipboard"}
+          text={row.original.signature}
+        />
       </div>
     ),
   },
@@ -31,12 +34,12 @@ export const TransactionColumns: ColumnDef<TransactionType>[] = [
   {
     header: ({ column }) => {
       return (
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-1 items-center justify-between">
           <span>Block Time</span>
           <Button
             variant="ghost"
             title="Sort by block time"
-            className="hover:bg-none bg-none"
+            className="hover:bg-none bg-none flex items-center justify-center p-0"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -52,11 +55,45 @@ export const TransactionColumns: ColumnDef<TransactionType>[] = [
     },
   },
   {
-    header: "Updated At",
-    accessorKey: "updated_at",
+    header: "From",
+    accessorKey: "address",
+    cell: ({ row }) => (
+      <div className="flex w-42 items-center justify-between">
+        <Link
+          href={`https://solscan.io/account/${row.original.address}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          {row.original.address.slice(0, 5)}...
+          {row.original.address.slice(-5)}
+        </Link>
+        <CopyToClipboard
+          title={"Copy address to clipboard"}
+          text={row.original.address}
+        />
+      </div>
+    ),
   },
   {
-    header: "Created At",
-    accessorKey: "created_at",
+    header: "To",
+    accessorKey: "to_address",
+    cell: ({ row }) => (
+      <div className="flex w-42 items-center justify-between">
+        <Link
+          href={`https://solscan.io/account/${row.original.address}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline"
+        >
+          {row.original.address.slice(0, 5)}...
+          {row.original.address.slice(-5)}
+        </Link>
+        <CopyToClipboard
+          title={"Copy address to clipboard"}
+          text={row.original.address}
+        />
+      </div>
+    ),
   },
 ];

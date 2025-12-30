@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -17,7 +18,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,13 +39,15 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getCoreRowModel(),
     state: {
       sorting,
     },
   });
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden rounded-md">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -85,6 +90,28 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} /{" "}
+          {table.getPageCount()}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <ChevronLeft />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          <ChevronRight />
+        </Button>
+      </div>
     </div>
   );
 }

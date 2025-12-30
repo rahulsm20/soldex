@@ -11,3 +11,8 @@ export type TransactionType = {
 export type TransactionsResponse = {
   transactions: TransactionType[];
 };
+
+export type ChartDataType = {
+  [key: string]: number | string;
+  date: number;
+};

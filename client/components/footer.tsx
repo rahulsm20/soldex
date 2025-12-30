@@ -25,9 +25,7 @@ const Footer = () => {
           <BookOpenCheck className="w-4 h-4" />
           SolDex
         </p>
-        <span className="text-zinc-500">
-          A simple Solana indexer for developers.
-        </span>
+        <span className="text-zinc-500">A really smart solana indexer.</span>
         <div className="flex flex-col gap-3">
           <ul className="flex gap-2 list-disc">
             {socials.map(({ name, url, title, icon }) => (

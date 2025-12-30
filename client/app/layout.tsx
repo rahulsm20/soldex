@@ -39,7 +39,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <div className="flex items-center justify-center font-sans min-h-screen">
+          <div className="flex items-start justify-center font-sans min-h-screen">
             {children}
           </div>
           <Footer />

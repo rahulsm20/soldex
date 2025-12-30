@@ -1,11 +1,7 @@
 import { createClient } from "redis";
 
 export const redisClient = createClient({
-  password: process.env.REDIS_PASS,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 10305,
-  },
+  url: process.env.REDIS_URL,
 });
 
 redisClient.on("connect", () => console.log("Connected to Redis"));

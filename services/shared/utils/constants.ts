@@ -3,5 +3,5 @@ export const ACCOUNTS_SIGS = {
 };
 
 export const CACHE_KEYS = {
-  TRANSACTIONS_FOR_ADDRESS: "transactions_for_address_",
+  TRANSACTIONS_FOR_ADDRESS: `transactions_for_address`,
 };

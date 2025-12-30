@@ -1,0 +1,31 @@
+# Stage 1: Install all dependencies (root + services + shared)
+FROM oven/bun:1.2.18 AS build
+WORKDIR /usr/src/app
+
+# Copy root package.json + lockfile + shared and services
+COPY package.json bun.lock ./
+COPY . ./client
+
+# Install all dependencies (hoisted to root)
+RUN bun install
+
+# Stage 2: Copy built code + node_modules for the specific service
+FROM oven/bun:1.2.18 AS release
+WORKDIR /usr/src/app
+
+# Copy node_modules from build stage
+COPY --from=build /usr/src/app/package.json ./package.json
+COPY --from=build /usr/src/app/bun.lock ./bun.lock
+COPY --from=build /usr/src/app/node_modules ./node_modules
+
+# Copy only the service code we want to deploy
+COPY --from=build /usr/src/app/client ./client
+
+# Build the service if needed
+WORKDIR /usr/src/app/client
+RUN bun run build
+
+# Set environment & run
+ENV NODE_ENV=production
+EXPOSE 3000
+ENTRYPOINT ["bun", "start"]

@@ -1,0 +1,43 @@
+name: Deploy services
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GCP
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Build and Push Indexer Docker Image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest ./indexer
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest
+
+      - name: Deploy Indexer Service to Cloud Run
+        run: |
+          gcloud run deploy soldex-indexer \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated
+
+      - name: Build and Push Server Docker Image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest ./server
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest
+
+      - name: Deploy Server
+        run: |
+          gcloud run deploy soldex-server \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated

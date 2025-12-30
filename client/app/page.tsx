@@ -30,20 +30,20 @@ export default function Home() {
           <Area
             type="monotone"
             dataKey="av"
+            stroke="var(--color-purple-500)"
+            fill="var(--color-purple-400)"
+          />
+          <Area
+            type="monotone"
+            dataKey="bv"
             stroke="var(--chart-1)"
             fill="var(--chart-1)"
           />
           <Area
             type="monotone"
-            dataKey="bv"
+            dataKey="cv"
             stroke="var(--chart-2)"
             fill="var(--chart-2)"
-          />
-          <Area
-            type="monotone"
-            dataKey="cv"
-            stroke="var(--chart-3)"
-            fill="var(--chart-3)"
           />
         </AreaChart>
       </ResponsiveContainer>

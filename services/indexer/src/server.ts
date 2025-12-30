@@ -19,5 +19,5 @@ app.get("*", async (_req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Indexer is running at port ${port}`);
+  console.log(`>> Indexer is running at port ${port}`);
 });

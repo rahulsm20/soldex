@@ -25,7 +25,7 @@ jobs:
         run: |
           gcloud run deploy soldex-indexer \
           --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest \
-          --region us-central1 \
+          --region us-west1 \
           --platform managed \
           --allow-unauthenticated
 
@@ -38,6 +38,6 @@ jobs:
         run: |
           gcloud run deploy soldex-server \
           --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest \
-          --region us-central1 \
+          --region us-west1 \
           --platform managed \
           --allow-unauthenticated

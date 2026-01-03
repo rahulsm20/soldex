@@ -12,6 +12,7 @@
   - Next.js
   - Tailwind
   - Typescript
+  - Tanstack Query
 
 - Server
 

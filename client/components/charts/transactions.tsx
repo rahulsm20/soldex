@@ -80,7 +80,7 @@ export function ChartAreaInteractive({
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 bg-none">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-62.5 w-full"
         >
           <AreaChart data={data}>
             <defs>
@@ -102,7 +102,7 @@ export function ChartAreaInteractive({
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid />
             <XAxis
               dataKey="date"
               tickLine={false}
@@ -136,10 +136,10 @@ export function ChartAreaInteractive({
               <Area
                 key={label.value}
                 dataKey={label.sig}
-                type="natural"
+                // type="natural"
                 fill={`url(#${labels.indexOf(label) + 1})`}
                 stroke={label.color}
-                stackId="a"
+                // stackId="a"
               />
             ))}
             <ChartLegend content={<ChartLegendContent />} />

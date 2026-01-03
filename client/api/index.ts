@@ -3,7 +3,8 @@ import { TransactionType } from "@/types";
 class ApiClient {
   private readonly baseUrl: string;
   constructor() {
-    this.baseUrl = process.env.SERVER_URL || "http://localhost:3002";
+    this.baseUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3002";
   }
   async fetchTransactions(): Promise<{ transactions: TransactionType[] }> {
     const response = await fetch(`${this.baseUrl}/transactions`);

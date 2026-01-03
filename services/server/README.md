@@ -1,6 +1,12 @@
-# Express Template
+# Soldex Server
+
+### Index
+
+- [Tech Stack](#tech-stack)
+
+### Tech Stack
 
 - Typescript
-- Node.js
+- Bun
 - Express.js
 - Drizzle

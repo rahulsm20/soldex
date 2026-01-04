@@ -69,4 +69,9 @@ export const transactionsController = {
         .json({ message: "Internal Server Error", error: err });
     }
   },
+  indexTransaction: async (req: Request, res: Response) => {
+    // TODO: Implement transaction indexing logic
+    console.log({ event: req.body });
+    return res.status(200).json({ message: "Webhook ack" });
+  },
 };

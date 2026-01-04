@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { rateLimiter } from "./middleware/rate-limit";
 import { transactionRoutes } from "./routes/transactionRoutes";
 
 //----------------------------------------------------
@@ -7,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
+app.use(rateLimiter);
 app.use("/wallet", transactionRoutes);
 
 app.get("/", async (_req: Request, res: Response) => {

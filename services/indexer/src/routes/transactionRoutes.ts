@@ -7,4 +7,5 @@ router.get(
   transactionsController.getTransactionsForAddress
 );
 
+router.post("/webhook", transactionsController.indexTransaction);
 export { router as transactionRoutes };

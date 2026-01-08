@@ -6,7 +6,7 @@ const Footer = () => {
   const socials = [
     {
       name: "Github",
-      url: "https://github.com/rahulsm20/tokenbreeze",
+      url: "https://github.com/rahulsm20/soldex",
       title: "Github",
       icon: <Github className="w-4 h-4" />,
     },

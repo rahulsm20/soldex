@@ -25,11 +25,17 @@ import { Button } from "./ui/button";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageIndex: number; // current page index
+  pageCount: number; // total pages
+  onPageChange: (newPage: number) => void; // callback to parent
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageIndex,
+  pageCount,
+  onPageChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -92,22 +98,21 @@ export function DataTable<TData, TValue>({
       </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         <span>
-          Page {table.getState().pagination.pageIndex + 1} /{" "}
-          {table.getPageCount()}
+          Page {pageIndex} / {pageCount}
         </span>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => onPageChange(pageIndex - 1)}
+          disabled={pageIndex === 1}
         >
           <ChevronLeft />
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => onPageChange(pageIndex + 1)}
+          disabled={pageIndex + 1 >= pageCount}
         >
           <ChevronRight />
         </Button>

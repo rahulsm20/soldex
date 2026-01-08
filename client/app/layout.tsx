@@ -1,5 +1,3 @@
-import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
@@ -38,11 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <div className="flex items-start justify-center font-sans min-h-screen">
-            {children}
-          </div>
-          <Footer />
+          {children}
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

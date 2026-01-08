@@ -5,6 +5,7 @@ import { ChartAreaInteractive } from "@/components/charts/transactions";
 import { TransactionColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
 import Loader from "@/components/loader";
+import PageLayout from "@/components/page-layout";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -12,6 +13,7 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -27,19 +29,21 @@ import { toast } from "sonner";
 
 const Transactions = () => {
   const queryClient = new QueryClient();
+  const [page, setPage] = useState(1);
   const {
     data = { transactions: [] },
     isLoading,
     error,
     isFetching,
   } = useQuery<{ transactions: TransactionType[] }>(
-    queries.FETCH_TRANSACTIONS,
+    queries.FETCH_TRANSACTIONS({ variables: { page, pageSize: 10 } }),
     queryClient
   );
 
   const [showToast, setShowToast] = useState(true);
+  const [value, setValue] = useState<string | undefined>(undefined);
+  const [open, setOpen] = useState(false);
 
-  if (isLoading || isFetching) return <Loader />;
   if (error) {
     if (showToast)
       toast("Error loading transactions", {
@@ -69,45 +73,75 @@ const Transactions = () => {
         /> */
   }
   return (
-    <div className="flex justify-start items-center flex-col gap-6 min-h-screen">
-      <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
-        <h1 className="text-xl font-semibold">Transactions</h1>
-        <div className="flex gap-2 items-center justify-between">
-          <Select>
-            <SelectTrigger className="w-52">
-              <SelectValue
-                placeholder={
-                  <div className="flex items-center gap-2">
-                    <span>Filter by accounts</span>
-                    <Filter className="h-2 w-2" />
-                  </div>
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Accounts</SelectLabel>
-                {ACCOUNTS.map((account) => (
-                  <SelectItem key={account.value} value={account.value}>
-                    {account.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" disabled>
-            <Download /> <span>Download</span>
-          </Button>
+    <PageLayout>
+      {isLoading || isFetching ? (
+        <Loader />
+      ) : (
+        <div className="flex justify-start items-center flex-col gap-6 min-h-screen">
+          <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
+            <h1 className="text-xl font-semibold">Transactions</h1>
+            <div className="flex gap-2 items-center justify-between">
+              <Select
+                onValueChange={setValue}
+                open={open}
+                value={value || ""}
+                onOpenChange={setOpen}
+              >
+                <SelectTrigger className="w-52">
+                  <SelectValue
+                    placeholder={
+                      <div className="flex items-center gap-2">
+                        <span>Filter by accounts</span>
+                        <Filter className="h-2 w-2" />
+                      </div>
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Accounts</SelectLabel>
+                    {ACCOUNTS.map((account) => (
+                      <SelectItem key={account.value} value={account.value}>
+                        {account.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  <SelectSeparator />
+                  <Button
+                    className="w-full px-2"
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setValue(undefined);
+                      setOpen(false);
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" disabled>
+                <Download /> <span>Download</span>
+              </Button>
+            </div>
+            <ChartAreaInteractive
+              data={chartData}
+              labels={ACCOUNTS}
+              title="Transactions"
+              description="Showing transactions per day for the selected period."
+            />
+            <DataTable
+              data={transactions}
+              columns={TransactionColumns}
+              pageCount={10}
+              pageIndex={page}
+              onPageChange={setPage}
+            />
+          </div>
         </div>
-        <ChartAreaInteractive
-          data={chartData}
-          labels={ACCOUNTS}
-          title="Transactions"
-          description="Showing transactions per day for the selected period."
-        />
-        <DataTable data={transactions} columns={TransactionColumns} />
-      </div>
-    </div>
+      )}
+    </PageLayout>
   );
 };
 

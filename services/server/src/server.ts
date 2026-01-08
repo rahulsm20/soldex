@@ -1,10 +1,15 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { transactionRouter } from "./routes/transactionRoutes";
+import { config } from "./utils/config";
 
 const app = express();
-const port = process.env.PORT || 3000;
-app.use(cors());
+const port = config.PORT || 3000;
+app.use(
+  cors({
+    origin: config.CLIENT_URL,
+  })
+);
 app.use(express.json());
 
 app.use("/transactions", transactionRouter);

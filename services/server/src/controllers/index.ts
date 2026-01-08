@@ -11,9 +11,13 @@ export const transactionsController = {
     const {
       address,
       limit,
+      page,
+      pageSize,
     }: {
       address?: string;
       limit?: number;
+      page?: number;
+      pageSize?: number;
     } = req.query;
     try {
       let where: TransactionWhereInput = {};
@@ -23,9 +27,16 @@ export const transactionsController = {
       if (limit) {
         where.limit = limit;
       }
-
+      if (page) {
+        const size = pageSize ? Number(pageSize) : 50;
+        where.limit = size;
+        where.offset = (Number(page) - 1) * size;
+      }
       const cachedData = await getCachedData(
-        CACHE_KEYS.TRANSACTIONS_FOR_ADDRESS
+        CACHE_KEYS.TRANSACTIONS(
+          page ? Number(page) : undefined,
+          pageSize ? Number(pageSize) : undefined
+        )
       );
       if (cachedData) {
         const transactions = JSON.parse(cachedData);
@@ -37,10 +48,14 @@ export const transactionsController = {
         .from(solana_transactions)
         .where(address ? eq(solana_transactions.address, address) : undefined)
         .limit(where.limit || 200)
+        .offset(where.offset || 0)
         .orderBy(desc(solana_transactions.blockTime));
 
       await cacheData(
-        CACHE_KEYS.TRANSACTIONS_FOR_ADDRESS,
+        CACHE_KEYS.TRANSACTIONS(
+          page ? Number(page) : undefined,
+          pageSize ? Number(pageSize) : undefined
+        ),
         JSON.stringify(transactions),
         100
       );

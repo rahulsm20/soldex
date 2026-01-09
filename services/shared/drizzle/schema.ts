@@ -1,7 +1,23 @@
 import { sql } from "drizzle-orm";
-import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 //--------------------------------
+
+export const TransactionTypeEnum = pgEnum("transaction_type", [
+  "transfer",
+  "contract_call",
+  "stake",
+  "unstake",
+  "mint",
+  "reward",
+]);
 
 export const solana_transactions = pgTable("solana_transactions", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -12,6 +28,7 @@ export const solana_transactions = pgTable("solana_transactions", {
   from_address: text("from_address"),
   to_address: text("to_address"),
   lamports: integer("lamports"),
+  transaction_type: TransactionTypeEnum("transaction_type"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp()
     .notNull()

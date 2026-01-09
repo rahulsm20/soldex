@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/select";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
-import { transactionDataToChartData } from "@/lib/utils";
+import { determineBucketSize, transactionDataToChartData } from "@/lib/utils";
 import { Download, Filter } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -48,8 +49,23 @@ const Transactions = () => {
   }
 
   const transactions = data?.transactions || [];
-  console.log({ transactions });
-  const chartData = transactionDataToChartData(transactions).sort(
+  if (!isFetching && transactions.length == 0) {
+    return (
+      <PageLayout>
+        <div className="flex justify-center items-center flex-col gap-6 min-h-screen">
+          <h1 className="text-xl font-semibold">No Transactions Found</h1>
+          <p className="text-center text-muted-foreground max-w-md">
+            There are no transactions to display for the selected account.
+            Please try selecting a different account or check back later.
+          </p>
+        </div>
+      </PageLayout>
+    );
+  }
+  const toUnix = transactions?.[0]?.blockTime;
+  const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
+  const timeRange = determineBucketSize(fromUnix, toUnix);
+  const chartData = transactionDataToChartData(transactions, timeRange).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
   {
@@ -92,7 +108,15 @@ const Transactions = () => {
                     <SelectLabel>Accounts</SelectLabel>
                     {ACCOUNTS.map((account) => (
                       <SelectItem key={account.value} value={account.value}>
-                        {account.label}
+                        <div className="flex items-center gap-2 w-full justify-between">
+                          <span>{account.label}</span>
+                          <Image
+                            src={account.icon}
+                            alt={account.label}
+                            width={20}
+                            height={20}
+                          />
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectGroup>
@@ -118,12 +142,16 @@ const Transactions = () => {
             <ChartAreaInteractive
               data={chartData}
               labels={ACCOUNTS}
+              range={timeRange}
               title="Transactions"
               description="Showing transactions per day for the selected period."
             />
             <DataTable
               data={transactions}
-              columns={TransactionColumns}
+              columns={TransactionColumns(
+                data?.page || 1,
+                data?.pageSize || 10
+              )}
               pageCount={data?.pageCount}
               pageIndex={data?.page}
               pageSize={data?.pageSize}

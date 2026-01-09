@@ -1,0 +1,1 @@
+CREATE TYPE "public"."transaction_type" AS ENUM('transfer', 'contract_call', 'stake', 'unstake', 'mint', 'reward');

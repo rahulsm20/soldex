@@ -1,4 +1,4 @@
-import { TransactionType } from "@/types";
+import { BucketSize, TransactionType } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,39 +7,93 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function transactionDataToChartData(
-  transactions: TransactionType[] = []
+  transactions: TransactionType[],
+  bucket: BucketSize
 ) {
-  const data = new Map<string, { date: number; [key: string]: number }>();
+  const data = new Map<number, { date: number; [key: string]: number }>();
+  const allAddresses = new Set<string>();
 
   transactions.forEach((tx) => {
     if (!tx.blockTime) return;
 
-    const date = new Date(tx.blockTime * 1000).toISOString().split("T")[0];
-    const unixTime = new Date(date).getTime();
+    allAddresses.add(tx.address);
 
-    if (data.has(date)) {
-      const existing = data.get(date)!;
-      existing[tx.address] = existing[tx.address]
-        ? existing[tx.address] + 1
-        : 1;
-      data.set(date, existing);
-    } else {
-      data.set(date, {
-        [tx.address]: 1,
-        date: unixTime,
-      });
+    const bucketTime = bucketTimestamp(tx.blockTime, bucket);
+
+    if (!data.has(bucketTime)) {
+      data.set(bucketTime, { date: bucketTime });
     }
+
+    const entry = data.get(bucketTime)!;
+    entry[tx.address] = (entry[tx.address] ?? 0) + 1;
   });
 
-  // fill missing address keys with 0
-  const allAddresses = new Set(transactions.map((tx) => tx.address));
-
+  // fill missing addresses
   data.forEach((entry) => {
-    allAddresses.forEach((address) => {
-      if (!(address in entry)) {
-        entry[address] = 0;
-      }
+    allAddresses.forEach((addr) => {
+      entry[addr] ??= 0;
     });
   });
-  return Array.from(data.values());
+
+  return Array.from(data.values()).sort((a, b) => a.date - b.date);
+}
+
+export function determineBucketSize(
+  fromUnix?: number | null,
+  toUnix?: number | null
+): BucketSize {
+  if (!fromUnix || !toUnix) return "1d";
+  const diffSeconds = toUnix - fromUnix;
+  if (diffSeconds <= 60 * 60) return "1m"; // <= 1h
+  if (diffSeconds <= 6 * 60 * 60) return "5m"; // <= 6h
+  if (diffSeconds <= 24 * 60 * 60) return "1h"; // <= 1d
+  return "1d";
+}
+
+export function bucketTimestamp(
+  unixSeconds: number,
+  bucket: BucketSize
+): number {
+  const ms = unixSeconds * 1000;
+
+  switch (bucket) {
+    case "1m":
+      return Math.floor(ms / (60 * 1000)) * (60 * 1000);
+    case "5m":
+      return Math.floor(ms / (5 * 60 * 1000)) * (5 * 60 * 1000);
+    case "1h":
+      return Math.floor(ms / (60 * 60 * 1000)) * (60 * 60 * 1000);
+    case "1d":
+      return Math.floor(ms / (24 * 60 * 60 * 1000)) * (24 * 60 * 60 * 1000);
+  }
+}
+
+export function formatDateBasedOnBucket(
+  unixSeconds: number,
+  bucket: BucketSize
+): string {
+  const date = new Date(unixSeconds * 1000);
+
+  switch (bucket) {
+    case "1m":
+    case "5m":
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    case "1h":
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        day: "numeric",
+        month: "short",
+      });
+    case "1d":
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    default:
+      return date.toLocaleString();
+  }
 }

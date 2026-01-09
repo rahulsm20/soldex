@@ -44,31 +44,39 @@ class SolanaClientClass {
     limit?: number
   ): Promise<ConfirmedSignatureInfo[]> {
     const key = new PublicKey(address);
-    const opts: SignaturesForAddressOptions = {
-      limit: limit || 10,
-    };
+    const opts: SignaturesForAddressOptions = {};
     if (cursor) opts.before = cursor;
+    if (limit) opts.limit = limit;
     const response = await this.client.getSignaturesForAddress(key, opts);
     return response;
   }
 
   async getTransactions(
-    address: string,
+    address?: string,
     cursor?: string | null,
-    limit?: number
+    limit?: number,
+    signaturesToFind?: string[]
   ): Promise<(ParsedTransactionWithMeta | null)[]> {
-    const signatures = await this.getSignatures(address, cursor, limit);
-    if (!signatures || signatures.length === 0) {
-      return [];
-    }
+    let signatures: ConfirmedSignatureInfo[] | string[] = [];
     const transactions = [];
+    if (signaturesToFind && signaturesToFind.length > 0) {
+      signatures = signaturesToFind;
+    } else {
+      if (!address) return [];
+      signatures = await this.getSignatures(address, cursor, limit);
+      if (!signatures || signatures.length === 0) {
+        return [];
+      }
+    }
     for (const sig of signatures) {
-      const tx = await this.client.getParsedTransaction(sig.signature, {
-        maxSupportedTransactionVersion: 0,
-      });
+      const tx = await this.client.getParsedTransaction(
+        typeof sig === "string" ? sig : sig.signature,
+        {
+          maxSupportedTransactionVersion: 0,
+        }
+      );
       transactions.push(tx);
     }
-
     return transactions;
   }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "solana_transactions" ADD COLUMN "type" "transaction_type";

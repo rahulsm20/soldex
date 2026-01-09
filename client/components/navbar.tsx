@@ -23,7 +23,6 @@ const LinkItem = ({
   currPage: string;
 }) => {
   const isActive = currPage === item.href;
-  // console.log({ isActive, page, href: item.href });
   return (
     <li
       key={item.name}

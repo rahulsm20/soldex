@@ -16,16 +16,9 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ACCOUNTS_SIGS } from "@/lib/constants";
-import { ChartDataType } from "@/types";
-import { useState } from "react";
+import { formatDateBasedOnBucket } from "@/lib/utils";
+import { BucketSize, ChartDataType } from "@/types";
 
 //------------------------------------------------
 
@@ -38,24 +31,24 @@ const chartConfig = {
     label: "USDT Mint",
     color: "var(--chart-2)",
   },
-  [ACCOUNTS_SIGS.PUMP_FUN]: {
-    label: "Pump Fun",
-    color: "var(--chart-3)",
-  },
+  // [ACCOUNTS_SIGS.PUMP_FUN]: {
+  //   label: "Pump Fun",
+  //   color: "var(--chart-3)",
+  // },
 } satisfies ChartConfig;
 
 export function ChartAreaInteractive({
   data = [],
   labels = [],
   description,
+  range,
 }: {
   data?: ChartDataType[];
   labels?: { label: string; value: string; sig: string; color: string }[];
   title?: string;
   description?: string;
+  range?: BucketSize;
 }) {
-  const [timeRange, setTimeRange] = useState("90d");
-
   return (
     <Card className="pt-0 bg-transparent">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
@@ -65,7 +58,7 @@ export function ChartAreaInteractive({
             {description || "Showing total visitors for the last 3 months"}
           </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
             aria-label="Select a value"
@@ -83,7 +76,7 @@ export function ChartAreaInteractive({
               Last 7 days
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 bg-none">
         <ChartContainer
@@ -119,10 +112,10 @@ export function ChartAreaInteractive({
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                return formatDateBasedOnBucket(
+                  Math.floor(date.getTime() / 1000),
+                  range || "1d"
+                );
               }}
             />
             <ChartTooltip
@@ -131,10 +124,15 @@ export function ChartAreaInteractive({
                 <ChartTooltipContent
                   labelFormatter={(_value, payload) => {
                     const date = payload?.[0]?.payload?.date;
-                    return new Date(date).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    });
+
+                    if (date) {
+                      const dt = new Date(date);
+                      return formatDateBasedOnBucket(
+                        Math.floor(dt.getTime() / 1000),
+                        range || "1d"
+                      );
+                    }
+                    return "";
                   }}
                   indicator="dot"
                 />

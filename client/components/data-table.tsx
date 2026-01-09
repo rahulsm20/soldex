@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({
   data,
   pageIndex,
   pageCount,
-  pageSize,
+  pageSize: rowCount,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -44,7 +44,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     pageCount,
-    rowCount: data?.length,
+    rowCount,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
           variant="outline"
           size="sm"
           onClick={() => onPageChange(pageIndex + 1)}
-          disabled={pageIndex + 1 >= pageCount}
+          disabled={pageIndex + 1 > pageCount}
         >
           <ChevronRight />
         </Button>

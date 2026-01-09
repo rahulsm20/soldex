@@ -1,0 +1,1 @@
+ALTER TABLE "solana_transactions" RENAME COLUMN "type" TO "transaction_type";

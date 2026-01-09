@@ -1,4 +1,5 @@
 import { solanaClient } from "@/lib/sol";
+import { extractFromAndToAddresses } from "@/utils";
 import { eq } from "drizzle-orm";
 import { Request, Response } from "express";
 import { db } from "shared/drizzle/db";
@@ -31,10 +32,17 @@ export const transactionsController = {
       );
       for (const tx of transactions) {
         if (!tx) continue;
+        const { from_address, to_address } = extractFromAndToAddresses(
+          tx,
+          address
+        );
+
         await db.insert(solana_transactions).values({
           address: address,
           signature: tx.transaction.signatures[0],
           slot: tx.slot,
+          from_address,
+          to_address,
           blockTime: tx.blockTime || null,
         });
       }

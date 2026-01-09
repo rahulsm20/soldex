@@ -16,29 +16,35 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker us-west1-docker.pkg.dev --quiet
 
       - name: Build and Push Indexer Docker Image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest ./indexer
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest
+          cd services &&
+          docker build -f Dockerfile.indexer --platform linux/amd64 -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-indexer:latest . && 
+          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-indexer:latest
 
       - name: Deploy Indexer Service to Cloud Run
         run: |
           gcloud run deploy soldex-indexer \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/indexer-image:latest \
+          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-indexer:latest \
           --region us-west1 \
           --platform managed \
           --allow-unauthenticated
 
       - name: Build and Push Server Docker Image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest ./server
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest
+          cd services &&
+          docker build -f Dockerfile.server --platform linux/amd64 -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest . &&
+          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest
 
       - name: Deploy Server
         run: |
+          cd services && 
           gcloud run deploy soldex-server \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/server-image:latest \
+          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest \
           --region us-west1 \
           --platform managed \
           --allow-unauthenticated

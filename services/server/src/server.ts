@@ -4,7 +4,7 @@ import { transactionRouter } from "./routes/transactionRoutes";
 import { config } from "./utils/config";
 
 const app = express();
-const port = config.PORT || 3000;
+const port = config.PORT || 3002;
 app.use(
   cors({
     origin: config.CLIENT_URL,

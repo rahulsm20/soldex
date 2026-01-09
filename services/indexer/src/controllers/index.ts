@@ -10,6 +10,7 @@ import {
 export const transactionsController = {
   getTransactionsForAddress: async (req: Request, res: Response) => {
     const address = req.params.address;
+    const { limit } = req.query;
     if (!address)
       return res.status(400).json({ message: "Address parameter is required" });
     try {
@@ -23,7 +24,11 @@ export const transactionsController = {
       if (last_indexed_state.length)
         cursor = last_indexed_state?.[0]?.lastProcessedSignature;
 
-      const transactions = await solanaClient.getTransactions(address, cursor);
+      const transactions = await solanaClient.getTransactions(
+        address,
+        cursor,
+        limit ? Number(limit) : undefined
+      );
       for (const tx of transactions) {
         if (!tx) continue;
         await db.insert(solana_transactions).values({

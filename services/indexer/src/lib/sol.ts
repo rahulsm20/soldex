@@ -40,11 +40,12 @@ class SolanaClientClass {
 
   async getSignatures(
     address: string,
-    cursor?: string | null
+    cursor?: string | null,
+    limit?: number
   ): Promise<ConfirmedSignatureInfo[]> {
     const key = new PublicKey(address);
     const opts: SignaturesForAddressOptions = {
-      limit: 10,
+      limit: limit || 10,
     };
     if (cursor) opts.before = cursor;
     const response = await this.client.getSignaturesForAddress(key, opts);
@@ -53,9 +54,10 @@ class SolanaClientClass {
 
   async getTransactions(
     address: string,
-    cursor?: string | null
+    cursor?: string | null,
+    limit?: number
   ): Promise<(ParsedTransactionWithMeta | null)[]> {
-    const signatures = await this.getSignatures(address, cursor);
+    const signatures = await this.getSignatures(address, cursor, limit);
     if (!signatures || signatures.length === 0) {
       return [];
     }

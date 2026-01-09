@@ -1,0 +1,61 @@
+services:
+  db:
+    image: neondatabase/neon_local:latest
+    ports:
+      - "5432:5432"
+    environment:
+      NEON_API_KEY: ${NEON_API_KEY}
+      NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+      DRIVER: serverless
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  client:
+    image: soldex-client:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_URL=http://server:3002
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client/config:/client/config:ro
+    depends_on:
+      - db
+
+  indexer:
+    image: indexer:latest
+    build:
+      context: ./services
+      dockerfile: Dockerfile.indexer
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./indexer/config:/indexer/config:ro
+
+  server:
+    image: soldex-server:latest
+    build:
+      context: ./services
+      dockerfile: Dockerfile.server
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./server/config:/server/config:ro
+    depends_on:
+      - db
+      - indexer
+
+volumes:
+  db_data:
+  redis_data:

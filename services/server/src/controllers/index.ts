@@ -51,6 +51,18 @@ export const transactionsController = {
         .offset(where.offset || 0)
         .orderBy(desc(solana_transactions.blockTime));
 
+      const pageCount = await db
+        .select()
+        .from(solana_transactions)
+        .where(address ? eq(solana_transactions.address, address) : undefined)
+        .then((results) => {
+          const total = results.length;
+          const size = pageSize ? Number(pageSize) : 50;
+          return Math.ceil(total / size);
+        });
+
+      const size = pageSize ? Number(pageSize) : 50;
+
       await cacheData(
         CACHE_KEYS.TRANSACTIONS(
           page ? Number(page) : undefined,
@@ -59,7 +71,9 @@ export const transactionsController = {
         JSON.stringify(transactions),
         100
       );
-      return res.status(200).json({ transactions });
+      return res
+        .status(200)
+        .json({ transactions, pageCount, pageSize: size, page });
     } catch (error) {
       console.error("Error fetching transactions:", error);
       return res.status(500).json({ message: "Internal server error" });

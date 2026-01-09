@@ -85,78 +85,80 @@ const Transactions = () => {
       ) : (
         <div className="flex justify-start items-center flex-col gap-6 min-h-screen">
           <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
-            <h1 className="text-xl font-semibold">Transactions</h1>
-            <div className="flex gap-2 items-center justify-between">
-              <Select
-                onValueChange={setValue}
-                open={open}
-                value={value || ""}
-                onOpenChange={setOpen}
-              >
-                <SelectTrigger className="w-52">
-                  <SelectValue
-                    placeholder={
-                      <div className="flex items-center gap-2">
-                        <span>Filter by accounts</span>
-                        <Filter className="h-2 w-2" />
-                      </div>
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Accounts</SelectLabel>
-                    {ACCOUNTS.map((account) => (
-                      <SelectItem key={account.value} value={account.value}>
-                        <div className="flex items-center gap-2 w-full justify-between">
-                          <span>{account.label}</span>
-                          <Image
-                            src={account.icon}
-                            alt={account.label}
-                            width={20}
-                            height={20}
-                          />
+            <div className="flex flex-col justify-center items-center gap-10">
+              <h1 className="text-xl font-semibold lg:w-full">Transactions</h1>
+              <div className="flex gap-2 items-center justify-between lg:w-full">
+                <Select
+                  onValueChange={setValue}
+                  open={open}
+                  value={value || ""}
+                  onOpenChange={setOpen}
+                >
+                  <SelectTrigger className="w-52">
+                    <SelectValue
+                      placeholder={
+                        <div className="flex items-center gap-2">
+                          <span>Filter by accounts</span>
+                          <Filter className="h-2 w-2" />
                         </div>
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                  <SelectSeparator />
-                  <Button
-                    className="w-full px-2"
-                    variant="secondary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setValue(undefined);
-                      setOpen(false);
-                    }}
-                  >
-                    Clear
-                  </Button>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" disabled>
-                <Download /> <span>Download</span>
-              </Button>
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Accounts</SelectLabel>
+                      {ACCOUNTS.map((account) => (
+                        <SelectItem key={account.value} value={account.value}>
+                          <div className="flex items-center gap-2 w-full justify-between">
+                            <span>{account.label}</span>
+                            <Image
+                              src={account.icon}
+                              alt={account.label}
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                    <SelectSeparator />
+                    <Button
+                      className="w-full px-2"
+                      variant="secondary"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue(undefined);
+                        setOpen(false);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" disabled>
+                  <Download /> <span>Download</span>
+                </Button>
+              </div>
+              <ChartAreaInteractive
+                data={chartData}
+                labels={ACCOUNTS}
+                range={timeRange}
+                title="Transactions"
+                description="Showing transactions per day for the selected period."
+              />
+              <DataTable
+                data={transactions}
+                columns={TransactionColumns(
+                  data?.page || 1,
+                  data?.pageSize || 10
+                )}
+                pageCount={data?.pageCount}
+                pageIndex={data?.page}
+                pageSize={data?.pageSize}
+                onPageChange={setPage}
+              />
             </div>
-            <ChartAreaInteractive
-              data={chartData}
-              labels={ACCOUNTS}
-              range={timeRange}
-              title="Transactions"
-              description="Showing transactions per day for the selected period."
-            />
-            <DataTable
-              data={transactions}
-              columns={TransactionColumns(
-                data?.page || 1,
-                data?.pageSize || 10
-              )}
-              pageCount={data?.pageCount}
-              pageIndex={data?.page}
-              pageSize={data?.pageSize}
-              onPageChange={setPage}
-            />
           </div>
         </div>
       )}

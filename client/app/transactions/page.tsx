@@ -1,6 +1,5 @@
 "use client";
 
-import { queries } from "@/api/queries";
 import { ChartAreaInteractive } from "@/components/charts/transactions";
 import { TransactionColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
@@ -17,10 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
 import { transactionDataToChartData } from "@/lib/utils";
-import { TransactionType } from "@/types";
-import { QueryClient, useQuery } from "@tanstack/react-query";
 import { Download, Filter } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -28,17 +26,13 @@ import { toast } from "sonner";
 //--------------------------------
 
 const Transactions = () => {
-  const queryClient = new QueryClient();
   const [page, setPage] = useState(1);
   const {
     data = { transactions: [] },
     isLoading,
     error,
     isFetching,
-  } = useQuery<{ transactions: TransactionType[] }>(
-    queries.FETCH_TRANSACTIONS({ variables: { page, pageSize: 10 } }),
-    queryClient
-  );
+  } = useTransactions({ page });
 
   const [showToast, setShowToast] = useState(true);
   const [value, setValue] = useState<string | undefined>(undefined);

@@ -10,6 +10,9 @@ export type TransactionType = {
 
 export type TransactionsResponse = {
   transactions: TransactionType[];
+  page: number;
+  pageSize: number;
+  pageCount: number;
 };
 
 export type ChartDataType = {

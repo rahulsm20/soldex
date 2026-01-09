@@ -27,12 +27,7 @@ import { toast } from "sonner";
 
 const Transactions = () => {
   const [page, setPage] = useState(1);
-  const {
-    data = { transactions: [] },
-    isLoading,
-    error,
-    isFetching,
-  } = useTransactions({ page });
+  const { data, isLoading, error, isFetching } = useTransactions({ page });
 
   const [showToast, setShowToast] = useState(true);
   const [value, setValue] = useState<string | undefined>(undefined);
@@ -53,6 +48,7 @@ const Transactions = () => {
   }
 
   const transactions = data?.transactions || [];
+  console.log({ transactions });
   const chartData = transactionDataToChartData(transactions).sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -128,8 +124,9 @@ const Transactions = () => {
             <DataTable
               data={transactions}
               columns={TransactionColumns}
-              pageCount={10}
-              pageIndex={page}
+              pageCount={data?.pageCount}
+              pageIndex={data?.page}
+              pageSize={data?.pageSize}
               onPageChange={setPage}
             />
           </div>

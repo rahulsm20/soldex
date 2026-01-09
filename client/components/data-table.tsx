@@ -4,7 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -26,7 +25,8 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageIndex: number; // current page index
-  pageCount: number; // total pages
+  pageCount: number; // total pages,
+  pageSize: number; // items per page
   onPageChange: (newPage: number) => void; // callback to parent
 }
 
@@ -35,6 +35,7 @@ export function DataTable<TData, TValue>({
   data,
   pageIndex,
   pageCount,
+  pageSize,
   onPageChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -42,10 +43,11 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    pageCount,
+    rowCount: data?.length,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getCoreRowModel(),
     state: {
       sorting,

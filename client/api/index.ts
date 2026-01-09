@@ -10,7 +10,12 @@ class ApiClient {
     variables,
   }: {
     variables: { page?: number; pageSize?: number };
-  }): Promise<{ transactions: TransactionType[] }> {
+  }): Promise<{
+    transactions: TransactionType[];
+    page: number;
+    pageSize: number;
+    pageCount: number;
+  }> {
     const response = await fetch(
       `${this.baseUrl}/transactions?page=${variables.page ?? 1}&pageSize=${
         variables.pageSize ?? 10
@@ -19,7 +24,13 @@ class ApiClient {
     if (!response.ok) {
       throw new Error("Failed to fetch transactions");
     }
-    const data: { transactions: TransactionType[] } = await response.json();
+    const data: {
+      transactions: TransactionType[];
+      page: number;
+      pageSize: number;
+      pageCount: number;
+    } = await response.json();
+
     return data;
   }
 }

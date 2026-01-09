@@ -12,10 +12,18 @@ export const queries = {
       queryKey: ["transactions", variables.page, variables.pageSize],
       initialData: {
         transactions: [],
+        page: variables.page,
+        pageSize: variables.pageSize,
+        pageCount: 0,
       },
       queryFn: async (): Promise<TransactionsResponse> => {
         const response = await apiClient.fetchTransactions({ variables });
-        return { transactions: response.transactions };
+        return {
+          transactions: response.transactions,
+          page: response.page,
+          pageSize: response.pageSize,
+          pageCount: response.pageCount,
+        };
       },
     } satisfies DefinedInitialDataOptions<
       TransactionsResponse,

@@ -39,8 +39,8 @@ export const transactionsController = {
         )
       );
       if (cachedData) {
-        const transactions = JSON.parse(cachedData);
-        return res.status(200).json({ transactions });
+        const data = JSON.parse(cachedData);
+        return res.status(200).json(data);
       }
 
       const transactions = await db
@@ -62,18 +62,21 @@ export const transactionsController = {
         });
 
       const size = pageSize ? Number(pageSize) : 50;
-
+      const result = {
+        transactions,
+        pageCount,
+        pageSize: size,
+        page: Number(page) || 1,
+      };
       await cacheData(
         CACHE_KEYS.TRANSACTIONS(
           page ? Number(page) : undefined,
           pageSize ? Number(pageSize) : undefined
         ),
-        JSON.stringify(transactions),
+        JSON.stringify(result),
         100
       );
-      return res
-        .status(200)
-        .json({ transactions, pageCount, pageSize: size, page });
+      return res.status(200).json(result);
     } catch (error) {
       console.error("Error fetching transactions:", error);
       return res.status(500).json({ message: "Internal server error" });

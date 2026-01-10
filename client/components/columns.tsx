@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import CopyToClipboard from "./copy-to-clipboard";
+import HoverPopover from "./hover-popover";
 import { Button } from "./ui/button";
 
 export function TransactionColumns(
@@ -83,7 +84,11 @@ export function TransactionColumns(
       cell: ({ row }) => {
         if (row.original.blockTime === null) return <span>N/A</span>;
         const date = new Date(row.original.blockTime * 1000);
-        return <span>{date.toLocaleString()}</span>;
+        return (
+          <HoverPopover content={<span>{date.toLocaleString()}</span>}>
+            <span>{row.original.blockTime}</span>
+          </HoverPopover>
+        );
       },
     },
     {

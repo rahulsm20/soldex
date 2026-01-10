@@ -55,7 +55,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="overflow-hidden rounded-md max-w-1/3 md:max-w-2/3 lg:max-w-full">
+    <div className="overflow-hidden rounded-md max-w-1/3 md:max-w-2/3 lg:max-w-full border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 p-4">
         <span>
           Page {pageIndex} / {pageCount}
         </span>

@@ -18,21 +18,33 @@ import {
 } from "@/components/ui/select";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
+import { TransactionsPage } from "@/lib/pages";
 import { determineBucketSize, transactionDataToChartData } from "@/lib/utils";
 import { Download, Filter } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 //--------------------------------
 
-const Transactions = () => {
-  const [page, setPage] = useState(1);
+const Transactions = ({}) => {
+  const searchParams = useSearchParams();
+  const queryPage = searchParams.get("page")
+    ? parseInt(searchParams.get("page")!)
+    : 1;
+  const router = useRouter();
+  const [page, setPage] = useState(queryPage);
   const { data, isLoading, error, isFetching } = useTransactions({ page });
 
   const [showToast, setShowToast] = useState(true);
   const [value, setValue] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (page !== undefined)
+      router.replace(TransactionsPage.href + `?page=${page}`);
+  }, [page]);
 
   if (error) {
     if (showToast)
@@ -83,7 +95,7 @@ const Transactions = () => {
       {isLoading || isFetching ? (
         <Loader />
       ) : (
-        <div className="flex justify-start items-center flex-col gap-6 min-h-screen">
+        <div className="flex justify-start items-center flex-col gap-6 min-h-screen ">
           <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
             <div className="flex flex-col justify-center items-center gap-10">
               <h1 className="text-xl font-semibold lg:w-full">Transactions</h1>

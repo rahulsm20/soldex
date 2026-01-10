@@ -46,8 +46,10 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+html,
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 :root {

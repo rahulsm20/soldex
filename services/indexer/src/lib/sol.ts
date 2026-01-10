@@ -22,12 +22,14 @@ interface GetAccountInfoResult {
  */
 class SolanaClientClass {
   private readonly client: Connection;
+  private readonly apiKey: string;
   constructor(options?: { apiKey?: string; fetcher?: typeof fetch }) {
     const apiKey = options?.apiKey ?? config.HELIUS_API_KEY;
     const url = `https://mainnet.helius-rpc.com/?api-key=${apiKey}`;
     if (!apiKey) {
       throw new Error("Helius API key is required");
     }
+    this.apiKey = apiKey;
 
     this.client = new Connection(url, "confirmed");
   }
@@ -41,12 +43,14 @@ class SolanaClientClass {
   async getSignatures(
     address: string,
     cursor?: string | null,
-    limit?: number
+    limit?: number,
+    before?: number // unix timestamp
   ): Promise<ConfirmedSignatureInfo[]> {
     const key = new PublicKey(address);
     const opts: SignaturesForAddressOptions = {};
     if (cursor) opts.before = cursor;
     if (limit) opts.limit = limit;
+    // if(before) opts.
     const response = await this.client.getSignaturesForAddress(key, opts);
     return response;
   }
@@ -78,6 +82,19 @@ class SolanaClientClass {
       transactions.push(tx);
     }
     return transactions;
+  }
+
+  async getTransactionsForAddress(
+    address?: string,
+    cursor?: string | null,
+    limit?: number,
+    signaturesToFind?: string[]
+  ): Promise<(ParsedTransactionWithMeta | null)[]> {
+    const data = fetch(
+      `https://api-mainnet.helius-rpc.com/v0/addresses/${address}/transactions?api-key=${this.apiKey}`
+    );
+
+    return [];
   }
 }
 

@@ -7,4 +7,5 @@ export const ACCOUNTS_SIGS = {
 export const CACHE_KEYS = {
   TRANSACTIONS: (page?: number, pageSize?: number) =>
     `transactions:${page}:${pageSize}`,
+  TOKEN_PRICE: (tokenAddress: string) => `token_price:${tokenAddress}`,
 };

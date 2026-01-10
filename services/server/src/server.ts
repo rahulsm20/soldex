@@ -1,7 +1,9 @@
+import { transactionRouter } from "@/routes/transactionRoutes";
+import { config } from "@/utils/config";
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { transactionRouter } from "./routes/transactionRoutes";
-import { config } from "./utils/config";
+import { rateLimiter } from "./middleware/rate-limit";
+import { tokenRoutes } from "./routes/tokenRoutes";
 
 const app = express();
 const port = config.PORT || 3002;
@@ -12,8 +14,10 @@ app.use(
 );
 app.use(express.json());
 
-app.use("/transactions", transactionRouter);
+app.use(rateLimiter);
 
+app.use("/transactions", transactionRouter);
+app.use("/token", tokenRoutes);
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).json({ message: "Service running", status: "ok" });
 });

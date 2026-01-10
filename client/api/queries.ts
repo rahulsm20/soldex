@@ -4,12 +4,22 @@ import apiClient from ".";
 
 export const queries = {
   FETCH_TRANSACTIONS: ({
-    variables,
+    variables = { page: 1, pageSize: 50 },
   }: {
-    variables: { page: number; pageSize: number };
+    variables: {
+      page: number;
+      pageSize: number;
+      from_address?: string;
+      address?: string;
+    };
   }) =>
     ({
-      queryKey: ["transactions", variables.page, variables.pageSize],
+      queryKey: [
+        "transactions",
+        variables.page,
+        variables.pageSize,
+        // ...Object.values(variables).map((v) => v ?? undefined),
+      ] as const,
       initialData: {
         transactions: [],
         page: variables.page,
@@ -31,4 +41,17 @@ export const queries = {
       TransactionsResponse,
       readonly ["transactions", number, number]
     >),
+  FETCH_TOKEN_PRICES: ({
+    variables: { tokens },
+  }: {
+    variables: { tokens: string[] };
+  }) => ({
+    queryKey: ["token_prices", ...tokens] as const,
+    queryFn: async () => {
+      const response = await apiClient.fetchTokenPrices({
+        variables: { tokens },
+      });
+      return response;
+    },
+  }),
 };

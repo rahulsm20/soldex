@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Solana Indexer",
+  title: "Soldex",
   description:
     "A simple Solana blockchain indexer built with Next.js and TypeScript.",
 };

@@ -11,7 +11,7 @@ import {
 export const transactionsController = {
   getTransactionsForAddress: async (req: Request, res: Response) => {
     const address = req.params.address;
-    const { limit } = req.query;
+    const { limit = 10 } = req.query;
     if (!address)
       return res.status(400).json({ message: "Address parameter is required" });
     try {

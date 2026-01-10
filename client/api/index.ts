@@ -1,4 +1,4 @@
-import { TransactionType } from "@/types";
+import { TokenPriceResponse, TransactionType } from "@/types";
 
 class ApiClient {
   private readonly baseUrl: string;
@@ -32,6 +32,30 @@ class ApiClient {
     } = await response.json();
 
     return data;
+  }
+  async fetchTokenPrices({
+    variables,
+  }: {
+    variables: { tokens: string[] };
+  }): Promise<TokenPriceResponse[]> {
+    try {
+      const url = `${this.baseUrl}/token`;
+      // const idsParam = variables.tokens.join(",");
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tokens: variables.tokens }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch token prices");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching token prices: ", error);
+      throw error;
+    }
   }
 }
 

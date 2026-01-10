@@ -16,26 +16,22 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { ACCOUNTS_SIGS } from "@/lib/constants";
+import { ACCOUNTS } from "@/lib/constants";
 import { formatDateBasedOnBucket } from "@/lib/utils";
 import { BucketSize, ChartDataType } from "@/types";
 
 //------------------------------------------------
 
-const chartConfig = {
-  [ACCOUNTS_SIGS.USDC_MINT_MULTISIG]: {
-    label: "USDC Mint",
-    color: "var(--chart-1)",
-  },
-  [ACCOUNTS_SIGS.USDT_MINT_MULTISIG]: {
-    label: "USDT Mint",
-    color: "var(--chart-2)",
-  },
-  // [ACCOUNTS_SIGS.PUMP_FUN]: {
-  //   label: "Pump Fun",
-  //   color: "var(--chart-3)",
-  // },
-} satisfies ChartConfig;
+const chartConfig = ACCOUNTS.reduce(
+  (config, account) => ({
+    ...config,
+    [account.sig]: {
+      label: account.label,
+      color: `var(--chart-${ACCOUNTS.indexOf(account) + 1})`,
+    },
+  }),
+  {}
+) satisfies ChartConfig;
 
 export function ChartAreaInteractive({
   data = [],

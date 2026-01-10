@@ -47,4 +47,20 @@ export const solana_indexer_state = pgTable("solana_indexer_state", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
+export const solana_tokens = pgTable("solana_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  address: text("address").notNull().unique(),
+  name: text("name"),
+  symbol: text("symbol"),
+  decimals: integer("decimals"),
+  icon: text("icon"),
+  price: integer("price"),
+  priceChange24h: integer("price_change_24h"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp()
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
+});
+
 //--------------------------------------------------------

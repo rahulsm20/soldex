@@ -3,9 +3,13 @@ import { TransactionType } from "@/types";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 
 export const useTransactions = ({
+  // from_address,
+  // address,
   page,
-  pageSize = 50,
+  pageSize = 20,
 }: {
+  // address?: string;
+  // from_address?: string;
   page: number;
   pageSize?: number;
 }) => {

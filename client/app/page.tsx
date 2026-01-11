@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <PageLayout>
-      <div className="flex w-full max-w-3xl flex-col items-center sm:items-start py-16 gap-5">
+      <div className="flex w-2/3 text-sm max-w-3xl lg:text-base flex-col items-center sm:items-start py-16 gap-5">
         <div>
           <h1 className="text-5xl font-bold mb-8 text-center sm:text-left">
             Welcome to <span className="text-purple-400">Soldex!</span>

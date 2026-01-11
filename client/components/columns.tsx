@@ -1,11 +1,15 @@
 import { TransactionType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import CopyToClipboard from "./copy-to-clipboard";
 import HoverPopover from "./hover-popover";
 import { Button } from "./ui/button";
+dayjs.extend(relativeTime);
 
+//------------------------------------------------
 export function TransactionColumns(
   page: number,
   pageSize: number
@@ -85,8 +89,14 @@ export function TransactionColumns(
         if (row.original.blockTime === null) return <span>N/A</span>;
         const date = new Date(row.original.blockTime * 1000);
         return (
-          <HoverPopover content={<span>{date.toLocaleString()}</span>}>
-            <span>{row.original.blockTime}</span>
+          <HoverPopover
+            content={
+              <span>
+                {date.toLocaleString()} ({row.original.blockTime})
+              </span>
+            }
+          >
+            <span>{dayjs(row.original.blockTime * 1000).fromNow()}</span>
           </HoverPopover>
         );
       },

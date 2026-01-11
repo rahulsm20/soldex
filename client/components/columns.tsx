@@ -87,16 +87,18 @@ export function TransactionColumns(
       accessorKey: "blockTime",
       cell: ({ row }) => {
         if (row.original.blockTime === null) return <span>N/A</span>;
-        const date = new Date(row.original.blockTime * 1000);
+        const date = new Date(row.original.blockTime);
         return (
           <HoverPopover
             content={
               <span>
-                {date.toLocaleString()} ({row.original.blockTime})
+                {date.toLocaleString()}
+                <br />
+                ISO: ({date.toISOString()})
               </span>
             }
           >
-            <span>{dayjs(row.original.blockTime * 1000).fromNow()}</span>
+            <span>{dayjs(row.original.blockTime).fromNow()}</span>
           </HoverPopover>
         );
       },

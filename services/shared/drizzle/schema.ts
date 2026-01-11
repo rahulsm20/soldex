@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  doublePrecision,
   integer,
   pgEnum,
   pgTable,
@@ -54,8 +55,8 @@ export const solana_tokens = pgTable("solana_tokens", {
   symbol: text("symbol"),
   decimals: integer("decimals"),
   icon: text("icon"),
-  price: integer("price"),
-  priceChange24h: integer("price_change_24h"),
+  price: doublePrecision("price"),
+  priceChange24h: doublePrecision("price_change_24h"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp()
     .notNull()

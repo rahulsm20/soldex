@@ -1,9 +1,6 @@
 "use client";
-import Marquee from "@/components/marquee";
 import PageLayout from "@/components/page-layout";
 import { Button } from "@/components/ui/button";
-import { useTokens } from "@/hooks/tokens";
-import { TOKENS } from "@/lib/constants";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,15 +15,12 @@ export default function Home() {
       cv: Math.floor(Math.random() * 2000) + 1000,
     }))
   );
-  const { data: tokenData, isLoading } = useTokens({
-    tokens: TOKENS.map((acc) => acc.sig),
-  });
+
   const router = useRouter();
 
   return (
     <PageLayout>
       <div className="flex w-full max-w-3xl flex-col items-center sm:items-start py-16 gap-5">
-        <Marquee tokens={tokenData} isLoading={isLoading} />
         <div>
           <h1 className="text-5xl font-bold mb-8 text-center sm:text-left">
             Welcome to <span className="text-purple-400">Soldex!</span>
@@ -60,15 +54,17 @@ export default function Home() {
         <blockquote className="border-l-4 border-purple-400 pl-4">
           <h2 className="text-xl font-semibold">How it works</h2>
           <div>
-            We index all transactions on Solana for some of the most popular
-            programs, including:
-            <ul className="list-disc list-inside">
-              <li>Token Transfers (SPL Token Program)</li>
-              <li>NFT Sales (Metaplex Token Metadata Program)</li>
-              <li>Decentralized Exchange Trades (Serum DEX Program)</li>
+            Soldex is a real-time Solana transaction indexing and analytics
+            platform.
+            <ul>
+              <li className="list-disc list-inside">
+                It consists of a high-performance indexer service that ingests
+                on-chain transaction data and a main API server that exposes
+                structured, queryable endpoints for building dashboards and
+                analytics features such as transaction charts, token activity,
+                and historical trends.
+              </li>
             </ul>
-            Using our intuitive UI, you can easily search and filter
-            transactions by program, address, date range, and more.
           </div>
         </blockquote>
         <Button

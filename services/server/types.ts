@@ -7,10 +7,10 @@ export type TransactionWhereInput = {
 export type TokenPriceResponse = {
   id: string;
   address: string;
-  name: string | null;
-  symbol: string | null;
-  icon: string | null;
-  decimals: number | null;
+  name: string | null | undefined;
+  symbol: string | null | undefined;
+  icon: string | null | undefined;
+  decimals: number | null | undefined;
   price: number | null;
   priceChange24h: number | null;
 };

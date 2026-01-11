@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { ModeToggle } from "./dark-mode";
+import { Separator } from "./ui/separator";
 
 //---------------------------------------
 const LinkItem = ({
@@ -24,7 +25,7 @@ const LinkItem = ({
 }) => {
   const isActive = currPage === item.href;
   return (
-    <li
+    <div
       key={item.name}
       title={item.name}
       className={
@@ -41,7 +42,7 @@ const LinkItem = ({
         <span className="hidden md:block">{item.name}</span>
         <item.icon className="w-4 h-4" />
       </Link>
-    </li>
+    </div>
   );
 };
 
@@ -60,7 +61,7 @@ const Navbar = () => {
   ];
   const pathname = usePathname();
   return (
-    <nav className="flex sticky top-0 z-50 backdrop-blur-xl items-center justify-between bg-none py-2 px-4 text-sm border-b border-zinc-300 dark:border-zinc-800 mb-10">
+    <nav className="flex z-50 backdrop-blur-xl items-center justify-between bg-none py-2 px-4 text-sm border-b border-zinc-300 dark:border-zinc-800">
       <Link href="/" className="flex items-center gap-2">
         <Image
           src="/favicon.ico"
@@ -78,14 +79,17 @@ const Navbar = () => {
         />
         <span className="font-semibold text-lg">Soldex</span>
       </Link>
-      <ul className="flex gap-5 items-center">
-        {navItems.map((item) => (
-          <LinkItem key={item.name} item={item} currPage={pathname} />
+      <section className="flex gap-5 items-center">
+        {navItems.map((item, idx) => (
+          <div key={idx} className="flex items-center gap-2">
+            <LinkItem item={item} currPage={pathname} />
+            <Separator orientation="vertical" className="h-3" />
+          </div>
         ))}
-        <li>
+        <div>
           <ModeToggle />
-        </li>
-      </ul>
+        </div>
+      </section>
     </nav>
   );
 };

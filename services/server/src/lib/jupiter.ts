@@ -1,6 +1,4 @@
 import { config } from "@/utils/config";
-import { db } from "shared/drizzle/db";
-import { solana_tokens } from "shared/drizzle/schema";
 import { cacheData, getCachedData } from "shared/redis";
 import { CACHE_KEYS } from "shared/utils/constants";
 import { TokenPriceResponse } from "types";
@@ -157,38 +155,48 @@ export async function getTokenPrice(
     if (tokenInfo && tokenPrice) {
       tokenPrice.decimals = tokenInfo.decimals;
     }
-    const [insertedToken] = await db
-      .insert(solana_tokens)
-      .values({
-        address: id,
-        name: tokenInfo?.name,
-        symbol: tokenInfo?.symbol,
-        decimals: tokenInfo?.decimals,
-        icon: tokenInfo?.icon,
-        price: Math.floor(tokenPrice.usdPrice * 100),
-        priceChange24h: Math.floor(tokenPrice.priceChange24h * 100),
-      })
-      .onConflictDoUpdate({
-        target: solana_tokens.address,
-        set: {
-          name: tokenInfo?.name,
-          symbol: tokenInfo?.symbol,
-          decimals: tokenInfo?.decimals,
-          icon: tokenInfo?.icon,
-          price: Math.floor(tokenPrice.usdPrice * 100),
-          priceChange24h: Math.floor(tokenPrice.priceChange24h * 100),
-        },
-      })
-      .returning({
-        id: solana_tokens.id,
-        address: solana_tokens.address,
-        name: solana_tokens.name,
-        symbol: solana_tokens.symbol,
-        decimals: solana_tokens.decimals,
-        icon: solana_tokens.icon,
-        price: solana_tokens.price,
-        priceChange24h: solana_tokens.priceChange24h,
-      });
+    const insertedToken = {
+      id,
+      address: id,
+      name: tokenInfo?.name,
+      symbol: tokenInfo?.symbol,
+      decimals: tokenInfo?.decimals,
+      icon: tokenInfo?.icon,
+      price: tokenPrice?.usdPrice,
+      priceChange24h: tokenPrice?.priceChange24h,
+    };
+    // const [insertedToken] = await db
+    //   .insert(solana_tokens)
+    //   .values({
+    //     address: id,
+    //     name: tokenInfo?.name,
+    //     symbol: tokenInfo?.symbol,
+    //     decimals: tokenInfo?.decimals,
+    //     icon: tokenInfo?.icon,
+    //     price: tokenPrice.usdPrice,
+    //     priceChange24h: tokenPrice.priceChange24h,
+    //   })
+    //   .onConflictDoUpdate({
+    //     target: solana_tokens.address,
+    //     set: {
+    //       name: tokenInfo?.name,
+    //       symbol: tokenInfo?.symbol,
+    //       decimals: tokenInfo?.decimals,
+    //       icon: tokenInfo?.icon,
+    //       price: tokenPrice.usdPrice,
+    //       priceChange24h: tokenPrice.priceChange24h,
+    //     },
+    //   })
+    //   .returning({
+    //     id: solana_tokens.id,
+    //     address: solana_tokens.address,
+    //     name: solana_tokens.name,
+    //     symbol: solana_tokens.symbol,
+    //     decimals: solana_tokens.decimals,
+    //     icon: solana_tokens.icon,
+    //     price: solana_tokens.price,
+    //     priceChange24h: solana_tokens.priceChange24h,
+    //   });
     data.push(insertedToken);
   }
   const HOUR_IN_SECONDS = 3600;

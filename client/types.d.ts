@@ -19,7 +19,7 @@ export type TransactionsResponse = {
 
 export type ChartDataType = {
   [key: string]: number | string;
-  date: number;
+  time: string;
 };
 
 export type BucketSize = "1m" | "5m" | "1h" | "1d";
@@ -33,4 +33,9 @@ export type TokenPriceResponse = {
   decimals: number | null;
   price: number | null;
   priceChange24h: number | null;
+};
+
+export type ChartDataResponse = {
+  time: string;
+  [tokenAddress: string]: number | string;
 };

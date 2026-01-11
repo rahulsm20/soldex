@@ -35,6 +35,7 @@ const LinkItem = ({
       }
     >
       <Link
+        title={item.name}
         href={item.href}
         className="flex gap-2 items-center"
         target={item.target}
@@ -55,6 +56,12 @@ const Navbar = () => {
     {
       name: "Github",
       href: "https://github.com/rahulsm20/soldex",
+      icon: ArrowUpRight,
+      target: "_blank",
+    },
+    {
+      name: "API",
+      href: "https://api.soldex.dev/docs",
       icon: ArrowUpRight,
       target: "_blank",
     },

@@ -54,4 +54,11 @@ export const queries = {
       return response;
     },
   }),
+  FETCH_CHART_DATA: () => ({
+    queryKey: ["soldex_chart_data"] as const,
+    queryFn: async () => {
+      const response = await apiClient.fetchChartData();
+      return response;
+    },
+  }),
 };

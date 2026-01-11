@@ -101,8 +101,8 @@ export function ChartAreaInteractive({
             </defs>
             <CartesianGrid />
             <XAxis
-              dataKey="date"
-              tickLine={false}
+              dataKey="time"
+              // tickLine={false}
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
@@ -119,7 +119,7 @@ export function ChartAreaInteractive({
               content={
                 <ChartTooltipContent
                   labelFormatter={(_value, payload) => {
-                    const date = payload?.[0]?.payload?.date;
+                    const date = payload?.[0]?.payload?.time;
 
                     if (date) {
                       const dt = new Date(date);
@@ -138,10 +138,10 @@ export function ChartAreaInteractive({
               <Area
                 key={label.value}
                 dataKey={label.sig}
-                // type="natural"
+                type="natural"
                 fill={`url(#${labels.indexOf(label) + 1})`}
                 stroke={label.color}
-                // stackId="a"
+                stackId="a"
               />
             ))}
             <ChartLegend content={<ChartLegendContent />} />

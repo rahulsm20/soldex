@@ -1,0 +1,1 @@
+ALTER TABLE "solana_transactions" ALTER COLUMN "block_time" SET DATA TYPE timestamp;

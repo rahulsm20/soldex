@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useChart } from "@/hooks/charts";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
 import { TransactionsPage } from "@/lib/pages";
@@ -33,10 +34,18 @@ const Transactions = ({}) => {
   const queryPage = searchParams.get("page")
     ? parseInt(searchParams.get("page")!)
     : 1;
+  const queryPageSize = searchParams.get("pageSize")
+    ? parseInt(searchParams.get("pageSize")!)
+    : 20;
   const router = useRouter();
   const [page, setPage] = useState(queryPage);
-  const { data, isLoading, error, isFetching } = useTransactions({ page });
-
+  const [pageSize, _setPageSize] = useState(queryPageSize);
+  const { data, isLoading, error, isFetching } = useTransactions({
+    page,
+    pageSize,
+  });
+  const { data: formattedChartData, isLoading: isChartLoading } = useChart();
+  console.log({ formattedChartData, isChartLoading });
   const [showToast, setShowToast] = useState(true);
   const [value, setValue] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
@@ -153,7 +162,7 @@ const Transactions = ({}) => {
                 </Button>
               </div>
               <ChartAreaInteractive
-                data={chartData}
+                data={formattedChartData}
                 labels={ACCOUNTS}
                 range={timeRange}
                 title="Transactions"

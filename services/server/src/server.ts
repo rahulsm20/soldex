@@ -3,6 +3,7 @@ import { config } from "@/utils/config";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { rateLimiter } from "./middleware/rate-limit";
+import { chartRoutes } from "./routes/chartRoutes";
 import { tokenRoutes } from "./routes/tokenRoutes";
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(rateLimiter);
 
 app.use("/transactions", transactionRouter);
 app.use("/token", tokenRoutes);
+app.use("/charts", chartRoutes);
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).json({ message: "Service running", status: "ok" });
 });

@@ -25,7 +25,7 @@ export const solana_transactions = pgTable("solana_transactions", {
   address: text("address").notNull(),
   signature: text("signature").unique().notNull(),
   slot: integer("slot").notNull(),
-  blockTime: integer("block_time"),
+  blockTime: timestamp("block_time"),
   from_address: text("from_address"),
   to_address: text("to_address"),
   lamports: integer("lamports"),

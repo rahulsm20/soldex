@@ -1,4 +1,8 @@
-import { TokenPriceResponse, TransactionType } from "@/types";
+import {
+  ChartDataResponse,
+  TokenPriceResponse,
+  TransactionType,
+} from "@/types";
 
 class ApiClient {
   private readonly baseUrl: string;
@@ -56,6 +60,14 @@ class ApiClient {
       console.error("Error fetching token prices: ", error);
       throw error;
     }
+  }
+  async fetchChartData(): Promise<ChartDataResponse[]> {
+    const response = await fetch(`${this.baseUrl}/charts`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch chart data");
+    }
+    const data = await response.json();
+    return data;
   }
 }
 

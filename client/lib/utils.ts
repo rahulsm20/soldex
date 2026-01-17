@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function transactionDataToChartData(
   transactions: TransactionType[],
-  bucket: BucketSize
+  bucket: BucketSize,
 ) {
   const data = new Map<number, { date: number; [key: string]: number }>();
   const allAddresses = new Set<string>();
@@ -40,7 +40,7 @@ export function transactionDataToChartData(
 
 export function determineBucketSize(
   fromUnix?: number | null,
-  toUnix?: number | null
+  toUnix?: number | null,
 ): BucketSize {
   if (!fromUnix || !toUnix) return "1d";
   const diffSeconds = toUnix - fromUnix;
@@ -52,7 +52,7 @@ export function determineBucketSize(
 
 export function bucketTimestamp(
   unixSeconds: number,
-  bucket: BucketSize
+  bucket: BucketSize,
 ): number {
   const ms = unixSeconds * 1000;
 
@@ -70,7 +70,7 @@ export function bucketTimestamp(
 
 export function formatDateBasedOnBucket(
   unixSeconds: number,
-  bucket: BucketSize
+  bucket: BucketSize,
 ): string {
   const date = new Date(unixSeconds * 1000);
 
@@ -96,4 +96,30 @@ export function formatDateBasedOnBucket(
     default:
       return date.toLocaleString();
   }
+}
+
+export function generateSolscanLink(
+  type: "tx" | "account",
+  identifier: string,
+): string {
+  if (type === "tx") {
+    return `https://solscan.io/tx/${identifier}`;
+  } else if (type === "account") {
+    return `https://solscan.io/account/${identifier}`;
+  }
+  return "";
+}
+
+export function generateLink(
+  baseUrl: string,
+  path: string,
+  params?: Record<string, string | number | undefined>,
+) {
+  const url = new URL(path, baseUrl);
+  Object.entries(params ?? {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      url.searchParams.append(key, String(value));
+    }
+  });
+  return url.toString();
 }

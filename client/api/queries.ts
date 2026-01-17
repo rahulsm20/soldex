@@ -4,13 +4,21 @@ import apiClient from ".";
 
 export const queries = {
   FETCH_TRANSACTIONS: ({
-    variables = { page: 1, pageSize: 50 },
+    variables = {
+      page: 1,
+      pageSize: 50,
+      address: "",
+      startTime: "",
+      endTime: "",
+    },
   }: {
     variables: {
       page: number;
       pageSize: number;
       from_address?: string;
       address?: string;
+      startTime?: string;
+      endTime?: string;
     };
   }) =>
     ({
@@ -18,7 +26,9 @@ export const queries = {
         "transactions",
         variables.page,
         variables.pageSize,
-        // ...Object.values(variables).map((v) => v ?? undefined),
+        variables.address,
+        variables.startTime,
+        variables.endTime,
       ] as const,
       initialData: {
         transactions: [],
@@ -39,7 +49,14 @@ export const queries = {
       TransactionsResponse,
       Error,
       TransactionsResponse,
-      readonly ["transactions", number, number]
+      readonly [
+        "transactions",
+        number,
+        number,
+        string | undefined,
+        string | undefined,
+        string | undefined
+      ]
     >),
   FETCH_TOKEN_PRICES: ({
     variables: { tokens },

@@ -1,18 +1,18 @@
+import { generateSolscanLink } from "@/lib/utils";
 import { TransactionType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ArrowUpDown } from "lucide-react";
-import Link from "next/link";
-import CopyToClipboard from "./copy-to-clipboard";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import HoverPopover from "./hover-popover";
+import TxLink from "./tx-link";
 import { Button } from "./ui/button";
 dayjs.extend(relativeTime);
 
 //------------------------------------------------
 export function TransactionColumns(
   page: number,
-  pageSize: number
+  pageSize: number,
 ): ColumnDef<TransactionType>[] {
   return [
     {
@@ -24,40 +24,36 @@ export function TransactionColumns(
       header: "Signature",
       accessorKey: "signature",
       cell: ({ row }) => (
-        <div className="flex w-42 items-center justify-between">
-          <Link
-            href={`https://solscan.io/tx/${row.original.signature}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {row.original.signature.slice(0, 5)}...
-            {row.original.signature.slice(-5)}
-          </Link>
-          <CopyToClipboard
-            title={"Copy signature to clipboard"}
+        <div className="flex w-42 items-center justify-between underline">
+          <TxLink
+            title={
+              <>
+                {row.original.signature?.slice(0, 5)}...
+                {row.original.signature?.slice(-5)}
+              </>
+            }
             text={row.original.signature}
+            url={generateSolscanLink("tx", row.original.signature)}
           />
         </div>
       ),
+      filterFn: "includesString",
+      enableColumnFilter: true,
     },
     {
       header: "Address",
       accessorKey: "address",
       cell: ({ row }) => (
-        <div className="flex w-42 items-center justify-between">
-          <Link
-            href={`https://solscan.io/account/${row.original.address}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-          >
-            {row.original.address.slice(0, 5)}...
-            {row.original.address.slice(-5)}
-          </Link>
-          <CopyToClipboard
-            title={"Copy address to clipboard"}
+        <div className="flex w-42 items-center justify-between underline">
+          <TxLink
+            title={
+              <span>
+                {row.original.address?.slice(0, 5)}...
+                {row.original.address?.slice(-5)}
+              </span>
+            }
             text={row.original.address}
+            url={generateSolscanLink("account", row.original.address)}
           />
         </div>
       ),
@@ -68,18 +64,26 @@ export function TransactionColumns(
     },
     {
       header: ({ column }) => {
+        const isSorted = column.getIsSorted();
+
         return (
           <div className="flex gap-1 items-center justify-between">
             <span>Block Time</span>
             <Button
               variant="ghost"
               title="Sort by block time"
-              className="hover:bg-none bg-none flex items-center justify-center p-0"
+              className="hover:bg-none bg-none flex items-center justify-center"
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
             >
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              {isSorted === "asc" ? (
+                <ArrowDown className=" h-4 w-full" />
+              ) : isSorted === "desc" ? (
+                <ArrowUp className=" h-4 w-full" />
+              ) : (
+                <ArrowUpDown className="h-4 w-full" />
+              )}
             </Button>
           </div>
         );
@@ -90,13 +94,7 @@ export function TransactionColumns(
         const date = new Date(row.original.blockTime);
         return (
           <HoverPopover
-            content={
-              <span>
-                {date.toLocaleString()}
-                <br />
-                ISO: ({date.toISOString()})
-              </span>
-            }
+            content={<span>{dayjs(date).format("YYYY-MM-DD hh:mma")}</span>}
           >
             <span>{dayjs(row.original.blockTime).fromNow()}</span>
           </HoverPopover>
@@ -107,21 +105,18 @@ export function TransactionColumns(
       header: "From",
       accessorKey: "from_address",
       cell: ({ row }) => (
-        <div className="flex w-42 items-center justify-between">
+        <div className="flex w-42 items-center justify-between underline">
           {row.original.from_address ? (
             <>
-              <Link
-                href={`https://solscan.io/account/${row.original.from_address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                {row.original.from_address.slice(0, 5)}...
-                {row.original.from_address.slice(-5)}
-              </Link>
-              <CopyToClipboard
-                title={"Copy address to clipboard"}
+              <TxLink
+                title={
+                  <span>
+                    {row.original.from_address?.slice(0, 5)}...
+                    {row.original.from_address?.slice(-5)}
+                  </span>
+                }
                 text={row.original.from_address}
+                url={generateSolscanLink("account", row.original.from_address)}
               />
             </>
           ) : (
@@ -134,21 +129,18 @@ export function TransactionColumns(
       header: "To",
       accessorKey: "to_address",
       cell: ({ row }) => (
-        <div className="flex w-42 items-center justify-between">
+        <div className="flex w-42 items-center justify-between underline">
           {row.original.to_address ? (
             <>
-              <Link
-                href={`https://solscan.io/account/${row.original.to_address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                {row.original.to_address?.slice(0, 5)}...
-                {row.original.to_address?.slice(-5)}
-              </Link>
-              <CopyToClipboard
-                title={"Copy address to clipboard"}
+              <TxLink
+                title={
+                  <span>
+                    {row.original.to_address?.slice(0, 5)}...
+                    {row.original.to_address?.slice(-5)}
+                  </span>
+                }
                 text={row.original.to_address}
+                url={generateSolscanLink("account", row.original.to_address)}
               />
             </>
           ) : (

@@ -1,3 +1,4 @@
+import { generateLink } from "@/lib/utils";
 import {
   ChartDataResponse,
   TokenPriceResponse,
@@ -13,18 +14,27 @@ class ApiClient {
   async fetchTransactions({
     variables,
   }: {
-    variables: { page?: number; pageSize?: number };
+    variables: {
+      page?: number;
+      pageSize?: number;
+      address?: string;
+      startTime?: string;
+      endTime?: string;
+    };
   }): Promise<{
     transactions: TransactionType[];
     page: number;
     pageSize: number;
     pageCount: number;
   }> {
-    const response = await fetch(
-      `${this.baseUrl}/transactions?page=${variables.page ?? 1}&pageSize=${
-        variables.pageSize ?? 10
-      }`
-    );
+    const url = generateLink(this.baseUrl, "/transactions", {
+      page: variables.page,
+      pageSize: variables.pageSize,
+      address: variables.address,
+      startTime: variables.startTime,
+      endTime: variables.endTime,
+    });
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Failed to fetch transactions");
     }

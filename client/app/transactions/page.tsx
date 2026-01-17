@@ -19,41 +19,37 @@ import {
 import { useChart } from "@/hooks/charts";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
-import { TransactionsPage } from "@/lib/pages";
 import { determineBucketSize, transactionDataToChartData } from "@/lib/utils";
 import { Download, Filter } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useQueryState } from "nuqs";
+import { useState } from "react";
 import { toast } from "sonner";
 
 //--------------------------------
 
 const Transactions = ({}) => {
-  const searchParams = useSearchParams();
-  const queryPage = searchParams.get("page")
-    ? parseInt(searchParams.get("page")!)
-    : 1;
-  const queryPageSize = searchParams.get("pageSize")
-    ? parseInt(searchParams.get("pageSize")!)
-    : 20;
-  const router = useRouter();
-  const [page, setPage] = useState(queryPage);
-  const [pageSize, _setPageSize] = useState(queryPageSize);
-  const { data, isLoading, error, isFetching } = useTransactions({
-    page,
-    pageSize,
+  const [pageSize, _setPageSize] = useQueryState("pageSize", {
+    defaultValue: "20",
   });
-  const { data: formattedChartData, isLoading: isChartLoading } = useChart();
-  console.log({ formattedChartData, isChartLoading });
-  const [showToast, setShowToast] = useState(true);
-  const [value, setValue] = useState<string | undefined>(undefined);
-  const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (page !== undefined)
-      router.replace(TransactionsPage.href + `?page=${page}`);
-  }, [page]);
+  const [address, setAddress] = useQueryState("address", {
+    defaultValue: "",
+  });
+  const [queryPage, setQueryPage] = useQueryState("page", {
+    defaultValue: "1",
+  });
+
+  const { data, isLoading, error, isFetching } = useTransactions({
+    page: queryPage ? parseInt(queryPage, 10) : 1,
+    pageSize: pageSize ? parseInt(pageSize, 10) : 20,
+    address,
+  });
+
+  const { data: formattedChartData } = useChart();
+
+  const [showToast, setShowToast] = useState(true);
+  const [open, setOpen] = useState(false);
 
   if (error) {
     if (showToast)
@@ -87,7 +83,7 @@ const Transactions = ({}) => {
   const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
   const timeRange = determineBucketSize(fromUnix, toUnix);
   const chartData = transactionDataToChartData(transactions, timeRange).sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
   {
     /* <Input
@@ -99,6 +95,7 @@ const Transactions = ({}) => {
           className="max-w-sm"
         /> */
   }
+
   return (
     <PageLayout>
       {isLoading || isFetching ? (
@@ -110,9 +107,9 @@ const Transactions = ({}) => {
               <h1 className="text-xl font-semibold lg:w-full">Transactions</h1>
               <div className="flex gap-2 items-center justify-between lg:w-full">
                 <Select
-                  onValueChange={setValue}
+                  onValueChange={setAddress}
                   open={open}
-                  value={value || ""}
+                  value={address || ""}
                   onOpenChange={setOpen}
                 >
                   <SelectTrigger className="w-52">
@@ -129,7 +126,7 @@ const Transactions = ({}) => {
                     <SelectGroup>
                       <SelectLabel>Accounts</SelectLabel>
                       {ACCOUNTS.map((account) => (
-                        <SelectItem key={account.value} value={account.value}>
+                        <SelectItem key={account.sig} value={account.sig}>
                           <div className="flex items-center gap-2 w-full justify-between">
                             <span>{account.label}</span>
                             <Image
@@ -149,7 +146,7 @@ const Transactions = ({}) => {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setValue(undefined);
+                        setAddress("");
                         setOpen(false);
                       }}
                     >
@@ -172,12 +169,13 @@ const Transactions = ({}) => {
                 data={transactions}
                 columns={TransactionColumns(
                   data?.page || 1,
-                  data?.pageSize || 10
+                  data?.pageSize || 10,
                 )}
                 pageCount={data?.pageCount}
                 pageIndex={data?.page}
                 pageSize={data?.pageSize}
-                onPageChange={setPage}
+                onPageChange={setQueryPage}
+                filter={address}
               />
             </div>
           </div>

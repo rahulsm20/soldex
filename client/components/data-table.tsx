@@ -2,8 +2,10 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -18,7 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { Options } from "nuqs";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 interface DataTableProps<TData, TValue> {
@@ -27,7 +30,11 @@ interface DataTableProps<TData, TValue> {
   pageIndex: number; // current page index
   pageCount: number; // total pages,
   pageSize: number; // items per page
-  onPageChange: (newPage: number) => void; // callback to parent
+  onPageChange: (
+    value: string | ((old: string) => string | null) | null,
+    options?: Options | undefined,
+  ) => Promise<URLSearchParams>; // callback to parent
+  filter?: { id: string; value: string } | string;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,8 +44,24 @@ export function DataTable<TData, TValue>({
   pageCount,
   pageSize: rowCount,
   onPageChange,
+  filter,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  // Sync parent filter -> table filter
+  useEffect(() => {
+    if (filter) {
+      setColumnFilters([
+        {
+          id: "address",
+          value: filter,
+        },
+      ]);
+    } else {
+      setColumnFilters([]);
+    }
+  }, [filter]);
 
   const table = useReactTable({
     data,
@@ -48,9 +71,10 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
   });
 
@@ -67,7 +91,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );
@@ -105,7 +129,9 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(pageIndex - 1)}
+          onClick={() =>
+            onPageChange((old) => (old ? String(Number(old) - 1) : null))
+          }
           disabled={pageIndex === 1}
         >
           <ChevronLeft />
@@ -113,7 +139,9 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(pageIndex + 1)}
+          onClick={() =>
+            onPageChange((old) => (old ? String(Number(old) + 1) : null))
+          }
           disabled={pageIndex + 1 > pageCount}
         >
           <ChevronRight />

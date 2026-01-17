@@ -1,0 +1,1 @@
+ALTER TABLE "solana_transactions" ALTER COLUMN "transaction_type" SET DEFAULT 'transfer';

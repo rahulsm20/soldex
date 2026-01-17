@@ -43,7 +43,7 @@ export const transactionsController = {
           slot: tx.slot,
           from_address,
           to_address,
-          blockTime: tx.blockTime || null,
+          blockTime: tx.blockTime ? new Date(tx.blockTime * 1000) : null,
         });
       }
 

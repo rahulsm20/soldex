@@ -11,7 +11,7 @@ const port = config.PORT || 3002;
 app.use(
   cors({
     origin: config.CLIENT_URL,
-  })
+  }),
 );
 app.use(express.json());
 

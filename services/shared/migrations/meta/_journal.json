@@ -113,6 +113,20 @@
       "when": 1768165380480,
       "tag": "0015_charming_stellaris",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1768658191997,
+      "tag": "0016_glossy_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1768659015177,
+      "tag": "0017_nostalgic_malice",
+      "breakpoints": true
     }
   ]
 }

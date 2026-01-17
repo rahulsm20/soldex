@@ -35,8 +35,8 @@ export const ACCOUNTS = [
 ];
 
 export const CACHE_KEYS = {
-  TRANSACTIONS: (page?: number, pageSize?: number) =>
-    `transactions:${page}:${pageSize}`,
+  TRANSACTIONS: (...args: (string | number)[]) =>
+    `transactions:${args.join(":")}`,
   TOKEN_PRICE: (tokenAddress: string) => `token_price:${tokenAddress}`,
   CHART_DATA: `soldex_chart_data`,
 };

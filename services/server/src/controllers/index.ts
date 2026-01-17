@@ -13,11 +13,15 @@ export const transactionsController = {
       limit,
       page,
       pageSize,
+      startTime,
+      endTime,
     }: {
       address?: string;
       limit?: number;
       page?: number;
       pageSize?: number;
+      startTime?: string;
+      endTime?: string;
     } = req.query;
     try {
       let where: TransactionWhereInput = {};
@@ -32,12 +36,16 @@ export const transactionsController = {
         where.limit = size;
         where.offset = (Number(page) - 1) * size;
       }
-      const cachedData = await getCachedData(
-        CACHE_KEYS.TRANSACTIONS(
-          page ? Number(page) : undefined,
-          pageSize ? Number(pageSize) : undefined
-        )
-      );
+      if (startTime) {
+        where.startTime = startTime;
+      }
+      if (endTime) {
+        where.endTime = endTime;
+      }
+      const args = Object.values(where)
+        .filter((val) => val !== undefined)
+        .map((val) => val ?? "null");
+      const cachedData = await getCachedData(CACHE_KEYS.TRANSACTIONS(...args));
       if (cachedData) {
         const data = JSON.parse(cachedData);
         return res.status(200).json(data);
@@ -69,10 +77,7 @@ export const transactionsController = {
         page: Number(page) || 1,
       };
       await cacheData(
-        CACHE_KEYS.TRANSACTIONS(
-          page ? Number(page) : undefined,
-          pageSize ? Number(pageSize) : undefined
-        ),
+        CACHE_KEYS.TRANSACTIONS(...args),
         JSON.stringify(result),
         100
       );

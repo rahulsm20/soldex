@@ -2,6 +2,8 @@ export type TransactionWhereInput = {
   address?: string;
   limit?: number;
   offset?: number;
+  startTime?: string;
+  endTime?: string;
 };
 
 export type TokenPriceResponse = {

@@ -15,12 +15,10 @@ export const rateLimiter = async (
   const data = await getCachedData(cacheKey);
   if (data) {
     if (parseInt(data) > 5) {
-      return res
-        .status(400)
-        .json({
-          error: "Too many requests",
-          message: "Rate limit exceeded. Please try again later.",
-        });
+      return res.status(400).json({
+        error: "Too many requests",
+        message: "Rate limit exceeded. Please try again later.",
+      });
     } else {
       const rate = parseInt(data) + 1;
       await cacheData(cacheKey, rate.toString(), 60);

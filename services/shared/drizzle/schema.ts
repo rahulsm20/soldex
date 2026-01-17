@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   doublePrecision,
   integer,
   pgEnum,
@@ -24,12 +25,12 @@ export const solana_transactions = pgTable("solana_transactions", {
   id: uuid("id").primaryKey().defaultRandom(),
   address: text("address").notNull(),
   signature: text("signature").unique().notNull(),
-  slot: integer("slot").notNull(),
   blockTime: timestamp("block_time"),
   from_address: text("from_address"),
   to_address: text("to_address"),
-  lamports: integer("lamports"),
-  transaction_type: TransactionTypeEnum("transaction_type"),
+  slot: bigint("slot", { mode: "number" }).notNull(),
+  lamports: bigint("lamports", { mode: "number" }),
+  transaction_type: TransactionTypeEnum("transaction_type").default("transfer"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp()
     .notNull()

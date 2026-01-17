@@ -2,17 +2,18 @@ import { sql } from "drizzle-orm";
 import { Request, Response } from "express";
 import { db } from "shared/drizzle/db";
 import { solana_transactions } from "shared/drizzle/schema";
-import { ACCOUNTS } from "shared/utils/constants";
+import { getCachedData } from "shared/redis";
+import { ACCOUNTS, CACHE_KEYS } from "shared/utils/constants";
 
 export const ChartsController = {
   getTransactionChartData: async (req: Request, res: Response) => {
     try {
       const { address, timeRange } = req.query;
-      //   const cachedData = await getCachedData(CACHE_KEYS.CHART_DATA);
-      //   if (cachedData) {
-      //     const data = JSON.parse(cachedData);
-      //     return res.status(200).json(data);
-      //   }
+      const cachedData = await getCachedData(CACHE_KEYS.CHART_DATA);
+      if (cachedData) {
+        const data = JSON.parse(cachedData);
+        return res.status(200).json(data);
+      }
       const transactions: { address: string; time: Date; tx_count: number }[] =
         await db
           .select({
@@ -29,7 +30,6 @@ export const ChartsController = {
             sql`DATE_TRUNC('day', ${solana_transactions.blockTime}) DESC`,
             solana_transactions.address
           );
-
       const result = transactions.map((tx) => ({
         address: tx.address,
         time: tx.time,

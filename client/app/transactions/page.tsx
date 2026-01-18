@@ -47,18 +47,16 @@ const Transactions = ({}) => {
     pageSize: pageSize ? parseInt(pageSize, 10) : 20,
     address,
   });
-  const {
-    isLoading: isExportLoading,
-    isFetching: isExportFetching,
-    refetch: exportPDF,
-  } = useExportTransactionsPDF(
-    {
-      page: queryPage ? parseInt(queryPage, 10) : 1,
-      pageSize: pageSize ? parseInt(pageSize, 10) : 20,
-      address: address || undefined,
-    },
-    false,
-  );
+  const { isLoading: isExportLoading, isFetching: isExportFetching } =
+    useExportTransactionsPDF(
+      {
+        page: queryPage ? parseInt(queryPage, 10) : 1,
+        pageSize: pageSize ? parseInt(pageSize, 10) : 20,
+        address: address || undefined,
+      },
+      download,
+      setDownload,
+    );
   const isPDFDownloading = isExportLoading || isExportFetching;
   const { data: formattedChartData } = useChart();
   const transactions = data?.transactions || [];
@@ -161,7 +159,7 @@ const Transactions = ({}) => {
                   variant="outline"
                   disabled={isPDFDownloading}
                   onClick={() => {
-                    exportPDF();
+                    setDownload(true);
                   }}
                 >
                   <Download />

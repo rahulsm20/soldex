@@ -12,11 +12,12 @@ export const useExportTransactionsPDF = (
     endTime?: string;
   },
   enabled?: boolean,
+  setEnabled?: (value: boolean) => void,
 ) => {
   const query = useQuery(queries.EXPORT_TRANSACTIONS({ variables, enabled }));
 
   useEffect(() => {
-    if (query.data?.signedUrl) {
+    if (query.data?.signedUrl && enabled) {
       const downloadPDF = async () => {
         try {
           const signedUrl = query.data.signedUrl;
@@ -32,6 +33,7 @@ export const useExportTransactionsPDF = (
 
           a.remove();
           window.URL.revokeObjectURL(url);
+          if (setEnabled) setEnabled(false);
         } catch (err) {
           console.error("Error downloading PDF:", err);
         }
@@ -39,7 +41,7 @@ export const useExportTransactionsPDF = (
 
       downloadPDF();
     }
-  }, [query.data]);
+  }, [query.data, enabled]);
 
   return query;
 };

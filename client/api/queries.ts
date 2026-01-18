@@ -97,6 +97,7 @@ export const queries = {
       endTime?: string;
     };
     enabled?: boolean;
+    setEnabled?: (value: boolean) => void;
   }) =>
     ({
       queryKey: [

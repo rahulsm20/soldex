@@ -7,10 +7,15 @@ import {
 
 class ApiClient {
   private readonly baseUrl: string;
+  private readonly headers: HeadersInit = {
+    "Content-Type": "application/json",
+    "x-internal-job": process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "",
+  };
   constructor() {
     this.baseUrl =
       process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3002";
   }
+
   async fetchTransactions({
     variables,
   }: {
@@ -34,7 +39,9 @@ class ApiClient {
       startTime: variables.startTime,
       endTime: variables.endTime,
     });
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: this.headers,
+    });
     if (!response.ok) {
       throw new Error("Failed to fetch transactions");
     }
@@ -57,9 +64,7 @@ class ApiClient {
       // const idsParam = variables.tokens.join(",");
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: this.headers,
         body: JSON.stringify({ tokens: variables.tokens }),
       });
       if (!response.ok) {
@@ -72,7 +77,9 @@ class ApiClient {
     }
   }
   async fetchChartData(): Promise<ChartDataResponse[]> {
-    const response = await fetch(`${this.baseUrl}/charts`);
+    const response = await fetch(`${this.baseUrl}/charts`, {
+      headers: this.headers,
+    });
     if (!response.ok) {
       throw new Error("Failed to fetch chart data");
     }
@@ -102,6 +109,7 @@ class ApiClient {
     });
     const response = await fetch(url, {
       method: "POST",
+      headers: this.headers,
     });
     if (!response.ok) {
       throw new Error("Failed to export transactions PDF");

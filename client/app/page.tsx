@@ -30,9 +30,6 @@ export default function Home() {
       cv: Math.floor(Math.random() * 2000) + 1000,
     })),
   );
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
-  console.log({ isDarkMode });
   const router = useRouter();
   const features = [
     {
@@ -72,6 +69,10 @@ export default function Home() {
       icon: <BookOpen />,
     },
   ];
+
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === "dark";
+
   return (
     <PageLayout>
       <div className="flex w-2/3 text-sm max-w-5xl lg:text-base flex-col items-center sm:items-start py-16 gap-5">
@@ -173,6 +174,7 @@ export default function Home() {
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <Image
+              loading="eager"
               src={isDarkMode ? "/arch-dark.png" : "/arch.png"}
               alt={"Soldex architecture diagram"}
               width={1000}

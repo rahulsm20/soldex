@@ -44,3 +44,14 @@ export type ExportResponse = {
   filename: string;
   signedUrl: string;
 };
+
+export type TimeRange =
+  | "1h"
+  | "6h"
+  | "24h"
+  | "1d"
+  | "7d"
+  | "30d"
+  | "90d"
+  | "180d"
+  | "1y";

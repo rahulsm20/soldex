@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { Request, Response } from "express";
 import { db } from "shared/drizzle/db";
 import { cacheData, getCachedData } from "shared/redis";
@@ -37,14 +37,16 @@ export const transactionsController = {
         where.offset = (Number(page) - 1) * size;
       }
       if (startTime) {
-        where.startTime = startTime;
+        where.blockTime = { gte: startTime };
       }
       if (endTime) {
-        where.endTime = endTime;
+        where.blockTime = { ...where?.blockTime, lte: endTime };
       }
       const args = Object.values(where)
         .filter((val) => val !== undefined)
-        .map((val) => val ?? "null");
+        .map((val) =>
+          typeof val === "object" ? JSON.stringify(val) : (val ?? "null"),
+        ) as (string | number)[];
       const cachedData = await getCachedData(CACHE_KEYS.TRANSACTIONS(...args));
       if (cachedData) {
         const data = JSON.parse(cachedData);
@@ -54,7 +56,17 @@ export const transactionsController = {
       const transactions = await db
         .select()
         .from(solana_transactions)
-        .where(address ? eq(solana_transactions.address, address) : undefined)
+        .where(
+          and(
+            address ? eq(solana_transactions.address, address) : undefined,
+            startTime
+              ? gte(solana_transactions.blockTime, new Date(startTime))
+              : undefined,
+            endTime
+              ? lte(solana_transactions.blockTime, new Date(endTime))
+              : undefined,
+          ),
+        )
         .limit(where.limit || 200)
         .offset(where.offset || 0)
         .orderBy(desc(solana_transactions.blockTime));
@@ -62,7 +74,17 @@ export const transactionsController = {
       const pageCount = await db
         .select()
         .from(solana_transactions)
-        .where(address ? eq(solana_transactions.address, address) : undefined)
+        .where(
+          and(
+            address ? eq(solana_transactions.address, address) : undefined,
+            startTime
+              ? gte(solana_transactions.blockTime, new Date(startTime))
+              : undefined,
+            endTime
+              ? lte(solana_transactions.blockTime, new Date(endTime))
+              : undefined,
+          ),
+        )
         .then((results) => {
           const total = results.length;
           const size = pageSize ? Number(pageSize) : 50;

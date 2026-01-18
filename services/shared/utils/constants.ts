@@ -38,5 +38,6 @@ export const CACHE_KEYS = {
   TRANSACTIONS: (...args: (string | number)[]) =>
     `transactions:${args.join(":")}`,
   TOKEN_PRICE: (tokenAddress: string) => `token_price:${tokenAddress}`,
-  CHART_DATA: `soldex_chart_data`,
+  CHART_DATA: (...args: (string | number)[]) =>
+    `soldex_chart_data:${args.join(":")}`,
 };

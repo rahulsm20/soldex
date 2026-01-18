@@ -76,8 +76,17 @@ class ApiClient {
       throw error;
     }
   }
-  async fetchChartData(): Promise<ChartDataResponse[]> {
-    const response = await fetch(`${this.baseUrl}/charts`, {
+  async fetchChartData({
+    variables,
+  }: {
+    variables: { startTime?: string; endTime?: string; address?: string };
+  }): Promise<ChartDataResponse[]> {
+    const url = generateLink(this.baseUrl, "/charts", {
+      startTime: variables.startTime,
+      endTime: variables.endTime,
+      address: variables.address,
+    });
+    const response = await fetch(url, {
       headers: this.headers,
     });
     if (!response.ok) {

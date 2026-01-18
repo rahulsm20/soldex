@@ -71,10 +71,23 @@ export const queries = {
       return response;
     },
   }),
-  FETCH_CHART_DATA: () => ({
-    queryKey: ["soldex_chart_data"] as const,
+  FETCH_CHART_DATA: ({
+    startTime,
+    endTime,
+    address,
+  }: {
+    startTime?: string;
+    endTime?: string;
+    address?: string;
+  }) => ({
+    queryKey: ["soldex_chart_data", startTime, endTime, address] as const,
     queryFn: async () => {
-      const response = await apiClient.fetchChartData();
+      const variables = {
+        startTime,
+        endTime,
+        address,
+      };
+      const response = await apiClient.fetchChartData({ variables });
       return response;
     },
   }),

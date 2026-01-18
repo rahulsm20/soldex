@@ -94,7 +94,12 @@ export function TransactionColumns(
         const date = new Date(row.original.blockTime);
         return (
           <HoverPopover
-            content={<span>{dayjs(date).format("YYYY-MM-DD hh:mma")}</span>}
+            content={
+              <span>
+                {dayjs(date).format("YYYY-MM-DD hh:mma")} (
+                <span>{Intl.DateTimeFormat().resolvedOptions().timeZone}</span>)
+              </span>
+            }
           >
             <span>{dayjs(row.original.blockTime).fromNow()}</span>
           </HoverPopover>

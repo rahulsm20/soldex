@@ -17,9 +17,9 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { ACCOUNTS } from "@/lib/constants";
+import { ACCOUNTS, TimeRanges } from "@/lib/constants";
 import { formatDateBasedOnBucket } from "@/lib/utils";
-import { BucketSize, ChartDataType } from "@/types";
+import { BucketSize, ChartDataType, TimeRange } from "@/types";
 import Loader from "../loader";
 import {
   Select,
@@ -47,17 +47,21 @@ export function ChartAreaInteractive({
   labels = [],
   description,
   title,
-  range,
-  setRange,
+  bucket,
+  setBucket,
   loading,
+  timeRange,
+  setTimeRange,
 }: {
   data?: ChartDataType[];
   labels?: { label: string; value: string; sig: string; color: string }[];
   title?: string;
   description?: string;
   loading?: boolean;
-  range?: BucketSize;
-  setRange?: (range: BucketSize) => void;
+  bucket?: BucketSize;
+  setBucket?: (bucket: BucketSize) => void;
+  timeRange?: string;
+  setTimeRange?: (range: TimeRange) => void;
 }) {
   return (
     <Card className="pt-0 bg-transparent w-1/3 md:w-2/3 lg:w-full">
@@ -68,7 +72,7 @@ export function ChartAreaInteractive({
             {description || "Showing total visitors for the last 3 months"}
           </CardDescription>
         </div>
-        <Select value={range} onValueChange={setRange}>
+        <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="hidden w-40 rounded-lg sm:ml-auto sm:flex"
             aria-label="Select a value"
@@ -76,18 +80,15 @@ export function ChartAreaInteractive({
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value={"1m"} className="rounded-lg">
-              Last 1 minute
-            </SelectItem>
-            <SelectItem value="5m" className="rounded-lg">
-              Last 5 minutes
-            </SelectItem>
-            <SelectItem value="1h" className="rounded-lg">
-              Last 1 hour
-            </SelectItem>
-            <SelectItem value="1d" className="rounded-lg">
-              Last 1 day
-            </SelectItem>
+            {TimeRanges.map((range) => (
+              <SelectItem
+                key={range.value}
+                value={range.value}
+                className="rounded-lg"
+              >
+                {range.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </CardHeader>
@@ -134,7 +135,7 @@ export function ChartAreaInteractive({
                   const date = new Date(value);
                   return formatDateBasedOnBucket(
                     Math.floor(date.getTime() / 1000),
-                    range || "1d",
+                    bucket || "1d",
                   );
                 }}
               />
@@ -149,7 +150,7 @@ export function ChartAreaInteractive({
                         const dt = new Date(date);
                         return formatDateBasedOnBucket(
                           Math.floor(dt.getTime() / 1000),
-                          range || "1d",
+                          bucket || "1d",
                         );
                       }
                       return "";

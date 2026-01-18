@@ -120,7 +120,10 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 w-full lg:w-screen text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>
@@ -128,9 +131,11 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
       <div className="flex items-center justify-end space-x-2 p-4">
-        <span>
-          Page {pageIndex} / {pageCount}
-        </span>
+        {pageCount > 0 && (
+          <span>
+            Page {pageIndex} / {pageCount}
+          </span>
+        )}
         <Button
           variant="outline"
           size="sm"

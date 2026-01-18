@@ -1,5 +1,6 @@
-import { BucketSize, TransactionType } from "@/types";
+import { BucketSize, TimeRange, TransactionType } from "@/types";
 import { clsx, type ClassValue } from "clsx";
+import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -122,4 +123,48 @@ export function generateLink(
     }
   });
   return url.toString();
+}
+
+export function generateTimeRange(range: TimeRange): {
+  from: string;
+  to: string;
+} {
+  const now = dayjs();
+  let from = now;
+  const to = now.endOf("day");
+
+  switch (range) {
+    case "1h":
+      from = now.subtract(1, "hour");
+      break;
+    case "6h":
+      from = now.subtract(6, "hour");
+      break;
+    case "24h":
+      from = now.subtract(24, "hour").startOf("day");
+      break;
+    case "7d":
+      from = now.subtract(7, "day").startOf("day");
+      break;
+    case "30d":
+      from = dayjs(now).subtract(30, "day").startOf("day");
+      break;
+    case "90d":
+      from = dayjs(now).subtract(90, "day").startOf("day");
+      break;
+    case "180d":
+      from = dayjs(now).subtract(180, "day").startOf("day");
+      break;
+    case "1y":
+      from = dayjs(now).subtract(1, "year").startOf("day");
+      break;
+    default:
+      from = dayjs(now).subtract(7, "day").startOf("day");
+      break;
+  }
+
+  return {
+    from: from.toISOString(),
+    to: to.toISOString(),
+  };
 }

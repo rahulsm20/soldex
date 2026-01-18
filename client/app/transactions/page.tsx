@@ -20,11 +20,12 @@ import { useChart } from "@/hooks/charts";
 import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
-import { determineBucketSize } from "@/lib/utils";
+import { determineBucketSize, generateTimeRange } from "@/lib/utils";
+import { TimeRange } from "@/types";
 import { Download, Filter } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 //--------------------------------
@@ -41,11 +42,15 @@ const Transactions = ({}) => {
     defaultValue: "1",
   });
   const [download, setDownload] = useState(false);
+  const [timeRange, setTimeRange] = useState<TimeRange>("7d");
+  const { from, to } = useMemo(() => generateTimeRange(timeRange), [timeRange]);
 
   const { data, isLoading, error, isFetching } = useTransactions({
     page: queryPage ? parseInt(queryPage, 10) : 1,
     pageSize: pageSize ? parseInt(pageSize, 10) : 20,
     address,
+    startTime: from,
+    endTime: to,
   });
   const { isLoading: isExportLoading, isFetching: isExportFetching } =
     useExportTransactionsPDF(
@@ -58,14 +63,18 @@ const Transactions = ({}) => {
       setDownload,
     );
   const isPDFDownloading = isExportLoading || isExportFetching;
-  const { data: formattedChartData } = useChart();
+  const { data: formattedChartData } = useChart({
+    startTime: from,
+    endTime: to,
+    address,
+  });
   const transactions = data?.transactions || [];
   const toUnix = transactions?.[0]?.blockTime;
   const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
 
   const [showToast, setShowToast] = useState(true);
   const [open, setOpen] = useState(false);
-  const [timeRange, setTimeRange] = useState(
+  const [bucketSize, setBucketSize] = useState(
     determineBucketSize(fromUnix, toUnix),
   );
 
@@ -83,19 +92,19 @@ const Transactions = ({}) => {
       });
   }
 
-  if (!isFetching && transactions.length == 0) {
-    return (
-      <PageLayout>
-        <div className="flex justify-center items-center flex-col gap-6 min-h-screen">
-          <h1 className="text-xl font-semibold">No Transactions Found</h1>
-          <p className="text-center text-muted-foreground max-w-md">
-            There are no transactions to display for the selected account.
-            Please try selecting a different account or check back later.
-          </p>
-        </div>
-      </PageLayout>
-    );
-  }
+  // if (!isFetching && transactions.length == 0) {
+  //   return (
+  //     <PageLayout>
+  //       <div className="flex justify-center items-center flex-col gap-6 min-h-screen">
+  //         <h1 className="text-xl font-semibold">No Transactions Found</h1>
+  //         <p className="text-center text-muted-foreground max-w-md">
+  //           There are no transactions to display for the selected account.
+  //           Please try selecting a different account or check back later.
+  //         </p>
+  //       </div>
+  //     </PageLayout>
+  //   );
+  // }
 
   return (
     <PageLayout>
@@ -171,10 +180,12 @@ const Transactions = ({}) => {
               <ChartAreaInteractive
                 data={formattedChartData}
                 labels={ACCOUNTS}
-                range={timeRange}
-                setRange={setTimeRange}
+                bucket={bucketSize}
+                timeRange={timeRange}
+                setTimeRange={setTimeRange}
+                setBucket={setBucketSize}
                 title="Transactions"
-                description="Showing transactions per day for the selected period."
+                description="Showing number of transactions per day for the selected period."
               />
               <DataTable
                 data={transactions}

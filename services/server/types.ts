@@ -2,8 +2,10 @@ export type TransactionWhereInput = {
   address?: string;
   limit?: number;
   offset?: number;
-  startTime?: string;
-  endTime?: string;
+  blockTime?: {
+    gte?: string;
+    lte?: string;
+  };
 };
 
 export type TokenPriceResponse = {

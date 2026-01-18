@@ -7,14 +7,24 @@ export const useTransactions = ({
   address,
   page,
   pageSize = 20,
+  startTime,
+  endTime,
 }: {
   address?: string;
   // from_address?: string;
   page: number;
   pageSize?: number;
+  startTime?: string;
+  endTime?: string;
 }) => {
   const queryClient = new QueryClient();
-  const args: { page: number; pageSize: number; address?: string } = {
+  const args: {
+    page: number;
+    pageSize: number;
+    address?: string;
+    startTime?: string;
+    endTime?: string;
+  } = {
     page,
     pageSize,
   };
@@ -26,6 +36,12 @@ export const useTransactions = ({
   }
   if (pageSize) {
     args.pageSize = pageSize;
+  }
+  if (startTime) {
+    args.startTime = startTime;
+  }
+  if (endTime) {
+    args.endTime = endTime;
   }
   return useQuery<{
     transactions: TransactionType[];

@@ -1,4 +1,5 @@
 "use client";
+import ArchitectureImage from "@/components/arch";
 import PageLayout from "@/components/page-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
@@ -173,13 +173,7 @@ export default function Home() {
             Architecture
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
-            <Image
-              loading="eager"
-              src={isDarkMode ? "/arch-dark.png" : "/arch.png"}
-              alt={"Soldex architecture diagram"}
-              width={1000}
-              height={400}
-            />
+            <ArchitectureImage />
           </CardContent>
         </Card>
         <Button

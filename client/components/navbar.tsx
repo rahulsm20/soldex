@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, ArrowUpRight, Home, LucideProps } from "lucide-react";
+import { ArrowUpDown, Github, Home, LucideProps } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,8 +30,8 @@ const LinkItem = ({
       title={item.name}
       className={
         isActive
-          ? "text-purple-400 underline underline-offset-8"
-          : "hover:underline underline-offset-8 hover:text-purple-400"
+          ? "text-purple-400  border-purple-400 p-1 border-b-2"
+          : "hover:border-b-2 p-1 hover:border-purple-400 hover:text-purple-400"
       }
     >
       <Link
@@ -56,15 +56,15 @@ const Navbar = () => {
     {
       name: "Github",
       href: "https://github.com/rahulsm20/soldex",
-      icon: ArrowUpRight,
+      icon: Github,
       target: "_blank",
     },
-    {
-      name: "API",
-      href: "https://api.soldex.dev/docs",
-      icon: ArrowUpRight,
-      target: "_blank",
-    },
+    // {
+    //   name: "API",
+    //   href: "https://api.soldex.dev/docs",
+    //   icon: ArrowUpRight,
+    //   target: "_blank",
+    // },
   ];
   const pathname = usePathname();
   return (

@@ -39,3 +39,8 @@ export type ChartDataResponse = {
   time: string;
   [tokenAddress: string]: number | string;
 };
+
+export type ExportResponse = {
+  filename: string;
+  signedUrl: string;
+};

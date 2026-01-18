@@ -79,6 +79,40 @@ class ApiClient {
     const data = await response.json();
     return data;
   }
+  async exportTransactionsPDF({
+    variables,
+  }: {
+    variables: {
+      page?: number;
+      pageSize?: number;
+      address?: string;
+      startTime?: string;
+      endTime?: string;
+    };
+  }): Promise<{
+    filename: string;
+    signedUrl: string;
+  }> {
+    const url = generateLink(this.baseUrl, "/file", {
+      page: variables.page,
+      pageSize: variables.pageSize,
+      address: variables.address,
+      startTime: variables.startTime,
+      endTime: variables.endTime,
+    });
+    const response = await fetch(url, {
+      method: "POST",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to export transactions PDF");
+    }
+    const data: {
+      filename: string;
+      signedUrl: string;
+    } = await response.json();
+
+    return data;
+  }
 }
 
 const apiClient = new ApiClient();

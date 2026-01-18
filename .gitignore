@@ -3,3 +3,4 @@ node_modules
 deploy.indexer.sh
 deploy.server.sh
 deploy.sh
+*.txt

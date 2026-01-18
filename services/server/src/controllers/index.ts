@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { db } from "shared/drizzle/db";
 import { cacheData, getCachedData } from "shared/redis";
 import { CACHE_KEYS } from "shared/utils/constants";
-import { TransactionWhereInput } from "types";
+import { TransactionsResponse, TransactionWhereInput } from "types";
 import { solana_transactions } from "../../../shared/drizzle/schema";
 
 export const transactionsController = {
@@ -70,7 +70,7 @@ export const transactionsController = {
         });
 
       const size = pageSize ? Number(pageSize) : 50;
-      const result = {
+      const result: TransactionsResponse = {
         transactions,
         pageCount,
         pageSize: size,
@@ -79,7 +79,7 @@ export const transactionsController = {
       await cacheData(
         CACHE_KEYS.TRANSACTIONS(...args),
         JSON.stringify(result),
-        100
+        100,
       );
       return res.status(200).json(result);
     } catch (error) {

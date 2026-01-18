@@ -16,3 +16,22 @@ export type TokenPriceResponse = {
   price: number | null;
   priceChange24h: number | null;
 };
+
+export type TransactionType = {
+  id: string;
+  address?: string;
+  signature: string;
+  slot: number;
+  blockTime: Date | null;
+  created_at: Date;
+  updated_at: Date;
+  from_address?: string | null;
+  to_address?: string | null;
+};
+
+export type TransactionsResponse = {
+  transactions: TransactionType[];
+  page: number;
+  pageSize: number;
+  pageCount: number;
+};

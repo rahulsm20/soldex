@@ -1,4 +1,4 @@
-import { TransactionsResponse } from "@/types";
+import { ExportResponse, TransactionsResponse } from "@/types";
 import { DefinedInitialDataOptions } from "@tanstack/react-query";
 import apiClient from ".";
 
@@ -45,7 +45,7 @@ export const queries = {
           pageCount: response.pageCount,
         };
       },
-    } satisfies DefinedInitialDataOptions<
+    }) satisfies DefinedInitialDataOptions<
       TransactionsResponse,
       Error,
       TransactionsResponse,
@@ -55,9 +55,9 @@ export const queries = {
         number,
         string | undefined,
         string | undefined,
-        string | undefined
+        string | undefined,
       ]
-    >),
+    >,
   FETCH_TOKEN_PRICES: ({
     variables: { tokens },
   }: {
@@ -78,4 +78,60 @@ export const queries = {
       return response;
     },
   }),
+  EXPORT_TRANSACTIONS: ({
+    variables = {
+      page: 1,
+      pageSize: 50,
+      address: "",
+      startTime: "",
+      endTime: "",
+    },
+    enabled = false,
+  }: {
+    variables: {
+      page: number;
+      pageSize: number;
+      from_address?: string;
+      address?: string;
+      startTime?: string;
+      endTime?: string;
+    };
+    enabled?: boolean;
+  }) =>
+    ({
+      queryKey: [
+        "export_transactions_pdf",
+        variables.page,
+        variables.pageSize,
+        variables.address,
+        variables.startTime,
+        variables.endTime,
+      ] as const,
+      initialData: {
+        filename: "",
+        signedUrl: "",
+      },
+      queryFn: async (): Promise<ExportResponse> => {
+        const { filename, signedUrl } = await apiClient.exportTransactionsPDF({
+          variables,
+        });
+        return {
+          filename,
+          signedUrl,
+        };
+      },
+      enabled,
+    }) satisfies DefinedInitialDataOptions<
+      ExportResponse,
+      Error,
+      ExportResponse,
+      readonly [
+        "export_transactions_pdf",
+        number,
+        number,
+        string | undefined,
+        string | undefined,
+        string | undefined,
+      ]
+    >,
 };

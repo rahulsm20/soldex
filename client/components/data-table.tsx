@@ -19,7 +19,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronFirst,
+  ChevronLast,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Options } from "nuqs";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -129,6 +134,14 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
+          onClick={() => onPageChange((old) => (old ? String(1) : null))}
+          disabled={pageIndex === 1}
+        >
+          <ChevronFirst />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() =>
             onPageChange((old) => (old ? String(Number(old) - 1) : null))
           }
@@ -145,6 +158,16 @@ export function DataTable<TData, TValue>({
           disabled={pageIndex + 1 > pageCount}
         >
           <ChevronRight />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            onPageChange((old) => (old ? String(pageCount) : null))
+          }
+          disabled={pageIndex + 1 > pageCount}
+        >
+          <ChevronLast />
         </Button>
       </div>
     </div>

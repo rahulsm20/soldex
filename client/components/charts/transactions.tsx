@@ -7,6 +7,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -20,6 +21,13 @@ import { ACCOUNTS } from "@/lib/constants";
 import { formatDateBasedOnBucket } from "@/lib/utils";
 import { BucketSize, ChartDataType } from "@/types";
 import Loader from "../loader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 //------------------------------------------------
 
@@ -31,14 +39,16 @@ const chartConfig = ACCOUNTS.reduce(
       color: `var(--chart-${ACCOUNTS.indexOf(account) + 1})`,
     },
   }),
-  {}
+  {},
 ) satisfies ChartConfig;
 
 export function ChartAreaInteractive({
   data = [],
   labels = [],
   description,
+  title,
   range,
+  setRange,
   loading,
 }: {
   data?: ChartDataType[];
@@ -47,35 +57,39 @@ export function ChartAreaInteractive({
   description?: string;
   loading?: boolean;
   range?: BucketSize;
+  setRange?: (range: BucketSize) => void;
 }) {
   return (
     <Card className="pt-0 bg-transparent w-1/3 md:w-2/3 lg:w-full">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
-          {/* <CardTitle>{title || "Area Chart - Interactive"}</CardTitle> */}
+          <CardTitle>{title || "Area Chart - Interactive"}</CardTitle>
           <CardDescription>
             {description || "Showing total visitors for the last 3 months"}
           </CardDescription>
         </div>
-        {/* <Select value={timeRange} onValueChange={setTimeRange}>
+        <Select value={range} onValueChange={setRange}>
           <SelectTrigger
-            className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
+            className="hidden w-40 rounded-lg sm:ml-auto sm:flex"
             aria-label="Select a value"
           >
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
+            <SelectItem value={"1m"} className="rounded-lg">
+              Last 1 minute
             </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
+            <SelectItem value="5m" className="rounded-lg">
+              Last 5 minutes
             </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
+            <SelectItem value="1h" className="rounded-lg">
+              Last 1 hour
+            </SelectItem>
+            <SelectItem value="1d" className="rounded-lg">
+              Last 1 day
             </SelectItem>
           </SelectContent>
-        </Select> */}
+        </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 bg-none">
         <ChartContainer
@@ -120,7 +134,7 @@ export function ChartAreaInteractive({
                   const date = new Date(value);
                   return formatDateBasedOnBucket(
                     Math.floor(date.getTime() / 1000),
-                    range || "1d"
+                    range || "1d",
                   );
                 }}
               />
@@ -135,7 +149,7 @@ export function ChartAreaInteractive({
                         const dt = new Date(date);
                         return formatDateBasedOnBucket(
                           Math.floor(dt.getTime() / 1000),
-                          range || "1d"
+                          range || "1d",
                         );
                       }
                       return "";

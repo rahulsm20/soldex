@@ -17,9 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useChart } from "@/hooks/charts";
+import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
-import { determineBucketSize, transactionDataToChartData } from "@/lib/utils";
+import { determineBucketSize } from "@/lib/utils";
 import { Download, Filter } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
@@ -39,17 +40,36 @@ const Transactions = ({}) => {
   const [queryPage, setQueryPage] = useQueryState("page", {
     defaultValue: "1",
   });
+  const [download, setDownload] = useState(false);
 
   const { data, isLoading, error, isFetching } = useTransactions({
     page: queryPage ? parseInt(queryPage, 10) : 1,
     pageSize: pageSize ? parseInt(pageSize, 10) : 20,
     address,
   });
-
+  const {
+    isLoading: isExportLoading,
+    isFetching: isExportFetching,
+    refetch: exportPDF,
+  } = useExportTransactionsPDF(
+    {
+      page: queryPage ? parseInt(queryPage, 10) : 1,
+      pageSize: pageSize ? parseInt(pageSize, 10) : 20,
+      address: address || undefined,
+    },
+    false,
+  );
+  const isPDFDownloading = isExportLoading || isExportFetching;
   const { data: formattedChartData } = useChart();
+  const transactions = data?.transactions || [];
+  const toUnix = transactions?.[0]?.blockTime;
+  const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
 
   const [showToast, setShowToast] = useState(true);
   const [open, setOpen] = useState(false);
+  const [timeRange, setTimeRange] = useState(
+    determineBucketSize(fromUnix, toUnix),
+  );
 
   if (error) {
     if (showToast)
@@ -65,7 +85,6 @@ const Transactions = ({}) => {
       });
   }
 
-  const transactions = data?.transactions || [];
   if (!isFetching && transactions.length == 0) {
     return (
       <PageLayout>
@@ -78,22 +97,6 @@ const Transactions = ({}) => {
         </div>
       </PageLayout>
     );
-  }
-  const toUnix = transactions?.[0]?.blockTime;
-  const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
-  const timeRange = determineBucketSize(fromUnix, toUnix);
-  const chartData = transactionDataToChartData(transactions, timeRange).sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
-  {
-    /* <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */
   }
 
   return (
@@ -154,14 +157,24 @@ const Transactions = ({}) => {
                     </Button>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" disabled>
-                  <Download /> <span>Download</span>
+                <Button
+                  variant="outline"
+                  disabled={isPDFDownloading}
+                  onClick={() => {
+                    exportPDF();
+                  }}
+                >
+                  <Download />
+                  <span>
+                    {isPDFDownloading ? "Downloading..." : "Download"}
+                  </span>
                 </Button>
               </div>
               <ChartAreaInteractive
                 data={formattedChartData}
                 labels={ACCOUNTS}
                 range={timeRange}
+                setRange={setTimeRange}
                 title="Transactions"
                 description="Showing transactions per day for the selected period."
               />

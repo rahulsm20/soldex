@@ -35,7 +35,7 @@ export default function Home() {
     {
       title: "Real-time Indexing",
       description:
-        "Instantly index and query Solana transactions as they occur on the blockchain.",
+        "Regular updates to ensure you have access to the latest Solana transaction information.",
       icon: <Bookmark />,
     },
     {

@@ -3,8 +3,8 @@
 import { ChartAreaInteractive } from "@/components/charts/transactions";
 import { TransactionColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
-import Loader from "@/components/loader";
 import PageLayout from "@/components/page-layout";
+import TransactionsPageSkeleton from "@/components/skeletons/TransactionsPage";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -109,7 +109,7 @@ const Transactions = ({}) => {
   return (
     <PageLayout>
       {isLoading || isFetching ? (
-        <Loader />
+        <TransactionsPageSkeleton />
       ) : (
         <div className="flex justify-start items-center flex-col gap-6 min-h-screen ">
           <div className="w-full max-w-5xl px-4 flex flex-col gap-5">

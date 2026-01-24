@@ -1,6 +1,6 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { rateLimiter } from "./middleware/rate-limit";
+import { rateLimiter } from "shared/middleware/rate-limit";
 import { transactionRoutes } from "./routes/transactionRoutes";
 import { config } from "./utils/config";
 
@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 app.use(
   cors({
     origin: config.CLIENT_URL,
-  })
+  }),
 );
 app.use(express.json());
 app.use(rateLimiter);

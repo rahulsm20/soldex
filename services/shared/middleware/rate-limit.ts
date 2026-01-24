@@ -1,17 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import ip from "ip";
-import { cacheData, getCachedData } from "shared/redis";
+import { cacheData, getCachedData } from "../redis";
 
 export const rateLimiter = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   //   if (req.headers["x-internal-job"] == config.ENCRYPTION_KEY) {
   //     return next();
   //   }
   const address = ip.address();
-  const cacheKey = `soldex_indexer:ip:${address}`;
+  const encryptedAddress = Buffer.from(address).toString("base64");
+  const cacheKey = `soldex_indexer:ip:${encryptedAddress}`;
   const data = await getCachedData(cacheKey);
   if (data) {
     if (parseInt(data) > 5) {

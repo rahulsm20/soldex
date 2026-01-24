@@ -1,21 +1,23 @@
-# SolDex
+<h1 style="display: flex; align-items:center; gap:10px;"><img src='https://soldex-seven.vercel.app/favicon.ico' width="30"/>
+SolDex 
+</h1>
+Just a really smart solana indexer.
 
-### Index
+## Index
 
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
+- [Local Setup](#local-setup)
 
-### Tech Stack
+## Tech Stack
 
 - Client
-
   - Next.js
   - Tailwind
   - Typescript
   - Tanstack Query
 
 - Server
-
   - Bun
   - Express.js
   - DrizzleORM
@@ -33,6 +35,23 @@
   - GCP
   - Helius
 
-### Architecture
+## Architecture
 
 ![image of architecture](./soldex-arch.png)
+
+## Local Setup
+
+- Setup required environment variables
+  - [services/indexer/.env.example](services/indexer/.env.example)
+  - [services/server/.env.example](services/server/.env.example)
+  - [services/.env.example](services/.env.example)
+  - [client/.env.example](client/.env.example)
+
+- Using provided script
+  ```
+  chmod +x start.sh && ./start.sh
+  ```
+- Use Docker
+  ```
+  docker compose up
+  ```

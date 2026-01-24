@@ -81,7 +81,7 @@ export default function Home() {
             Welcome to <span className="text-purple-400">Soldex!</span>
           </h1>
           <p className="text-3xl text-center sm:text-left mb-16">
-            A really smart solana indexer.
+            Just a really smart solana indexer.
           </p>
         </div>
         <ResponsiveContainer width="100%" height={300} className="mb-16">

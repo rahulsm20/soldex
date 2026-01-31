@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 import { Request } from "express";
+import path from "path";
 import PDFDocument from "pdfkit";
 import { formatDateISO, getRandomColor, renderLineChart } from "shared/utils";
 import { ACCOUNTS_MAP, LOGO_URL } from "shared/utils/constants";
@@ -42,7 +43,12 @@ export async function renderTransactionsReport(
   const { address, limit, offset } = req.query;
   const doc = new PDFDocument();
   const chunks: Uint8Array[] = [];
-
+  const fontPath = path.resolve(
+    __dirname,
+    "../../../shared/assets/fonts/Inter-VariableFont_opsz,wght.ttf",
+  );
+  doc.registerFont("Inter", fontPath, "Inter");
+  doc.font(fontPath);
   doc.on("data", (chunk) => chunks.push(chunk));
   doc.on("end", () => {});
   const response = await fetch(LOGO_URL);
@@ -89,7 +95,7 @@ export async function renderTransactionsReport(
   await renderLineChart(doc, labels, values);
   doc.moveDown();
   const tableData: PDFKit.Mixins.TableOptionsWithData["data"] = [
-    ["Date", "Signature", "Slot", "From", "To"],
+    ["Date", "", "Signature", "Slot", "From", "To"],
     ...transactions?.transactions.map((tx) => [
       dayjs(tx.blockTime).format("YYYY-MM-DD HH:mm:ss"),
       {

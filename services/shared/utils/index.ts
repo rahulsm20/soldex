@@ -46,10 +46,33 @@ export async function renderLineChart(
       datasets: values,
     },
     options: {
-      responsive: true,
+      responsive: false,
       plugins: {
         legend: {
-          position: "top",
+          labels: {
+            font: {
+              family: "Inter",
+              size: 10,
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: {
+              family: "Inter",
+              size: 9,
+            },
+          },
+        },
+        y: {
+          ticks: {
+            font: {
+              family: "Inter",
+              size: 9,
+            },
+          },
         },
       },
     },

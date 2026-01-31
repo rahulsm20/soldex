@@ -1,8 +1,10 @@
 import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 import { Request } from "express";
-import path from "path";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
+import interFont from "shared/assets/fonts/Inter-VariableFont_opsz,wght.ttf";
 import { formatDateISO, getRandomColor, renderLineChart } from "shared/utils";
 import { ACCOUNTS_MAP, LOGO_URL } from "shared/utils/constants";
 import { getSignedURL, uploadToS3 } from "./s3";
@@ -10,6 +12,8 @@ import {
   getTransactionsChartDataUtil,
   getTransactionsUtil,
 } from "./transactions";
+
+//--------------------------------------------------------------
 
 export async function generatePDFBuffer(): Promise<Uint8Array> {
   const doc = new PDFDocument();
@@ -44,9 +48,10 @@ export async function renderTransactionsReport(
   const doc = new PDFDocument();
   const chunks: Uint8Array[] = [];
   const fontPath = path.resolve(
-    __dirname,
-    "../../../shared/assets/fonts/Inter-VariableFont_opsz,wght.ttf",
+    path.dirname(fileURLToPath(import.meta.url)),
+    interFont,
   );
+
   doc.registerFont("Inter", fontPath, "Inter");
   doc.font(fontPath);
   doc.on("data", (chunk) => chunks.push(chunk));
@@ -95,9 +100,10 @@ export async function renderTransactionsReport(
   await renderLineChart(doc, labels, values);
   doc.moveDown();
   const tableData: PDFKit.Mixins.TableOptionsWithData["data"] = [
-    ["Date", "", "Signature", "Slot", "From", "To"],
+    ["Date", "Mint Address", "Signature", "Slot", "From", "To"],
     ...transactions?.transactions.map((tx) => [
       dayjs(tx.blockTime).format("YYYY-MM-DD HH:mm:ss"),
+      tx.address ?? "N/A",
       {
         text: tx.signature,
         url: `https://solscan.io/tx/${tx.signature}`,

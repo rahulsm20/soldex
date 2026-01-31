@@ -1,5 +1,6 @@
 import { queries } from "@/api/queries";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useExportTransactionsPDF = (variables: {
   page: number;
@@ -16,7 +17,7 @@ export const useExportTransactionsPDF = (variables: {
   const downloadPDF = async () => {
     try {
       const data = await refetch().then((res) => res.data);
-      if (!data) {
+      if (!data || !data.filename || !data.signedUrl) {
         throw new Error("No data received for PDF export");
       }
       const signedUrl = data.signedUrl;
@@ -33,6 +34,7 @@ export const useExportTransactionsPDF = (variables: {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
+      toast.error("Failed to download PDF");
       console.error("Error downloading PDF:", err);
     }
   };

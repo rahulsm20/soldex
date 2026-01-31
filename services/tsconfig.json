@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "esnext",
+    "lib": ["ES2022"],
+    "module": "es2022",
+    "types": ["bun-types"],
     "moduleResolution": "bundler"
   }
 }

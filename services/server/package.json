@@ -1,12 +1,12 @@
 {
-  "name": "express-template",
+  "name": "soldex-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "bun --watch src/server.ts",
     "build": "bun build src/server.ts --outdir dist/src --target bun",
-    "start": "bun run migrate && bun dist/src/server.js",
+    "start": "bun dist/src/server.js",
     "generate": "bunx drizzle-kit generate --dialect=postgresql --schema ../shared/drizzle/schema.ts --out ../shared/migrations",
     "migrate": "bunx drizzle-kit generate --dialect=postgresql --schema ../shared/drizzle/schema.ts --out ../shared/migrations && bunx drizzle-kit push"
   },

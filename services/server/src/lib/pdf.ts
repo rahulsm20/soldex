@@ -4,9 +4,9 @@ import { Request } from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
-import interFont from "shared/assets/fonts/Inter-VariableFont_opsz,wght.ttf";
 import { formatDateISO, getRandomColor, renderLineChart } from "shared/utils";
 import { ACCOUNTS_MAP, LOGO_URL } from "shared/utils/constants";
+import interFont from "../../assets/fonts/Inter-VariableFont_opsz,wght.ttf";
 import { getSignedURL, uploadToS3 } from "./s3";
 import {
   getTransactionsChartDataUtil,

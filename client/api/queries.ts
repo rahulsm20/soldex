@@ -135,6 +135,7 @@ export const queries = {
         };
       },
       enabled,
+      gcTime: 0,
     }) satisfies DefinedInitialDataOptions<
       ExportResponse,
       Error,

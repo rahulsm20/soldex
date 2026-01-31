@@ -1,10 +1,5 @@
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { getTransactionsUtil } from "@/lib/transactions";
 import { Request, Response } from "express";
-import { db } from "shared/drizzle/db";
-import { cacheData, getCachedData } from "shared/redis";
-import { CACHE_KEYS } from "shared/utils/constants";
-import { TransactionsResponse, TransactionWhereInput } from "types";
-import { solana_transactions } from "../../../shared/drizzle/schema";
 
 export const transactionsController = {
   fetchTransactions: async (req: Request, res: Response) => {
@@ -24,85 +19,14 @@ export const transactionsController = {
       endTime?: string;
     } = req.query;
     try {
-      let where: TransactionWhereInput = {};
-      if (address) {
-        where.address = address;
-      }
-      if (limit) {
-        where.limit = limit;
-      }
-      if (page) {
-        const size = pageSize ? Number(pageSize) : 50;
-        where.limit = size;
-        where.offset = (Number(page) - 1) * size;
-      }
-      if (startTime) {
-        where.blockTime = { gte: startTime };
-      }
-      if (endTime) {
-        where.blockTime = { ...where?.blockTime, lte: endTime };
-      }
-      const args = Object.values(where)
-        .filter((val) => val !== undefined)
-        .map((val) =>
-          typeof val === "object" ? JSON.stringify(val) : (val ?? "null"),
-        ) as (string | number)[];
-      const cachedData = await getCachedData(CACHE_KEYS.TRANSACTIONS(...args));
-      if (cachedData) {
-        const data = JSON.parse(cachedData);
-        return res.status(200).json(data);
-      }
-
-      const transactions = await db
-        .select()
-        .from(solana_transactions)
-        .where(
-          and(
-            address ? eq(solana_transactions.address, address) : undefined,
-            startTime
-              ? gte(solana_transactions.blockTime, new Date(startTime))
-              : undefined,
-            endTime
-              ? lte(solana_transactions.blockTime, new Date(endTime))
-              : undefined,
-          ),
-        )
-        .limit(where.limit || 200)
-        .offset(where.offset || 0)
-        .orderBy(desc(solana_transactions.blockTime));
-
-      const pageCount = await db
-        .select()
-        .from(solana_transactions)
-        .where(
-          and(
-            address ? eq(solana_transactions.address, address) : undefined,
-            startTime
-              ? gte(solana_transactions.blockTime, new Date(startTime))
-              : undefined,
-            endTime
-              ? lte(solana_transactions.blockTime, new Date(endTime))
-              : undefined,
-          ),
-        )
-        .then((results) => {
-          const total = results.length;
-          const size = pageSize ? Number(pageSize) : 50;
-          return Math.ceil(total / size);
-        });
-
-      const size = pageSize ? Number(pageSize) : 50;
-      const result: TransactionsResponse = {
-        transactions,
-        pageCount,
-        pageSize: size,
-        page: Number(page) || 1,
-      };
-      await cacheData(
-        CACHE_KEYS.TRANSACTIONS(...args),
-        JSON.stringify(result),
-        100,
-      );
+      const result = await getTransactionsUtil({
+        address: address as string,
+        limit: limit ? Number(limit) : undefined,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined,
+        startTime: startTime as string,
+        endTime: endTime as string,
+      });
       return res.status(200).json(result);
     } catch (error) {
       console.error("Error fetching transactions:", error);

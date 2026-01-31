@@ -34,6 +34,14 @@ export const ACCOUNTS = [
   },
 ];
 
+export const ACCOUNTS_MAP: { [sig: string]: string } = ACCOUNTS.reduce(
+  (acc, curr) => {
+    acc[curr.sig] = curr.label;
+    return acc;
+  },
+  {} as { [sig: string]: string },
+);
+
 export const CACHE_KEYS = {
   TRANSACTIONS: (...args: (string | number)[]) =>
     `transactions:${args.join(":")}`,
@@ -41,3 +49,5 @@ export const CACHE_KEYS = {
   CHART_DATA: (...args: (string | number)[]) =>
     `soldex_chart_data:${args.join(":")}`,
 };
+
+export const LOGO_URL = "https://soldex-seven.vercel.app/book-open-check.png";

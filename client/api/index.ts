@@ -72,7 +72,10 @@ class ApiClient {
       }
       return await response.json();
     } catch (error) {
-      console.error("Error fetching token prices: ", error);
+      console.error(
+        "Error fetching token prices: ",
+        error instanceof Error ? error.message : String(error),
+      );
       throw error;
     }
   }

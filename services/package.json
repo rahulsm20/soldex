@@ -14,5 +14,9 @@
     "typescript": "^5.4.5",
     "drizzle-kit": "^0.31.8",
     "dotenv": "^17.2.3"
+  },
+  "dependencies": {
+    "chartjs-node-canvas": "^5.0.0",
+    "dayjs": "^1.11.19"
   }
 }

@@ -3,6 +3,7 @@
 import { ChartAreaInteractive } from "@/components/charts/transactions";
 import { TransactionColumns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
+import DownloadButton from "@/components/download";
 import PageLayout from "@/components/page-layout";
 import TransactionsPageSkeleton from "@/components/skeletons/TransactionsPage";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useChart } from "@/hooks/charts";
+import { useChart, useTimeRange } from "@/hooks/charts";
 import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
 import { ACCOUNTS } from "@/lib/constants";
 import { determineBucketSize, generateTimeRange } from "@/lib/utils";
-import { TimeRange } from "@/types";
-import { Download, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
@@ -31,7 +31,7 @@ import { toast } from "sonner";
 //--------------------------------
 
 const Transactions = ({}) => {
-  const [pageSize, _setPageSize] = useQueryState("pageSize", {
+  const [pageSize] = useQueryState("pageSize", {
     defaultValue: "20",
   });
 
@@ -41,8 +41,7 @@ const Transactions = ({}) => {
   const [queryPage, setQueryPage] = useQueryState("page", {
     defaultValue: "1",
   });
-  const [download, setDownload] = useState(false);
-  const [timeRange, setTimeRange] = useState<TimeRange>("7d");
+  const { timeRange, setTimeRange } = useTimeRange();
   const { from, to } = useMemo(() => generateTimeRange(timeRange), [timeRange]);
 
   const { data, isLoading, error, isFetching } = useTransactions({
@@ -52,16 +51,17 @@ const Transactions = ({}) => {
     startTime: from,
     endTime: to,
   });
-  const { isLoading: isExportLoading, isFetching: isExportFetching } =
-    useExportTransactionsPDF(
-      {
-        page: queryPage ? parseInt(queryPage, 10) : 1,
-        pageSize: pageSize ? parseInt(pageSize, 10) : 20,
-        address: address || undefined,
-      },
-      download,
-      setDownload,
-    );
+  const {
+    isLoading: isExportLoading,
+    isFetching: isExportFetching,
+    downloadPDF,
+  } = useExportTransactionsPDF({
+    page: queryPage ? parseInt(queryPage, 10) : 1,
+    pageSize: pageSize ? parseInt(pageSize, 10) : 20,
+    address: address || undefined,
+    startTime: from,
+    endTime: to,
+  });
   const isPDFDownloading = isExportLoading || isExportFetching;
   const { data: formattedChartData } = useChart({
     startTime: from,
@@ -164,18 +164,15 @@ const Transactions = ({}) => {
                     </Button>
                   </SelectContent>
                 </Select>
-                <Button
-                  variant="outline"
+                <DownloadButton
+                  loading={isPDFDownloading}
                   disabled={isPDFDownloading}
                   onClick={() => {
-                    setDownload(true);
+                    downloadPDF();
                   }}
-                >
-                  <Download />
-                  <span>
-                    {isPDFDownloading ? "Downloading..." : "Download"}
-                  </span>
-                </Button>
+                  loadingTitle="Downloading..."
+                  buttonVariant="outline"
+                />
               </div>
               <ChartAreaInteractive
                 data={formattedChartData}
@@ -184,6 +181,7 @@ const Transactions = ({}) => {
                 timeRange={timeRange}
                 setTimeRange={setTimeRange}
                 setBucket={setBucketSize}
+                filteredAccount={address ? address : undefined}
                 title="Transactions"
                 description="Showing number of transactions per day for the selected period."
               />

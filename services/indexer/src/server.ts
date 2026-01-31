@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { rateLimiter } from "shared/middleware/rate-limit";
+import { apiRoutes } from "./routes/api";
 import { transactionRoutes } from "./routes/transactionRoutes";
 import { config } from "./utils/config";
 
@@ -16,7 +17,9 @@ app.use(
 app.use(express.json());
 app.use(rateLimiter);
 app.use("/wallet", transactionRoutes);
+app.use("/api", apiRoutes);
 
+//----------------------------------------------------
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).json({ message: "sol indexer running", status: "ok" });
 });

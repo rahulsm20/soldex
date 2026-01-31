@@ -37,3 +37,13 @@ export type TransactionsResponse = {
   pageSize: number;
   pageCount: number;
 };
+
+export type ChartDataResponse = {
+  time: string;
+  [tokenAddress: string]: number | string;
+};
+
+export type ChartPoint = {
+  label: string;
+  value: number;
+};

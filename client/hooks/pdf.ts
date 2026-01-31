@@ -1,47 +1,46 @@
 import { queries } from "@/api/queries";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
-export const useExportTransactionsPDF = (
-  variables: {
-    page: number;
-    pageSize: number;
-    from_address?: string;
-    address?: string;
-    startTime?: string;
-    endTime?: string;
-  },
-  enabled?: boolean,
-  setEnabled?: (value: boolean) => void,
-) => {
-  const query = useQuery(queries.EXPORT_TRANSACTIONS({ variables, enabled }));
+export const useExportTransactionsPDF = (variables: {
+  page: number;
+  pageSize: number;
+  from_address?: string;
+  address?: string;
+  startTime?: string;
+  endTime?: string;
+}) => {
+  const { refetch, data, isLoading, isFetching } = useQuery(
+    queries.EXPORT_TRANSACTIONS({ variables, enabled: false }),
+  );
 
-  useEffect(() => {
-    if (query.data?.signedUrl && enabled) {
-      const downloadPDF = async () => {
-        try {
-          const signedUrl = query.data.signedUrl;
-          const res = await fetch(signedUrl);
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
+  const downloadPDF = async () => {
+    try {
+      const data = await refetch().then((res) => res.data);
+      if (!data) {
+        throw new Error("No data received for PDF export");
+      }
+      const signedUrl = data.signedUrl;
+      const res = await fetch(signedUrl);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
 
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = query.data?.filename || "transactions.pdf";
-          document.body.appendChild(a);
-          a.click();
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = data?.filename || "transactions.pdf";
+      document.body.appendChild(a);
+      a.click();
 
-          a.remove();
-          window.URL.revokeObjectURL(url);
-          if (setEnabled) setEnabled(false);
-        } catch (err) {
-          console.error("Error downloading PDF:", err);
-        }
-      };
-
-      downloadPDF();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
     }
-  }, [query.data, enabled]);
+  };
 
-  return query;
+  return {
+    downloadPDF,
+    data,
+    isLoading,
+    isFetching,
+  };
 };

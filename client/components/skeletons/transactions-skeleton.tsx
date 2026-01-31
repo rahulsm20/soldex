@@ -89,11 +89,11 @@ export function LoadingTransactionsTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({ length: 20 }).map((_, index) => (
             <TableRow key={index}>
               {columns.map((col) => (
                 <TableCell key={`${col.header}-${index}`}>
-                  <Skeleton className="h-4 flex-1 w-full animate-pulse" />
+                  <Skeleton className="h-10 flex-1 w-full animate-pulse" />
                 </TableCell>
               ))}
             </TableRow>

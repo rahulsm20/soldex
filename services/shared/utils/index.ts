@@ -1,0 +1,59 @@
+import { ChartJSNodeCanvas } from "chartjs-node-canvas";
+import dayjs from "dayjs";
+
+export function formatDateLong24h(dateISO: string): string {
+  const date = new Date(dateISO);
+  return dayjs(date).format("YYYY-MM-DD HH:mm");
+}
+
+export function formatDateLong12h(dateISO: string): string {
+  const date = new Date(dateISO);
+  return dayjs(date).format("YYYY-MM-DD hh:mm A");
+}
+
+export function formatDateISO(date: Date): string {
+  return dayjs(date).format("YYYY-MM-DD");
+}
+
+export function getRandomColor(): string {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+/**
+ * Renders a line chart into the provided PDF document.
+ * @param doc
+ * @param labels
+ * @param values
+ */
+export async function renderLineChart(
+  doc: PDFKit.PDFDocument,
+  labels: string[],
+  values: { label: string; data: number[]; borderColor: string }[],
+) {
+  const canvas = new ChartJSNodeCanvas({
+    width: 800,
+    height: 400,
+  });
+
+  const image = await canvas.renderToBuffer({
+    type: "line",
+    data: {
+      labels,
+      datasets: values,
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+      },
+    },
+  });
+
+  doc.image(image, { width: 500 });
+}

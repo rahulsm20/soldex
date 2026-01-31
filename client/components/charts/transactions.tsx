@@ -52,6 +52,7 @@ export function ChartAreaInteractive({
   loading,
   timeRange,
   setTimeRange,
+  filteredAccount,
 }: {
   data?: ChartDataType[];
   labels?: { label: string; value: string; sig: string; color: string }[];
@@ -62,6 +63,7 @@ export function ChartAreaInteractive({
   setBucket?: (bucket: BucketSize) => void;
   timeRange?: string;
   setTimeRange?: (range: TimeRange) => void;
+  filteredAccount?: string;
 }) {
   return (
     <Card className="pt-0 bg-transparent w-1/3 md:w-2/3 lg:w-full">
@@ -159,16 +161,20 @@ export function ChartAreaInteractive({
                   />
                 }
               />
-              {labels.map((label) => (
-                <Area
-                  key={label.value}
-                  dataKey={label.sig}
-                  // type="natural"
-                  fill={`url(#${labels.indexOf(label) + 1})`}
-                  stroke={label.color}
-                  // stackId="a"
-                />
-              ))}
+              {labels
+                .filter(
+                  (label) => !filteredAccount || filteredAccount === label.sig,
+                )
+                .map((label) => (
+                  <Area
+                    key={label.value}
+                    dataKey={label.sig}
+                    // type="natural"
+                    fill={`url(#${labels.indexOf(label) + 1})`}
+                    stroke={label.color}
+                    // stackId="a"
+                  />
+                ))}
               <ChartLegend content={<ChartLegendContent />} />
             </AreaChart>
           )}

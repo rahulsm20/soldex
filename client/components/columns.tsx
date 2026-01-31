@@ -41,7 +41,7 @@ export function TransactionColumns(
       enableColumnFilter: true,
     },
     {
-      header: "Address",
+      header: "Mint Address",
       accessorKey: "address",
       cell: ({ row }) => (
         <div className="flex w-42 items-center justify-between underline">

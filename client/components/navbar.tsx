@@ -52,7 +52,7 @@ const LinkItem = ({
 const Navbar = () => {
   const navItems = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Transactions", href: "/transactions", icon: ArrowUpDown },
+    { name: "Mint Transactions", href: "/transactions", icon: ArrowUpDown },
     {
       name: "Github",
       href: "https://github.com/rahulsm20/soldex",

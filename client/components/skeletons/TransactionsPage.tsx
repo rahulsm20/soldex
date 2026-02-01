@@ -20,14 +20,14 @@ const TransactionsPageSkeleton = () => {
   return (
     <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
       <div className="flex flex-col justify-center items-center gap-5">
-        <h1 className="text-xl font-semibold lg:w-full">Transactions</h1>
+        <h1 className="text-xl font-semibold lg:w-full">Mint Transactions</h1>
         <div className="flex gap-2 items-center justify-between lg:w-full">
           <Select>
             <SelectTrigger className="w-52">
               <SelectValue
                 placeholder={
                   <div className="flex items-center gap-2">
-                    <span>Filter by accounts</span>
+                    <span>Filter by Mint</span>
                     <Filter className="h-2 w-2" />
                   </div>
                 }

@@ -12,7 +12,7 @@ export const rateLimiter = async (
   //   }
   const address = ip.address();
   const encryptedAddress = Buffer.from(address).toString("base64");
-  const cacheKey = `soldex_indexer:ip:${encryptedAddress}`;
+  const cacheKey = `soldex_server:ip:${encryptedAddress}`;
   const data = await getCachedData(cacheKey);
   if (data) {
     if (parseInt(data) > 5) {

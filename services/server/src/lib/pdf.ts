@@ -149,7 +149,7 @@ export async function renderTransactionsReport(
     mappedTransactions.push(["No transactions found", "", "", "", "", "", ""]);
   }
 
-  doc.text("Transactions");
+  doc.fontSize(12).text("Transactions");
   doc.moveDown();
 
   const tableData: PDFKit.Mixins.TableOptionsWithData["data"] = [

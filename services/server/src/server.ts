@@ -2,6 +2,7 @@ import { transactionRouter } from "@/routes/transactionRoutes";
 import { config } from "@/utils/config";
 import cors from "cors";
 import express, { Request, Response } from "express";
+import { rateLimiter } from "shared/middleware/rate-limit";
 import { chartRoutes } from "./routes/chartRoutes";
 import { pdfRoutes } from "./routes/pdfRoutes";
 import { tokenRoutes } from "./routes/tokenRoutes";
@@ -15,7 +16,7 @@ app.use(
 );
 app.use(express.json());
 
-// app.use(rateLimiter);
+app.use(rateLimiter);
 app.use("/file", pdfRoutes);
 app.use("/transactions", transactionRouter);
 app.use("/token", tokenRoutes);

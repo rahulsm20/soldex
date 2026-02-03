@@ -1,8 +1,12 @@
 import { ParsedTransactionWithMeta } from "@solana/web3.js";
+import { eq } from "drizzle-orm";
 import { BatchItem } from "drizzle-orm/batch";
 import fetch from "node-fetch";
 import { db } from "../../shared/drizzle/db";
-import { solana_transactions } from "../../shared/drizzle/schema";
+import {
+  solana_indexer_state,
+  solana_transactions,
+} from "../../shared/drizzle/schema";
 import { ACCOUNTS } from "../../shared/utils/constants";
 import { solanaClient } from "../src/lib/sol";
 import { extractFromAndToAddresses, getTransactionType } from "../src/utils";
@@ -11,7 +15,7 @@ const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const HELIUS_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 
 async function getSignaturesForAddress(
-  address,
+  address: string,
   beforeSignature = null,
   limit = 1000,
 ) {
@@ -67,19 +71,23 @@ async function getEnhancedTransactions(signatures) {
   return await response.json();
 }
 
-async function fetchTransactionsForPeriod(address, days = 30) {
+async function fetchTransactionsForPeriod(
+  address: string,
+  days = 30,
+  beforeSignature?: string,
+) {
   const cutoffTime = Math.floor(Date.now() / 1000) - days * 24 * 60 * 60;
   let allTransactions: ParsedTransactionWithMeta[] = [];
-  let beforeSignature = null;
+  // let beforeSignature = null;
   let hasMore = true;
   let totalFetched = 0;
 
-  console.log(
-    `Fetching transactions for ${address} from the past ${days} days...`,
-  );
-  console.log(
-    `Cutoff timestamp: ${new Date(cutoffTime * 1000).toISOString()}\n`,
-  );
+  // console.log(
+  //   `Fetching transactions for ${address} from the past ${days} days...`,
+  // );
+  // console.log(
+  //   `Cutoff timestamp: ${new Date(cutoffTime * 1000).toISOString()}\n`,
+  // );
 
   while (hasMore && totalFetched < 500) {
     // Get signatures with pagination
@@ -101,10 +109,10 @@ async function fetchTransactionsForPeriod(address, days = 30) {
     }
 
     totalFetched += recentSignatures.length;
-    console.log(
-      `Fetched ${recentSignatures.length} signatures (total: ${totalFetched})`,
-      // { recentSignatures },
-    );
+    // console.log(
+    //   `Fetched ${recentSignatures.length} signatures (total: ${totalFetched})`,
+    //   // { recentSignatures },
+    // );
 
     // Process in batches of 100 for enhanced transactions
     const batchSize = 10;
@@ -117,11 +125,11 @@ async function fetchTransactionsForPeriod(address, days = 30) {
         const transactions = await getParsedTransactions(sigs);
         allTransactions.push(...(transactions || []));
 
-        console.log(
-          `Processed batch ${Math.floor(i / batchSize) + 1} (${
-            sigs.length
-          } transactions)`,
-        );
+        // console.log(
+        //   `Processed batch ${Math.floor(i / batchSize) + 1} (${
+        //     sigs.length
+        //   } transactions)`,
+        // );
 
         // Rate limiting
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -136,6 +144,23 @@ async function fetchTransactionsForPeriod(address, days = 30) {
       hasMore = false;
     } else {
       beforeSignature = oldestSignature.signature;
+    }
+    if (beforeSignature) {
+      // update before signature for next iteration
+      await db
+        .insert(solana_indexer_state)
+        .values({
+          address,
+          lastProcessedSignature: beforeSignature,
+          updated_at: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: solana_indexer_state.address,
+          set: {
+            lastProcessedSignature: beforeSignature,
+            updated_at: new Date(),
+          },
+        });
     }
 
     // If we got fewer results than the limit, we've reached the end
@@ -174,7 +199,16 @@ async function main() {
     }
 
     try {
-      const transactions = await fetchTransactionsForPeriod(targetAddress, 30);
+      const existingState = await db
+        .select()
+        .from(solana_indexer_state)
+        .where(eq(solana_indexer_state.address, targetAddress));
+
+      const transactions = await fetchTransactionsForPeriod(
+        targetAddress,
+        30,
+        existingState?.[0]?.lastProcessedSignature,
+      );
 
       console.log(`\nTotal transactions fetched: ${transactions.length}`);
 
@@ -232,13 +266,13 @@ async function main() {
       }
       if (inserts.length > 0) {
         const typedInserts = inserts as [BatchItem<"pg">];
-        const batchresponse = await db.batch(typedInserts);
+        await db.batch(typedInserts);
         // console.log("\nSample transaction structure:");
         // console.log(
         //   JSON.stringify(transactions[0], null, 2).substring(0, 500) + "...",
         // );
 
-        console.log(JSON.stringify(batchresponse, null, 2));
+        // console.log(JSON.stringify(batchresponse, null, 2));
       } else {
         console.log("No new transactions to insert.");
       }

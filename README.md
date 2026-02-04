@@ -3,6 +3,8 @@ SolDex
 </h1>
 Just a really smart solana indexer.
 
+> Soldex indexes popular transactions from popular token creators in an efficently and reliably in a scalable manner using microservices, caching and cron jobs.
+
 ## Index
 
 - [Tech Stack](#tech-stack)

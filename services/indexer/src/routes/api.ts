@@ -8,7 +8,10 @@ router.get("/status", async (_req: Request, res: Response) => {
   return res.status(200).json({ message: "API is running", status: "ok" });
 });
 
-router.get("/webhook", async (_req: Request, res: Response) => {
+router.get("/webhook", async (req: Request, res: Response) => {
+  // push event data can be accessed via req.event
+  const event = req.event;
+  console.log(JSON.stringify(event, null, 2));
   return res.status(200).json({ service: "Indexer API", version: "1.0.0" });
 });
 router.get("*", async (_req: Request, res: Response) => {

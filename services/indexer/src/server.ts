@@ -7,6 +7,16 @@ import { config } from "./utils/config";
 
 //----------------------------------------------------
 
+declare global {
+  namespace Express {
+    interface Request {
+      event?: any;
+    }
+  }
+}
+
+//----------------------------------------------------
+
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(

@@ -169,10 +169,10 @@ export function ChartAreaInteractive({
                   <Area
                     key={label.value}
                     dataKey={label.sig}
-                    // type="natural"
+                    type="natural"
                     fill={`url(#${labels.indexOf(label) + 1})`}
                     stroke={label.color}
-                    // stackId="a"
+                    stackId="a"
                   />
                 ))}
               <ChartLegend content={<ChartLegendContent />} />

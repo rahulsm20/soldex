@@ -114,9 +114,7 @@ const Transactions = ({}) => {
         <div className="flex justify-start items-center flex-col gap-6 min-h-screen ">
           <div className="w-full max-w-5xl px-4 flex flex-col gap-5">
             <div className="flex flex-col justify-center items-center gap-5">
-              <h1 className="text-xl font-semibold lg:w-full ">
-                Mint Transactions
-              </h1>
+              <h1 className="text-xl font-semibold lg:w-full ">Transactions</h1>
               <div className="flex gap-2 items-center justify-between lg:w-full">
                 <Select
                   onValueChange={setAddress}
@@ -184,7 +182,7 @@ const Transactions = ({}) => {
                 setTimeRange={setTimeRange}
                 setBucket={setBucketSize}
                 filteredAccount={address ? address : undefined}
-                // title="Mint Transactions"
+                title="Mint Transactions"
                 description="Showing number of mint transactions per day for the selected period."
               />
               <DataTable

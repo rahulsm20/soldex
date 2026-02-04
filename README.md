@@ -1,9 +1,8 @@
 <h1 style="display: flex; align-items:center; gap:10px;"><img src='https://soldex-seven.vercel.app/favicon.ico' width="30"/>
 SolDex 
 </h1>
-Just a really smart solana indexer.
 
-> Soldex indexes popular transactions from popular token creators in an efficently and reliably in a scalable manner using microservices, caching and cron jobs.
+> Soldex indexes transactions from popular token creators in an efficently and reliably in a scalable manner using microservices, caching and cron jobs.
 
 ## Index
 

@@ -43,9 +43,8 @@ SolDex
 ## Local Setup
 
 - Setup required environment variables
-  - [services/indexer/.env.example](services/indexer/.env.example)
-  - [services/server/.env.example](services/server/.env.example)
-  - [services/.env.example](services/.env.example)
+  - [indexer/.env.example](indexer/.env.example)
+  - [server/.env.example](server/.env.example)
   - [client/.env.example](client/.env.example)
 
 - Using provided script

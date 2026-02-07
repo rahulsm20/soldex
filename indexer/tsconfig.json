@@ -5,20 +5,20 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "shared/*": ["../shared/*"]
+      "@/shared/*": ["../shared/*"],
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
   },
   "include": [
     "src/**/*.ts",
     "types.ts",
     "*.ts",
     "../shared/**/*.ts",
-    "../drizzle.config.ts"
+    "../drizzle.config.ts",
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

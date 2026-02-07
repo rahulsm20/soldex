@@ -1,8 +1,5 @@
-import { solanaClient } from "@/indexer/src/lib/sol";
-import {
-  extractFromAndToAddresses,
-  getTransactionType,
-} from "@/indexer/src/utils";
+import { solanaClient } from "../src/lib/sol";
+import { extractFromAndToAddresses, getTransactionType } from "../src/utils";
 import { db } from "@/shared/drizzle/db";
 import {
   solana_indexer_state,
@@ -210,7 +207,7 @@ async function main() {
       const transactions = await fetchTransactionsForPeriod(
         targetAddress,
         30,
-        existingState?.[0]?.lastProcessedSignature,
+        // existingState?.[0]?.lastProcessedSignature,
       );
 
       console.log(`\nTotal transactions fetched: ${transactions.length}`);

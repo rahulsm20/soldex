@@ -2,7 +2,7 @@
   "name": "sol-indexer",
   "private": true,
   "workspaces": [
-    "./*"
+    "/*"
   ],
   "scripts": {
     "dev:indexer": "cd indexer && bun run dev",
@@ -12,6 +12,7 @@
     "test": "turbo run test",
     "test:unit": "turbo run test:unit",
     "test:e2e": "turbo run test:e2e",
+    "build": "turbo run build",
     "dev": "cd client && bun run dev & cd server && bun run dev & cd indexer && bun run dev & wait"
   },
   "devDependencies": {
@@ -23,5 +24,6 @@
     "chartjs-node-canvas": "^5.0.0",
     "dayjs": "^1.11.19",
     "turbo": "^2.8.3"
-  }
+  },
+  "packageManager": "bun@1.2.18"
 }

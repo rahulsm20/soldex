@@ -1,15 +1,18 @@
+import { solanaClient } from "@/indexer/src/lib/sol";
+import {
+  extractFromAndToAddresses,
+  getTransactionType,
+} from "@/indexer/src/utils";
+import { db } from "@/shared/drizzle/db";
+import {
+  solana_indexer_state,
+  solana_transactions,
+} from "@/shared/drizzle/schema";
+import { ACCOUNTS } from "@/shared/utils/constants";
 import { ParsedTransactionWithMeta } from "@solana/web3.js";
 import { eq } from "drizzle-orm";
 import { BatchItem } from "drizzle-orm/batch";
 import fetch from "node-fetch";
-import { db } from "../../shared/drizzle/db";
-import {
-  solana_indexer_state,
-  solana_transactions,
-} from "../../shared/drizzle/schema";
-import { ACCOUNTS } from "../../shared/utils/constants";
-import { solanaClient } from "../src/lib/sol";
-import { extractFromAndToAddresses, getTransactionType } from "../src/utils";
 
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const HELIUS_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;

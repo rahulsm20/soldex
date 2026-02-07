@@ -14,7 +14,7 @@ app.use(
     origin: config.CLIENT_URL,
   }),
 );
-app.use(express.json());
+app.use(express.json);
 
 app.use(rateLimiter);
 app.use("/file", pdfRoutes);

@@ -1,14 +1,10 @@
-// import { solanaClient } from "../indexer/src/lib/sol";
-// import { db } from "../shared/drizzle/db";
-// import { solana_transactions } from "../shared/drizzle/schema";
-
+import { solanaClient } from "@/indexer/src/lib/sol";
+import { extractFromAndToAddresses } from "@/indexer/src/utils";
+import { db } from "@/shared/drizzle/db";
+import { solana_transactions } from "@/shared/drizzle/schema";
 import { ParsedInstruction } from "@solana/web3.js";
 import { sleep } from "bun";
 import { eq, isNull, or } from "drizzle-orm";
-import { db } from "../../shared/drizzle/db";
-import { solana_transactions } from "../../shared/drizzle/schema";
-import { solanaClient } from "../src/lib/sol";
-import { extractFromAndToAddresses } from "../src/utils";
 
 async function backfill() {
   const start = Date.now();
@@ -23,8 +19,8 @@ async function backfill() {
       .where(
         or(
           isNull(solana_transactions.to_address),
-          isNull(solana_transactions.from_address)
-        )
+          isNull(solana_transactions.from_address),
+        ),
       );
     if (raw_txs.length === 0) {
       console.log("No more transactions to backfill.");
@@ -34,7 +30,7 @@ async function backfill() {
       undefined,
       undefined,
       undefined,
-      raw_txs.map((tx) => tx.signature)
+      raw_txs.map((tx) => tx.signature),
     );
 
     for (const tx of txs) {
@@ -47,7 +43,7 @@ async function backfill() {
             data?.parsed?.type === "transfer" ||
             data?.parsed?.type === "transferChecked"
           );
-        }
+        },
       ) as ParsedInstruction | undefined;
       if (!mintInstruction) {
         continue;
@@ -73,7 +69,7 @@ async function backfill() {
   console.log(
     "Backfill completed.",
     new Date().toISOString(),
-    `timeTaken: ${timetaken}s`
+    `timeTaken: ${timetaken}s`,
   );
 }
 

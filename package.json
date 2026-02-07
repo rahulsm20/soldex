@@ -8,7 +8,11 @@
     "dev:indexer": "cd indexer && bun run dev",
     "dev:api": "cd api && bun run dev",
     "drizzle:generate": "bunx drizzle-kit generate",
-    "drizzle:migrate": "bunx drizzle-kit push"
+    "drizzle:migrate": "bunx drizzle-kit push",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "turbo run test:e2e",
+    "dev": "cd client && bun run dev & cd server && bun run dev & cd indexer && bun run dev & wait"
   },
   "devDependencies": {
     "typescript": "^5.4.5",
@@ -17,6 +21,7 @@
   },
   "dependencies": {
     "chartjs-node-canvas": "^5.0.0",
-    "dayjs": "^1.11.19"
+    "dayjs": "^1.11.19",
+    "turbo": "^2.8.3"
   }
 }

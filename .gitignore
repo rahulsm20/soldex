@@ -6,3 +6,4 @@ deploy.sh
 *.txt
 .vercel
 .env*.local
+.turbo

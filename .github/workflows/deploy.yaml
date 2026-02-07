@@ -25,7 +25,6 @@ jobs:
 
       - name: Build and Push Indexer Docker Image
         run: |
-          cd services &&
           docker build -f Dockerfile.indexer --platform linux/amd64 -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-indexer:latest . && 
           docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-indexer:latest
 
@@ -39,13 +38,11 @@ jobs:
 
       - name: Build and Push Server Docker Image
         run: |
-          cd services &&
           docker build -f Dockerfile.server --platform linux/amd64 -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest . &&
           docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest
 
       - name: Deploy Server
         run: |
-          cd services && 
           gcloud run deploy soldex-server \
           --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/soldex/soldex-server:latest \
           --region us-west1 \

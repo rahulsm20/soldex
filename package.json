@@ -13,7 +13,7 @@
     "test:unit": "turbo run test:unit",
     "test:e2e": "turbo run test:e2e",
     "build": "turbo run build",
-    "dev": "cd client && bun run dev & cd server && bun run dev & cd indexer && bun run dev & wait"
+    "dev": "cd client && bun dev & cd server && bun dev & cd indexer && bun dev & wait"
   },
   "dependencies": {
     "chartjs-node-canvas": "^5.0.0",

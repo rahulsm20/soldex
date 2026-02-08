@@ -12,9 +12,6 @@ import {
   getTransactionsChartDataUtil,
   getTransactionsUtil,
 } from "./transactions";
-import { db } from "shared/drizzle/db";
-import { solana_transactions } from "shared/drizzle/schema";
-import { and, eq, gte } from "drizzle-orm";
 
 //--------------------------------------------------------------
 
@@ -175,8 +172,8 @@ export async function renderTransactionsReport(
 //--------------------------------------------------------------
 export async function generatePDF(pdfBuffer: Buffer, name?: string) {
   const filename = `${name}.pdf` || `pdfs/${randomUUID()}.pdf`;
-
-  await uploadToS3(pdfBuffer, filename, "application/pdf");
+  const pdfBufferArray = new Uint8Array(pdfBuffer);
+  await uploadToS3(pdfBufferArray, filename, "application/pdf");
 
   const signedUrl = await getSignedURL(filename, 60 * 10); // 10 minutes
 

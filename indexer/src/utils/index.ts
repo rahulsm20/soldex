@@ -23,7 +23,7 @@ export const extractFromAndToAddresses = (
       mintInstruction.parsed.info.mintAuthority ||
       mintInstruction.parsed.info.source
     : address;
-
+  if (!from_address) console.log({ mintInstruction });
   return { from_address, to_address };
 };
 

@@ -14,30 +14,35 @@ router.get("/status", async (_req: Request, res: Response) => {
 });
 
 router.post("/webhook", async (req: Request, res: Response) => {
-  // push event data can be accessed via req.event
-  const events: ParsedTransactionWithMeta[] = req.body;
-  for (const event of events) {
-    const { to_address, from_address } = extractFromAndToAddresses(
-      event,
-      // event.transaction?.signatures
-    );
-    const signature = event.transaction.signatures?.[0];
-    let blockTime = null;
-    if (event?.blockTime) {
-      blockTime = new Date(event?.blockTime * 1000);
+  try {
+    const events: ParsedTransactionWithMeta[] = req.body;
+    for (const event of events) {
+      const { to_address, from_address } = extractFromAndToAddresses(event);
+      const signature = event.transaction.signatures?.[0];
+      let blockTime = null;
+      if (event?.blockTime) {
+        blockTime = new Date(event?.blockTime * 1000);
+      }
+      await db.insert(solana_transactions).values({
+        signature,
+        slot: event.slot,
+        blockTime,
+        to_address,
+        from_address,
+        address: from_address,
+      });
     }
-    await db.insert(solana_transactions).values({
-      signature,
-      slot: event.slot,
-      blockTime,
-      to_address,
-      from_address,
-      address: from_address,
-    });
+    return res
+      .status(200)
+      .json({ message: "Webhook successful, tx pushed to db ", status: "ok" });
+  } catch (err) {
+    if (err instanceof Error) {
+      return res
+        .status(404)
+        .json({ message: "failed to push tx", err: err.message });
+    }
+    return res.status(500).json({ message: "internal server error" });
   }
-  return res
-    .status(200)
-    .json({ message: "Webhook successful, tx pushed to queue", status: "ok" });
 });
 router.get("*", async (_req: Request, res: Response) => {
   return res.status(404).json({ message: "API Route not found" });

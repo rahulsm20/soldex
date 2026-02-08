@@ -12,12 +12,6 @@ export const ACCOUNTS = [
     color: "var(--chart-1)",
     icon: "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/vectors/usdc-fpxuadmgafrjjy85bgie5.png/usdc-kksfxcrdl3f9pjx0v6jxxp.png?_a=DATAg1AAZAA0",
   },
-  // {
-  //   label: "Pump Fun Account",
-  //   value: "pump_fun",
-  //   sig: "Doa8F9eugaAHpCBmfmShKV1BhKN9xyaEDg1mTsonW5p8",
-  //   color: "var(--chart-2)",
-  // },
   {
     label: "USDT",
     value: "usdt_mint_auth",

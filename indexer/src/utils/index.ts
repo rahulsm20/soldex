@@ -2,7 +2,7 @@ import { ParsedInstruction, ParsedTransactionWithMeta } from "@solana/web3.js";
 
 export const extractFromAndToAddresses = (
   tx: ParsedTransactionWithMeta,
-  address: string,
+  address?: string,
 ) => {
   const mintInstruction = tx.transaction.message.instructions.find((inst) => {
     const data = inst as ParsedInstruction;

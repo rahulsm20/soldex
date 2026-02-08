@@ -1,4 +1,8 @@
 import { txQueue } from "@/lib/bullmq";
+import { db } from "@/shared/drizzle/db";
+import { solana_transactions } from "@/shared/drizzle/schema";
+import { extractFromAndToAddresses } from "@/utils";
+import { ParsedTransactionWithMeta } from "@solana/web3.js";
 import express, { Request, Response } from "express";
 const router = express.Router();
 
@@ -11,14 +15,24 @@ router.get("/status", async (_req: Request, res: Response) => {
 
 router.post("/webhook", async (req: Request, res: Response) => {
   // push event data can be accessed via req.event
-  const events = req.body;
+  const events: ParsedTransactionWithMeta[] = req.body;
   for (const event of events) {
-    await txQueue.add("processTransaction", {
-      signature: event.signature,
+    const { to_address, from_address } = extractFromAndToAddresses(
+      event,
+      // event.transaction?.signatures
+    );
+    const signature = event.transaction.signatures?.[0];
+    let blockTime = null;
+    if (event?.blockTime) {
+      blockTime = new Date(event?.blockTime * 1000);
+    }
+    await db.insert(solana_transactions).values({
+      signature,
       slot: event.slot,
-      timestamp: event.timestamp,
-      block_time: event.blockTime,
-      accountData: event.accountData,
+      blockTime,
+      to_address,
+      from_address,
+      address: from_address,
     });
   }
   return res

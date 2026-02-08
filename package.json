@@ -13,16 +13,16 @@
     "test:unit": "turbo run test:unit",
     "test:e2e": "turbo run test:e2e",
     "build": "turbo run build",
-    "dev": "cd client && bun dev & cd server && bun dev & cd indexer && bun dev & wait"
+    "dev": "cd client && bun dev & cd server && bun dev & wait"
   },
   "dependencies": {
-    "chartjs-node-canvas": "^5.0.0",
-    "dayjs": "^1.11.19",
-    "turbo": "^2.8.3",
     "bun-types": "^0.1.0",
-    "express": "^4.19.2",
+    "chartjs-node-canvas": "^5.0.0",
     "cors": "^2.8.5",
-    "ip": "^2.0.1"
+    "dayjs": "^1.11.19",
+    "express": "^4.19.2",
+    "ip": "^2.0.1",
+    "turbo": "^2.8.3"
   },
   "devDependencies": {
     "typescript": "^5.4.5",

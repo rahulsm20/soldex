@@ -12,10 +12,13 @@ import {
   getTransactionsChartDataUtil,
   getTransactionsUtil,
 } from "./transactions";
+import { db } from "shared/drizzle/db";
+import { solana_transactions } from "shared/drizzle/schema";
+import { and, eq, gte } from "drizzle-orm";
 
 //--------------------------------------------------------------
 
-export async function generatePDFBuffer(): Promise<Uint8Array> {
+export async function generatePDFBuffer(): Promise<Buffer<ArrayBufferLike>> {
   const doc = new PDFDocument();
   const chunks: Uint8Array[] = [];
 
@@ -84,9 +87,10 @@ export async function renderTransactionsReport(
 
   const transactions = await getTransactionsUtil({
     address: address as string,
-    limit: limit ? Number(limit) : undefined,
-    page: page ? Number(page) : undefined,
-    pageSize: pageSize ? Number(pageSize) : undefined,
+    // TODO: uncomment when the modal for page selection is done
+    // limit: limit ? Number(limit) : undefined,
+    // page: page ? Number(page) : undefined,
+    // pageSize: pageSize ? Number(pageSize) : undefined,
     startTime: startTime as string,
     endTime: endTime as string,
   });

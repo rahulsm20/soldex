@@ -1,11 +1,22 @@
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import dayjs from "dayjs";
+import PDFKit from "pdfkit";
 
+/**
+ * Function to format a date string in ISO format to a long date format with 24-hour time.
+ * @param dateISO
+ * @returns
+ */
 export function formatDateLong24h(dateISO: string): string {
   const date = new Date(dateISO);
   return dayjs(date).format("YYYY-MM-DD HH:mm");
 }
 
+/**
+ * Function to format a date string in ISO format to a long date format with 12-hour time and AM/PM.
+ * @param dateISO
+ * @returns string
+ */
 export function formatDateLong12h(dateISO: string): string {
   const date = new Date(dateISO);
   return dayjs(date).format("YYYY-MM-DD hh:mm A");

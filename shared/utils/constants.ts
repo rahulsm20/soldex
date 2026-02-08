@@ -28,6 +28,46 @@ export const ACCOUNTS = [
   },
 ];
 
+export const TOKENS = [
+  {
+    label: "SOL",
+    value: "sol",
+    sig: "So11111111111111111111111111111111111111112",
+  },
+  {
+    label: "USDC",
+    value: "usdc",
+    sig: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  {
+    label: "USDT",
+    value: "usdt",
+    sig: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    color: "var(--chart-3)",
+  },
+  {
+    label: "TRUMP",
+    value: "trump",
+    sig: "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+  },
+  {
+    label: "PUMP",
+    value: "pump",
+    sig: "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+    color: "var(--chart-5)",
+  },
+  {
+    label: "Jupiter",
+    value: "jupiter",
+    sig: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+  },
+  {
+    label: "JITO",
+    value: "jito",
+    sig: "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn",
+  },
+];
+
 export const ACCOUNTS_MAP: { [sig: string]: string } = ACCOUNTS.reduce(
   (acc, curr) => {
     acc[curr.sig] = curr.label;

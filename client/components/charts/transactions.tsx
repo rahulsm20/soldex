@@ -17,9 +17,9 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { ACCOUNTS, TimeRanges } from "@/lib/constants";
+import { TimeRanges } from "@/lib/constants";
 import { formatDateBasedOnBucket } from "@/lib/utils";
-import { BucketSize, ChartDataType, TimeRange } from "@/types";
+import { BucketSize, ChartDataType, TimeRange } from "@soldex/types";
 import Loader from "../loader";
 import {
   Select,
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { ACCOUNTS } from "@soldex/shared/utils/constants";
 
 //------------------------------------------------
 

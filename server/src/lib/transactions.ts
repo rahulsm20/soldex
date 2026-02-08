@@ -7,7 +7,7 @@ import {
   ChartDataResponse,
   TransactionsResponse,
   TransactionWhereInput,
-} from "types";
+} from "@soldex/types";
 import { solana_transactions } from "../../../shared/drizzle/schema";
 // import { sql } from "bun";
 

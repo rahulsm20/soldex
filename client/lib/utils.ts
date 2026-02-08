@@ -1,4 +1,4 @@
-import { BucketSize, TimeRange, TransactionType } from "@/types";
+import { BucketSize, TimeRange, TransactionType } from "@soldex/types";
 import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
 import { twMerge } from "tailwind-merge";
@@ -15,11 +15,14 @@ export function transactionDataToChartData(
   const allAddresses = new Set<string>();
 
   transactions.forEach((tx) => {
-    if (!tx.blockTime) return;
+    if (!tx.blockTime || !tx.address) return;
 
     allAddresses.add(tx.address);
-
-    const bucketTime = bucketTimestamp(tx.blockTime, bucket);
+    const blockTime =
+      typeof tx.blockTime === "number"
+        ? tx.blockTime
+        : dayjs(tx.blockTime).unix();
+    const bucketTime = bucketTimestamp(blockTime, bucket);
 
     if (!data.has(bucketTime)) {
       data.set(bucketTime, { date: bucketTime });

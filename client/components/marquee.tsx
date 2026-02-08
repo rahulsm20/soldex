@@ -1,5 +1,5 @@
 import { ExternalLinks } from "@/lib/pages";
-import { TokenPriceResponse } from "@/types";
+import { TokenPriceResponse } from "@soldex/types";
 import { ChevronUp, Ellipsis } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

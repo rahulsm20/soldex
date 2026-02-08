@@ -1,4 +1,4 @@
-import { ExportResponse, TransactionsResponse } from "@/types";
+import { ExportResponse, TransactionsResponse } from "@soldex/types";
 import { DefinedInitialDataOptions } from "@tanstack/react-query";
 import apiClient from ".";
 

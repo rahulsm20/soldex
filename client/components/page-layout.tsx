@@ -1,7 +1,7 @@
 "use client";
 
 import { useTokens } from "@/hooks/tokens";
-import { TOKENS } from "@/lib/constants";
+import { TOKENS } from "@soldex/shared/utils/constants";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import Footer from "./footer";

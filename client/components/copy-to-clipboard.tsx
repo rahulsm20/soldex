@@ -9,11 +9,17 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
  * @param title (Optional) Title for the copy button
  * @returns
  */
-const CopyToClipboard = ({ text, title }: { text: string; title?: string }) => {
+const CopyToClipboard = ({
+  text,
+  title,
+}: {
+  text: string | undefined;
+  title?: string;
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(text || "");
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
   };

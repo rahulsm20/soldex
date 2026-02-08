@@ -1,5 +1,5 @@
 import { generateSolscanLink } from "@/lib/utils";
-import { TransactionType } from "@/types";
+import { TransactionType } from "@soldex/types";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -53,7 +53,7 @@ export function TransactionColumns(
               </span>
             }
             text={row.original.address}
-            url={generateSolscanLink("account", row.original.address)}
+            url={generateSolscanLink("account", row.original.address || "")}
           />
         </div>
       ),

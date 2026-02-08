@@ -1,5 +1,5 @@
 import { queries } from "@/api/queries";
-import { TransactionType } from "@/types";
+import { TransactionType } from "@soldex/types";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 
 export const useTransactions = ({

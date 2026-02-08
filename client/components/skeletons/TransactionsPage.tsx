@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ACCOUNTS } from "@/lib/constants";
+import { ACCOUNTS } from "@soldex/shared/utils/constants";
 import { Download, Filter } from "lucide-react";
 import Image from "next/image";
 import { TransactionColumns } from "../columns";

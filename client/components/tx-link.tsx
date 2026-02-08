@@ -9,7 +9,7 @@ const TxLink = ({
 }: {
   title: ReactNode;
   url: string;
-  text: string;
+  text: string | undefined;
 }) => {
   return (
     <ExternalLink

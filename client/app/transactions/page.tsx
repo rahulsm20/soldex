@@ -20,7 +20,7 @@ import {
 import { useChart, useTimeRange } from "@/hooks/charts";
 import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
-import { ACCOUNTS } from "@/lib/constants";
+import { ACCOUNTS } from "@soldex/shared/utils/constants";
 import { determineBucketSize, generateTimeRange } from "@/lib/utils";
 import { Filter } from "lucide-react";
 import Image from "next/image";
@@ -69,8 +69,9 @@ const Transactions = ({}) => {
     address,
   });
   const transactions = data?.transactions || [];
-  const toUnix = transactions?.[0]?.blockTime;
-  const fromUnix = transactions?.[transactions.length - 1]?.blockTime;
+  const toUnix = transactions?.[0]?.blockTime?.valueOf();
+  const fromUnix =
+    transactions?.[transactions.length - 1]?.blockTime?.valueOf();
 
   const [showToast, setShowToast] = useState(true);
   const [open, setOpen] = useState(false);

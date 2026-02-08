@@ -3,7 +3,7 @@ import {
   ChartDataResponse,
   TokenPriceResponse,
   TransactionType,
-} from "@/types";
+} from "@soldex/types";
 
 class ApiClient {
   private readonly baseUrl: string;

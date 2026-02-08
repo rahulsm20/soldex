@@ -1,7 +1,7 @@
 import { config } from "@/utils/config";
 import { cacheData, getCachedData } from "shared/redis";
 import { CACHE_KEYS } from "shared/utils/constants";
-import { TokenPriceResponse } from "types";
+import { TokenPriceResponse } from "@soldex/types";
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -55,7 +55,7 @@ class ApiClient {
       body?: unknown;
       query?: Record<string, any>;
       headers?: Record<string, string>;
-    } = {}
+    } = {},
   ): Promise<T> {
     const response = await fetch(this.buildUrl(path, options.query), {
       method,
@@ -66,7 +66,7 @@ class ApiClient {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `API Error ${response.status}: ${errorText || response.statusText}`
+        `API Error ${response.status}: ${errorText || response.statusText}`,
       );
     }
 
@@ -124,7 +124,7 @@ export async function getTokenData(ids: string[]) {
 }
 
 export async function getTokenPrice(
-  ids: string[]
+  ids: string[],
 ): Promise<TokenPriceResponse[]> {
   const cacheKey = CACHE_KEYS.TOKEN_PRICE(ids.join(","));
   const cachedData = await getCachedData(cacheKey);

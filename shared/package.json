@@ -2,7 +2,8 @@
   "name": "shared",
   "dependencies": {
     "ioredis": "^5.9.2",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@types/redis": "^4.0.11",

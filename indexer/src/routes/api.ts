@@ -10,7 +10,7 @@ router.get("/status", async (_req: Request, res: Response) => {
 
 router.post("/webhook", async (req: Request, res: Response) => {
   // push event data can be accessed via req.event
-  const event = req.event;
+  const event = req;
   console.log(JSON.stringify(event, null, 2));
   return res.status(200).json({ service: "Indexer API", version: "1.0.0" });
 });

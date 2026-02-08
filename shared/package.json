@@ -1,7 +1,7 @@
 {
   "name": "shared",
   "dependencies": {
-    "redis": "^4.6.14",
+    "ioredis": "^5.9.2",
     "pdfkit": "^0.17.2"
   },
   "devDependencies": {

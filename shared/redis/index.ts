@@ -1,7 +1,10 @@
-import { createClient } from "redis";
+import Redis from "ioredis";
+import { config } from "../config";
 
-export const redisClient = createClient({
-  url: process.env.REDIS_URL,
+export const redisClient = new Redis({
+  host: config.redis.host,
+  port: config.redis.port,
+  password: config.redis.password,
 });
 
 redisClient.on("connect", () => console.log("Connected to Redis"));
@@ -11,25 +14,25 @@ redisClient.on("error", function (error) {
 });
 
 const connectRedis = async () => {
-  if (!redisClient.isOpen) {
+  if (!(redisClient.status === "ready")) {
     await redisClient.connect();
   }
 };
 
 const disconnectRedis = async () => {
-  if (redisClient.isOpen) {
-    await redisClient.disconnect();
+  if (redisClient.status === "ready") {
+    redisClient.disconnect();
   }
 };
 
 export const cacheData = async (
   key: string,
   value: string,
-  ttlSeconds?: number
+  ttlSeconds?: number,
 ) => {
   await connectRedis();
   if (ttlSeconds) {
-    await redisClient.setEx(key, ttlSeconds, value);
+    await redisClient.setex(key, ttlSeconds, value);
   } else {
     await redisClient.set(key, value);
   }

@@ -1,4 +1,3 @@
-import { txQueue } from "@/lib/bullmq";
 import { db } from "@/shared/drizzle/db";
 import { solana_transactions } from "@/shared/drizzle/schema";
 import { extractFromAndToAddresses } from "@/utils";

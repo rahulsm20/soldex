@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ChartAreaInteractiveSkeleton() {
   return (
-    <Card className="pt-0 bg-transparent w-1/3 md:w-2/3 lg:w-full">
+    <Card className="pt-0 bg-transparent w-2/3 lg:w-full overflow-scroll">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-2">
           <Skeleton className="h-5 w-40" />

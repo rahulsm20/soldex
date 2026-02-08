@@ -68,7 +68,7 @@ export function LoadingTransactionsTable<TData, TValue>({
   });
 
   return (
-    <div className="w-full overflow-s rounded-md max-w-1/3 md:max-w-2/3 lg:max-w-full border">
+    <div className="w-full overflow-s rounded-md max-w-1/2 md:max-w-2/3 lg:max-w-full border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

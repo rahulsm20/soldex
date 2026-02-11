@@ -2,8 +2,6 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import { rateLimiter } from "shared/middleware/rate-limit";
 import { apiRoutes } from "./routes/api";
-import { transactionRoutes } from "./routes/transactionRoutes";
-import { config } from "./utils/config";
 
 //----------------------------------------------------
 
@@ -21,12 +19,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(
   cors({
-    origin: config.CLIENT_URL,
+    origin: "*",
   }),
 );
 app.use(express.json());
 app.use(rateLimiter);
-app.use("/wallet", transactionRoutes);
+// app.use("/wallet", transactionRoutes);
 app.use("/api", apiRoutes);
 
 //----------------------------------------------------

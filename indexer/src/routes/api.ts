@@ -1,7 +1,5 @@
 import { db } from "@/shared/drizzle/db";
 import { solana_transactions } from "@/shared/drizzle/schema";
-import { extractFromAndToAddresses } from "@/utils";
-import { ParsedTransactionWithMeta } from "@solana/web3.js";
 import express, { Request, Response } from "express";
 const router = express.Router();
 
@@ -14,13 +12,15 @@ router.get("/status", async (_req: Request, res: Response) => {
 
 router.post("/webhook", async (req: Request, res: Response) => {
   try {
-    const events: ParsedTransactionWithMeta[] = req.body;
+    const events = req.body;
+
     for (const event of events) {
-      const { to_address, from_address } = extractFromAndToAddresses(event);
-      const signature = event.transaction.signatures?.[0];
+      const to_address = event.nativeTransfers?.[0]?.toUserAccount;
+      const from_address = event.nativeTransfers?.[0]?.fromUserAccount;
+      const signature = event.signature;
       let blockTime = null;
-      if (event?.blockTime) {
-        blockTime = new Date(event?.blockTime * 1000);
+      if (event?.timestamp) {
+        blockTime = new Date(event?.timestamp * 1000);
       }
       await db.insert(solana_transactions).values({
         signature,

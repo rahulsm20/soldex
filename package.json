@@ -13,7 +13,8 @@
     "test:unit": "turbo run test:unit",
     "test:e2e": "turbo run test:e2e",
     "build": "turbo run build",
-    "dev": "cd client && bun dev & cd server && bun dev & wait"
+    "dev": "cd client && bun dev & cd server && bun dev & wait",
+    "start": "cd server && bun start & cd client && bun start & wait"
   },
   "dependencies": {
     "bun-types": "^0.1.0",

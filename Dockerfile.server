@@ -1,5 +1,11 @@
 FROM oven/bun:1.2.18 AS build
 WORKDIR /usr/src/app
+RUN apt-get update && apt-get install -y libexpat1
+RUN apt-get install -y \
+    wkhtmltopdf \
+    fontconfig \
+    fonts-dejavu \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY package.json bun.lock ./
 
@@ -13,12 +19,13 @@ RUN bun run build
 
 FROM oven/bun:1.2.18 AS release
 WORKDIR /usr/src/app
-RUN apt-get update && apt-get install -y libexpat1
-RUN apt-get install -y \
-    wkhtmltopdf \
+RUN apt-get update && apt-get install -y \
     fontconfig \
-    fonts-dejavu \
+    fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
+
+# copy wkhtmltopdf binary only
+COPY --from=build /usr/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 
 ENV NODE_ENV=production
 

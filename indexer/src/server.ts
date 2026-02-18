@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import { rateLimiter } from "shared/middleware/rate-limit";
 import { apiRoutes } from "./routes/api";
+import { config } from "./utils/config";
 
 //----------------------------------------------------
 
@@ -19,7 +20,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(
   cors({
-    origin: "*",
+    origin: config.CLIENT_URL,
   }),
 );
 app.use(express.json());

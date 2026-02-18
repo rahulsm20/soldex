@@ -13,6 +13,12 @@ RUN bun run build
 
 FROM oven/bun:1.2.18 AS release
 WORKDIR /usr/src/app
+RUN apt-get update && apt-get install -y libexpat1
+RUN apt-get install -y \
+    wkhtmltopdf \
+    fontconfig \
+    fonts-dejavu \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 

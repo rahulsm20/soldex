@@ -1,4 +1,4 @@
-name: Server CI
+name: End to End CI
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Build project
-        run: bun run build
+        run: turbo run build

@@ -9,6 +9,7 @@ import { tokenRoutes } from "./routes/tokenRoutes";
 
 const app = express();
 const port = config.PORT || 3002;
+
 app.use(
   cors({
     origin: config.CLIENT_URL,
@@ -29,6 +30,10 @@ app.get("*", async (_req: Request, res: Response) => {
   return res.status(404).json("Invalid route");
 });
 
-app.listen(port, () => {
-  console.log(`>> Server is running at port ${port}`);
-});
+export const startServer = () => {
+  app.listen(port, () => {
+    console.log(`>> Server is running at port ${port}`);
+  });
+};
+
+startServer();

@@ -1,20 +1,10 @@
-import { config } from "@/utils/config";
-import { afterAll, beforeAll, expect, test } from "bun:test";
-import { startServer, stopServer } from "../src/server";
-
-let server: ReturnType<typeof startServer>;
-
-beforeAll(() => {
-  server = startServer();
-});
-
-afterAll(() => {
-  stopServer(server);
-});
+import app from "@/server";
+import { expect, test } from "bun:test";
+import request from "supertest";
 
 test("should return 200 OK", async () => {
-  const response = await fetch(`http://localhost:${config.PORT || 3002}`);
-  const data = await response.json();
+  const response = await request(app).get("/").send();
+  const data = response.body;
   expect(response.status).toBe(200);
   expect(data).toEqual({ message: "Service running", status: "ok" });
 });

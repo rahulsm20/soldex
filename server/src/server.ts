@@ -2,7 +2,6 @@ import { transactionRouter } from "@/routes/transactionRoutes";
 import { config } from "@/utils/config";
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { IncomingMessage, Server, ServerResponse } from "http";
 import { rateLimiter } from "shared/middleware/rate-limit";
 import { chartRoutes } from "./routes/chartRoutes";
 import { pdfRoutes } from "./routes/pdfRoutes";
@@ -36,19 +35,8 @@ process.on("SIGINT", () => {
   process.exit(0);
 });
 
-export const startServer = () => {
-  const server = app.listen(port, () => {
-    console.log(`>> Server is running at port ${port}`);
-  });
-  return server;
-};
+app.listen(port, () => {
+  console.log(`>> Server is running at port ${port}`);
+});
 
-export const stopServer = (
-  server: Server<typeof IncomingMessage, typeof ServerResponse>,
-) => {
-  server.close(() => {
-    console.log(">> Server stopped");
-  });
-};
-
-startServer();
+export default app;

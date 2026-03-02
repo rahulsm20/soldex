@@ -8,7 +8,6 @@ import express, { Request, Response } from "express";
 import { rateLimiter } from "shared/middleware/rate-limit";
 
 const app = express();
-const port = config.PORT || 3002;
 
 app.use(
   cors({
@@ -17,7 +16,9 @@ app.use(
 );
 app.use(express.json());
 
-app.use(rateLimiter);
+if (config.NODE_ENV === "production") {
+  app.use(rateLimiter);
+}
 app.use("/file", pdfRoutes);
 app.use("/transactions", transactionRouter);
 app.use("/token", tokenRoutes);

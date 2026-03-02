@@ -1,4 +1,4 @@
-import app from "@/server";
+import app from "@/app";
 import { expect, test } from "bun:test";
 import request from "supertest";
 

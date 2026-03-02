@@ -2,6 +2,7 @@ import { transactionRouter } from "@/routes/transactionRoutes";
 import { config } from "@/utils/config";
 import cors from "cors";
 import express, { Request, Response } from "express";
+import { IncomingMessage, Server, ServerResponse } from "http";
 import { rateLimiter } from "shared/middleware/rate-limit";
 import { chartRoutes } from "./routes/chartRoutes";
 import { pdfRoutes } from "./routes/pdfRoutes";
@@ -30,9 +31,23 @@ app.get("*", async (_req: Request, res: Response) => {
   return res.status(404).json("Invalid route");
 });
 
+process.on("SIGINT", () => {
+  console.log(">> SIGINT received, shutting down server...");
+  process.exit(0);
+});
+
 export const startServer = () => {
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`>> Server is running at port ${port}`);
+  });
+  return server;
+};
+
+export const stopServer = (
+  server: Server<typeof IncomingMessage, typeof ServerResponse>,
+) => {
+  server.close(() => {
+    console.log(">> Server stopped");
   });
 };
 

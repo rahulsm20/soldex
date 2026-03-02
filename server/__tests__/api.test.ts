@@ -1,8 +1,15 @@
-import { beforeAll, expect, test } from "bun:test";
-import { startServer } from "../src/server";
 import { config } from "@/utils/config";
+import { afterAll, beforeAll, expect, test } from "bun:test";
+import { startServer, stopServer } from "../src/server";
+
+let server: ReturnType<typeof startServer>;
+
 beforeAll(() => {
-  startServer();
+  server = startServer();
+});
+
+afterAll(() => {
+  stopServer(server);
 });
 
 test("should return 200 OK", async () => {

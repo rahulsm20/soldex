@@ -10,6 +10,15 @@ jobs:
   build:
     name: test
     runs-on: ubuntu-latest
+    environment: production
+    env: 
+      ENCRYPTION_KEY: ${{secrets.ENCRYPTION_KEY}}
+      REDIS_HOST: ${{secrets.REDIS_HOST}}
+      REDIS_PORT: ${{secrets.REDIS_PORT}}
+      REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}} 
+      DATABASE_URL: ${{secrets.DATABASE_URL}}
+      PORT: ${{secrets.PORT}}
+      JUPITER_API_KEY: ${{secrets.JUPITER_API_KEY}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

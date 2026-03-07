@@ -2,7 +2,10 @@
   "name": "sol-indexer",
   "private": true,
   "workspaces": [
-    "./*"
+    "client",
+    "indexer",
+    "server",
+    "shared"
   ],
   "scripts": {
     "dev:indexer": "cd indexer && bun run dev",

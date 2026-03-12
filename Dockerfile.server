@@ -11,7 +11,7 @@ COPY package.json bun.lock ./
 
 COPY shared ./shared
 COPY server ./server
-
+RUN mkdir indexer client
 RUN bun install
 
 WORKDIR /usr/src/app/server

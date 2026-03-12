@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 COPY package.json bun.lock ./
 COPY shared ./shared
 COPY indexer ./indexer
-
+RUN mkdir server client
 RUN bun install
 
 FROM oven/bun:1.2.18 AS release

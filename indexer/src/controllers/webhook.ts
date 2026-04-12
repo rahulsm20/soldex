@@ -6,6 +6,7 @@ export const webhookController = {
   async handleWebhook(req: Request, res: Response) {
     try {
       const events = req.body;
+      console.log({ events })
       for (const event of events) {
         const to_address = event.nativeTransfers?.[0]?.toUserAccount;
         const from_address = event.nativeTransfers?.[0]?.fromUserAccount;

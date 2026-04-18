@@ -1,5 +1,6 @@
 import { db } from "@/shared/drizzle/db";
 import { solana_transactions } from "@/shared/drizzle/schema";
+import logger from "@/shared/logger";
 import { Request, Response } from "express";
 
 export const webhookController = {
@@ -33,6 +34,7 @@ export const webhookController = {
           .status(404)
           .json({ message: "failed to push tx", err: err.message });
       }
+      logger.error("Error in handleWebhook: ", err);
       return res.status(500).json({ message: "internal server error" });
     }
   },

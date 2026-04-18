@@ -2,23 +2,23 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "baseUrl": ".",
+    "rootDir": "../",
     "paths": {
-      "@/*": ["src/*"],
-      "@/shared/*": ["../shared/*"],
+      "@/*": ["./src/*"],
+      "@/shared/*": ["../shared/*"]
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",
+    "outDir": "./dist"
   },
   "include": [
     "src/**/*.ts",
     "types.ts",
     "*.ts",
     "../shared/**/*.ts",
-    "../drizzle.config.ts",
+    "../drizzle.config.ts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

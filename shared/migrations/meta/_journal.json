@@ -134,6 +134,13 @@
       "when": 1768693392266,
       "tag": "0018_needy_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1776497995572,
+      "tag": "0019_cheerful_human_torch",
+      "breakpoints": true
     }
   ]
 }

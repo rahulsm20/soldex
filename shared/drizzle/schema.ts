@@ -23,7 +23,7 @@ export const TransactionTypeEnum = pgEnum("transaction_type", [
 
 export const solana_transactions = pgTable("solana_transactions", {
   id: uuid("id").primaryKey().defaultRandom(),
-  address: text("address").notNull(),
+  address: text("address"),
   signature: text("signature").unique().notNull(),
   blockTime: timestamp("block_time"),
   from_address: text("from_address"),

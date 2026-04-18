@@ -1,8 +1,12 @@
 import { getTransactionsUtil } from "@/lib/transactions";
+import { TransactionsResponse } from "@soldex/types";
 import { Request, Response } from "express";
 
 export const transactionsController = {
-  fetchTransactions: async (req: Request, res: Response) => {
+  fetchTransactions: async (
+    req: Request,
+    res: Response,
+  ): Promise<Response<TransactionsResponse>> => {
     const {
       address,
       limit,

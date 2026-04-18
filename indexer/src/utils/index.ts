@@ -1,3 +1,4 @@
+import logger from "@/shared/logger";
 import { ParsedInstruction, ParsedTransactionWithMeta } from "@solana/web3.js";
 
 export const extractFromAndToAddresses = (
@@ -23,7 +24,7 @@ export const extractFromAndToAddresses = (
       mintInstruction.parsed.info.mintAuthority ||
       mintInstruction.parsed.info.source
     : address;
-  if (!from_address) console.log({ mintInstruction });
+  if (!from_address) logger.info({ mintInstruction });
   return { from_address, to_address };
 };
 

@@ -28,13 +28,13 @@ export const transactionsController = {
       const transactions = await solanaClient.getTransactions(
         address,
         cursor,
-        limit ? Number(limit) : undefined
+        limit ? Number(limit) : undefined,
       );
       for (const tx of transactions) {
         if (!tx) continue;
         const { from_address, to_address } = extractFromAndToAddresses(
           tx,
-          address
+          address,
         );
 
         await db.insert(solana_transactions).values({
@@ -81,10 +81,5 @@ export const transactionsController = {
         .status(500)
         .json({ message: "Internal Server Error", error: err });
     }
-  },
-  indexTransaction: async (req: Request, res: Response) => {
-    // TODO: Implement transaction indexing logic
-    console.log({ event: req.body });
-    return res.status(200).json({ message: "Webhook ack" });
   },
 };

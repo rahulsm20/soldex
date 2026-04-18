@@ -1,5 +1,6 @@
 import { generatePDF, renderTransactionsReport } from "@/lib/pdf";
 import { Request, Response } from "express";
+import logger from "shared/logger";
 import { formatDateLong12h } from "shared/utils";
 
 export const pdfController = {
@@ -13,10 +14,11 @@ export const pdfController = {
 
       return res.status(200).json({ filename, signedUrl });
     } catch (err) {
+      logger.error("Error generating PDF: ", err);
       return res.status(500).json({
         message: "Error generating PDF",
         status: "error",
-        err,
+        err: err instanceof Error ? err.message : err,
       });
     }
   },

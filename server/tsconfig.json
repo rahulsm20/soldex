@@ -3,26 +3,18 @@
     "target": "ES2022",
     "module": "es2022",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
+    "rootDir": "../",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "shared/*": [
-        "../shared/*"
-      ],
-      "@soldex/*": [
-        "../*"
-      ],
+      "@/*": ["./src/*"],
+      "shared/*": ["../shared/*"],
+      "@soldex/*": ["../*"]
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "types": [
-      "bun-types"
-    ],
+    "types": ["bun-types"]
   },
   "include": [
     "__tests__/**/*.ts",
@@ -31,9 +23,7 @@
     "*.ts",
     "../shared/**/*.ts",
     "../shared/**/*.ttf",
-    "../drizzle.config.ts",
+    "../drizzle.config.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"]
 }

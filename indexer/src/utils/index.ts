@@ -16,15 +16,15 @@ export const extractFromAndToAddresses = (
 
   const to_address = mintInstruction
     ? mintInstruction.parsed.info.account ||
-      mintInstruction.parsed.info.destination
+    mintInstruction.parsed.info.destination
     : null;
 
   const from_address = mintInstruction
     ? mintInstruction.parsed.info.multisigMintAuthority ||
-      mintInstruction.parsed.info.mintAuthority ||
-      mintInstruction.parsed.info.source
+    mintInstruction.parsed.info.mintAuthority ||
+    mintInstruction.parsed.info.source
     : address;
-  if (!from_address) logger.info({ mintInstruction });
+  if (!from_address) logger.info(mintInstruction);
   return { from_address, to_address };
 };
 

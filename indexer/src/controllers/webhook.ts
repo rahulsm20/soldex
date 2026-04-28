@@ -8,6 +8,7 @@ export const webhookController = {
     try {
       const events = req.body;
       for (const event of events) {
+        logger.info(JSON.stringify({ event }))
         const to_address = event.nativeTransfers?.[0]?.toUserAccount;
         const from_address = event.nativeTransfers?.[0]?.fromUserAccount;
         const signature = event.signature;

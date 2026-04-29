@@ -19,6 +19,9 @@ jobs:
       DATABASE_URL: ${{secrets.DATABASE_URL}}
       PORT: ${{secrets.PORT}}
       JUPITER_API_KEY: ${{secrets.JUPITER_API_KEY}}
+      LOKI_HOST: ${{secrets.LOKI_HOST}}
+      LOKI_ID: ${{secrets.LOKI_ID}}
+      LOKI_API_KEY: ${{secrets.LOKI_API_KEY}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

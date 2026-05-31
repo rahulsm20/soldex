@@ -22,7 +22,7 @@ const TransactionsPageSkeleton = () => {
       <div className="flex flex-col justify-center items-center gap-5">
         <h1 className="text-xl font-semibold lg:w-full">Transactions</h1>
         <div className="flex gap-2 items-center justify-between lg:w-full">
-          <Select>
+          <Select disabled>
             <SelectTrigger className="w-52">
               <SelectValue
                 placeholder={

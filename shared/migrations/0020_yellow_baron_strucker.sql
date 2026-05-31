@@ -1,0 +1,2 @@
+ALTER TABLE "solana_transactions" ADD COLUMN "from_addresses" text[] DEFAULT '{}'::text[] NOT NULL;--> statement-breakpoint
+ALTER TABLE "solana_transactions" ADD COLUMN "to_addresses" text[] DEFAULT '{}'::text[] NOT NULL;

@@ -30,7 +30,7 @@ import { toast } from "sonner";
 
 //--------------------------------
 
-const Transactions = ({}) => {
+const Transactions = ({ }) => {
   const [pageSize] = useQueryState("pageSize", {
     defaultValue: "20",
   });
@@ -123,7 +123,7 @@ const Transactions = ({}) => {
                   value={address || ""}
                   onOpenChange={setOpen}
                 >
-                  <SelectTrigger className="w-52">
+                  <SelectTrigger className="w-52" disabled={isLoading || isFetching}>
                     <SelectValue
                       placeholder={
                         <div className="flex items-center gap-2">

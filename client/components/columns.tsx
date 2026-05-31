@@ -16,11 +16,13 @@ export function TransactionColumns(
 ): ColumnDef<TransactionType>[] {
   return [
     {
+      id: 'id',
       header: "#",
       accessorKey: "id",
       cell: ({ row }) => <span>{row.index + 1 + (page - 1) * pageSize}</span>,
     },
     {
+      id: 'signature',
       header: "Signature",
       accessorKey: "signature",
       cell: ({ row }) => (
@@ -41,6 +43,7 @@ export function TransactionColumns(
       enableColumnFilter: true,
     },
     {
+      id: 'address',
       header: "Mint Address",
       accessorKey: "address",
       cell: ({ row }) => (
@@ -52,7 +55,7 @@ export function TransactionColumns(
                 {row.original.address?.slice(-5)}
               </span>
             }
-            text={row.original.address}
+            text={row.original.address!}
             url={generateSolscanLink("account", row.original.address || "")}
           />
         </div>

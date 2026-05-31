@@ -28,6 +28,7 @@ import {
 import { Options } from "nuqs";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -84,7 +85,15 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="overflow-hidden rounded-md w-full max-w-2/3 lg:max-w-full border">
+    <div className="overflow-hidden gap-4 flex flex-col rounded-md w-full max-w-2/3 lg:max-w-full border p-2">
+      <Input
+        placeholder="Filter by Signature"
+        value={(table.getColumn("signature")?.getFilterValue() as string) ?? ""}
+        onChange={(event) =>
+          table.getColumn("signature")?.setFilterValue(event.target.value)
+        }
+        className="max-w-sm"
+      />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -95,9 +104,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   </TableHead>
                 );
               })}

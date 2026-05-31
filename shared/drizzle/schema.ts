@@ -28,6 +28,8 @@ export const solana_transactions = pgTable("solana_transactions", {
   blockTime: timestamp("block_time"),
   from_address: text("from_address"),
   to_address: text("to_address"),
+  from_addresses: text("from_addresses").array().notNull().default(sql`'{}'::text[]`),
+  to_addresses: text("to_addresses").array().notNull().default(sql`'{}'::text[]`),
   slot: bigint("slot", { mode: "number" }).notNull(),
   lamports: bigint("lamports", { mode: "number" }),
   transaction_type: TransactionTypeEnum("transaction_type").default("transfer"),

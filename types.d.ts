@@ -21,7 +21,7 @@ export type TokenPriceResponse = {
 
 export type TransactionType = {
   id: string;
-  address?: string;
+  address: string | null;
   signature: string;
   slot: number;
   blockTime: Date | null;
@@ -31,6 +31,11 @@ export type TransactionType = {
   to_address?: string | null;
 };
 
+export type ChartTransactionType = {
+  address: string | null;
+  blockTime: Date | null;
+  tx_count: number;
+}
 export type TransactionsResponse = {
   transactions: TransactionType[];
   page: number;

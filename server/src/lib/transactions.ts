@@ -5,11 +5,11 @@ import { cacheData, getCachedData } from "shared/redis";
 import { ACCOUNTS, CACHE_KEYS } from "shared/utils/constants";
 import {
   ChartDataResponse,
+  ChartTransactionType,
   TransactionsResponse,
   TransactionWhereInput,
 } from "@soldex/types";
 import { solana_transactions } from "../../../shared/drizzle/schema";
-// import { sql } from "bun";
 
 export async function getTransactionsUtil({
   address,
@@ -143,11 +143,7 @@ export async function getTransactionsChartDataUtil(
     const data = JSON.parse(cachedData);
     return data;
   }
-  const transactions: {
-    address: string;
-    blockTime: Date;
-    tx_count: number;
-  }[] = await db
+  const transactions: ChartTransactionType[] = await db
     .select({
       address: solana_transactions.address,
       blockTime:
@@ -166,18 +162,20 @@ export async function getTransactionsChartDataUtil(
     );
   const result = transactions.map((tx) => ({
     address: tx.address,
-    time: new Date(tx.blockTime),
-    tx_count: Number(tx.tx_count),
+    time: new Date(tx.blockTime!),
+    tx_count: Number(tx.tx_count!),
   }));
 
   const mergedResult = result.reduce((acc: any[], curr) => {
     let existing = acc.find(
       (item) => item.time.getTime() === curr.time.getTime(),
     );
-    if (existing) {
-      existing[curr.address] = curr.tx_count;
-    } else {
-      acc.push({ time: curr.time, [curr.address]: curr.tx_count });
+    if (curr.address) {
+      if (existing) {
+        existing[curr.address] = curr.tx_count;
+      } else {
+        acc.push({ time: curr.time, [curr.address]: curr.tx_count });
+      }
     }
     return acc;
   }, []);

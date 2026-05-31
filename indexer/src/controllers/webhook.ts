@@ -8,9 +8,14 @@ export const webhookController = {
     try {
       const events = req.body;
       for (const event of events) {
-        logger.info(JSON.stringify({ event }))
-        const to_address = event.nativeTransfers?.[0]?.toUserAccount;
-        const from_address = event.nativeTransfers?.[0]?.fromUserAccount;
+        logger.info(JSON.stringify({ event }));
+        const to_address =
+          event.nativeTransfers?.[0]?.toUserAccount ||
+          event?.tokenTransfers?.[0]?.toUserAccount;
+        const from_address =
+          event.nativeTransfers?.[0]?.fromUserAccount ||
+          event?.tokenTransfers?.[0]?.fromUserAccount;
+        const mintAddress = event.tokenTransfers?.[0]?.mint;
         const signature = event.signature;
         let blockTime = null;
         if (event?.timestamp) {
@@ -22,7 +27,8 @@ export const webhookController = {
           blockTime,
           to_address,
           from_address,
-          address: from_address,
+          transaction_type: (event.type || "")?.toLowerCase(),
+          address: mintAddress || from_address,
         });
       }
       return res.status(200).json({

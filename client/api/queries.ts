@@ -149,4 +149,12 @@ export const queries = {
         string | undefined,
       ]
     >,
+  FETCH_FILTERS: () => ({
+    queryKey: ["filters"] as const,
+    queryFn: async () => {
+      const response = await apiClient.fetchFilters();
+      console.log({ response });
+      return response;
+    },
+  }),
 };

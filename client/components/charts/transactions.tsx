@@ -28,21 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ACCOUNTS } from "@soldex/shared/utils/constants";
 
 //------------------------------------------------
-
-const chartConfig = ACCOUNTS.reduce(
-  (config, account) => ({
-    ...config,
-    [account.sig]: {
-      label: account.label,
-      color: `var(--chart-${ACCOUNTS.indexOf(account) + 1})`,
-    },
-  }),
-  {},
-) satisfies ChartConfig;
-
 export function ChartAreaInteractive({
   data = [],
   labels = [],
@@ -66,6 +53,17 @@ export function ChartAreaInteractive({
   setTimeRange?: (range: TimeRange) => void;
   filteredAccount?: string;
 }) {
+  const chartConfig = labels.reduce(
+    (config, account) => ({
+      ...config,
+      [account.sig]: {
+        label: account.label,
+        color: `var(--chart-${labels.indexOf(account) % 4})`,
+      },
+    }),
+    {},
+  ) satisfies ChartConfig;
+
   return (
     <Card className="pt-0 bg-transparent w-2/3 md:w-2/3 lg:w-full">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
@@ -108,7 +106,7 @@ export function ChartAreaInteractive({
                 {labels.map((label, index) => (
                   <linearGradient
                     key={label.value}
-                    id={`${index + 1}`}
+                    id={`${(index + 1) % labels.length}`}
                     x1="0"
                     y1="0"
                     x2="0"
@@ -171,7 +169,7 @@ export function ChartAreaInteractive({
                     key={label.value}
                     dataKey={label.sig}
                     // type="natural"
-                    fill={`url(#${labels.indexOf(label) + 1})`}
+                    fill={`url(#${(labels.indexOf(label) + 1) % labels.length})`}
                     stroke={label.color}
                     stackId="a"
                   />

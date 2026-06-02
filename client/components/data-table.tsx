@@ -78,6 +78,7 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
       columnFilters,
@@ -89,9 +90,9 @@ export function DataTable<TData, TValue>({
       <Input
         placeholder="Filter by Signature"
         value={(table.getColumn("signature")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("signature")?.setFilterValue(event.target.value)
-        }
+        onChange={(event) => {
+          table.getColumn("signature")?.setFilterValue(event.target.value);
+        }}
         className="max-w-sm"
       />
       <Table>
@@ -104,9 +105,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 );
               })}

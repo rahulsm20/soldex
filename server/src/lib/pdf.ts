@@ -1,3 +1,5 @@
+import { getFiltersHelper } from "@/controllers/mint";
+import { FilterType } from "@soldex/types";
 import { randomUUID } from "crypto";
 import dayjs from "dayjs";
 import { Request } from "express";
@@ -5,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import PDFDocument from "pdfkit";
 import { formatDateISO, getRandomColor, renderLineChart } from "shared/utils";
-import { ACCOUNTS, ACCOUNTS_MAP, LOGO_URL } from "shared/utils/constants";
+import { LOGO_URL } from "shared/utils/constants";
 import interFont from "../../assets/fonts/Inter-VariableFont_opsz,wght.ttf";
 import { getSignedURL, uploadToS3 } from "./s3";
 import {
@@ -44,14 +46,14 @@ export async function renderTransactionsReport(
   req: Request,
   title?: string,
 ): Promise<Buffer> {
-  const { address, limit, page, pageSize, startTime, endTime } = req.query;
+  const { address, startTime, endTime } = req.query;
   const doc = new PDFDocument();
   const chunks: Uint8Array[] = [];
   const fontPath = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
     interFont,
   );
-
+  const filters: FilterType[] = await getFiltersHelper();
   doc.registerFont("Inter", fontPath, "Inter");
   doc.font(fontPath);
   doc.on("data", (chunk) => chunks.push(chunk));
@@ -93,12 +95,19 @@ export async function renderTransactionsReport(
   });
   const chartData = await getTransactionsChartDataUtil(req);
   const values: { label: string; data: number[]; borderColor: string }[] = [];
+  const filtersMap: { [sig: string]: string } = filters.reduce(
+    (acc, curr) => {
+      acc[curr.id] = curr.name;
+      return acc;
+    },
+    {} as { [sig: string]: string },
+  );
 
   const labels = chartData.map((data) => {
     const date = formatDateISO(new Date(data.time));
     for (let key of Object.keys(data)) {
       if (key !== "time") {
-        const mapKey = ACCOUNTS_MAP[key] || key;
+        const mapKey = filtersMap[key] || key;
         let entry = values.find((v) => v.label === mapKey);
         if (!entry) {
           entry = {
@@ -118,7 +127,11 @@ export async function renderTransactionsReport(
   await renderLineChart(doc, labels, values);
   doc.moveDown();
 
-  const tokens = ACCOUNTS.map((account) => [account.label, account.sig]);
+  const tokens = filters.map((account: FilterType) => [
+    account.name,
+    account.id,
+  ]);
+
   doc.text("Mint Addresses");
   doc.moveDown();
   const legendTableData: PDFKit.Mixins.TableOptionsWithData["data"] = [

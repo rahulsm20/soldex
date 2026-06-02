@@ -9,7 +9,7 @@ import {
   TransactionsResponse,
   TransactionWhereInput,
 } from "@soldex/types";
-import { solana_transactions } from "../../../shared/drizzle/schema";
+import { solana_transactions } from "shared/drizzle/schema";
 
 export async function getTransactionsUtil({
   address,

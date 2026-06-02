@@ -133,6 +133,19 @@ class ApiClient {
 
     return data;
   }
+
+  async fetchFilters() {
+    const url = `${this.baseUrl}/token/filters`;
+    const response = await fetch(url, {
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch filters");
+    }
+    const data = await response.json();
+    return data;
+  }
 }
 
 const apiClient = new ApiClient();

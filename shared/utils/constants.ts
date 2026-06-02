@@ -1,28 +1,28 @@
 export const ACCOUNTS_SIGS = {
-  USDC_MINT_MULTISIG: "BJE5MMbqXjVwjAF7oxwPYXnTXDyspzZyt4vwenNw5ruG",
-  USDT_MINT_MULTISIG: "Q6XprfkF8RQQKoQVG33xT88H7wi8Uk1B1CC7YAs69Gi",
-  TRUMP_UPDATE_AUTH: "5e2qRc1DNEXmyxP8qwPwJhRWjef7usLyi7v5xjqLr5G7",
+  USDC_MINT_MULTISIG: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  USDT_MINT_MULTISIG: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+  TRUMP_UPDATE_AUTH: "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
 };
 
 export const ACCOUNTS = [
   {
     label: "USDC",
     value: "usdc_mint_auth",
-    sig: "BJE5MMbqXjVwjAF7oxwPYXnTXDyspzZyt4vwenNw5ruG",
+    sig: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     color: "var(--chart-1)",
     icon: "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/vectors/usdc-fpxuadmgafrjjy85bgie5.png/usdc-kksfxcrdl3f9pjx0v6jxxp.png?_a=DATAg1AAZAA0",
   },
   {
     label: "USDT",
     value: "usdt_mint_auth",
-    sig: "Q6XprfkF8RQQKoQVG33xT88H7wi8Uk1B1CC7YAs69Gi",
+    sig: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
     color: "var(--chart-3)",
     icon: "https://www.svgrepo.com/show/367256/usdt.svg",
   },
   {
     label: "Trump",
     value: "trump_update_auth",
-    sig: "5e2qRc1DNEXmyxP8qwPwJhRWjef7usLyi7v5xjqLr5G7",
+    sig: "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
     color: "var(--chart-4)",
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/35336.png",
   },

@@ -2,6 +2,8 @@ import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import dayjs from "dayjs";
 import PDFKit from "pdfkit";
 
+//----------------------------------------------
+
 /**
  * Function to format a date string in ISO format to a long date format with 24-hour time.
  * @param dateISO
@@ -20,6 +22,16 @@ export function formatDateLong24h(dateISO: string): string {
 export function formatDateLong12h(dateISO: string): string {
   const date = new Date(dateISO);
   return dayjs(date).format("YYYY-MM-DD hh:mm A");
+}
+
+/**
+ * Function to format a date string in ISO format to a long date format with 12-hour time and AM/PM.
+ * @param dateISO
+ * @returns string
+ */
+export function formatDateShort(dateISO: string): string {
+  const date = new Date(dateISO);
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 export function formatDateISO(date: Date): string {
@@ -41,7 +53,7 @@ export function getRandomColor(): string {
  * @param values
  */
 export async function renderLineChart(
-  doc: PDFKit.PDFDocument,
+  doc: typeof PDFKit,
   labels: string[],
   values: { label: string; data: number[]; borderColor: string }[],
 ) {

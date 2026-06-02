@@ -20,17 +20,20 @@ import {
 import { useChart, useTimeRange } from "@/hooks/charts";
 import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
-import { ACCOUNTS } from "@soldex/shared/utils/constants";
-import { determineBucketSize, generateTimeRange } from "@/lib/utils";
+import { useFilters } from "@/hooks/useFilters";
+import {
+  determineBucketSize,
+  generateTimeRange,
+  getRandomColor,
+} from "@/lib/utils";
+import { FilterType } from "@soldex/types";
 import { Filter } from "lucide-react";
-import Image from "next/image";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-
 //--------------------------------
 
-const Transactions = ({ }) => {
+const Transactions = ({}) => {
   const [pageSize] = useQueryState("pageSize", {
     defaultValue: "20",
   });
@@ -43,7 +46,7 @@ const Transactions = ({ }) => {
   });
   const { timeRange, setTimeRange } = useTimeRange();
   const { from, to } = useMemo(() => generateTimeRange(timeRange), [timeRange]);
-
+  const { data: filters } = useFilters();
   const { data, isLoading, error, isFetching } = useTransactions({
     page: queryPage ? parseInt(queryPage, 10) : 1,
     pageSize: pageSize ? parseInt(pageSize, 10) : 20,
@@ -106,6 +109,14 @@ const Transactions = ({ }) => {
   //     </PageLayout>
   //   );
   // }
+  const labels = useMemo(() => {
+    return (filters || []).map((account: FilterType) => ({
+      label: account.name,
+      value: account.id,
+      sig: account.id,
+      color: getRandomColor(),
+    }));
+  }, [filters]);
 
   return (
     <PageLayout>
@@ -123,11 +134,14 @@ const Transactions = ({ }) => {
                   value={address || ""}
                   onOpenChange={setOpen}
                 >
-                  <SelectTrigger className="w-52" disabled={isLoading || isFetching}>
+                  <SelectTrigger
+                    className="w-52"
+                    disabled={isLoading || isFetching}
+                  >
                     <SelectValue
                       placeholder={
                         <div className="flex items-center gap-2">
-                          <span>Filter by Mint</span>
+                          <span> Filter by Mint </span>
                           <Filter className="h-2 w-2" />
                         </div>
                       }
@@ -136,19 +150,20 @@ const Transactions = ({ }) => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Accounts</SelectLabel>
-                      {ACCOUNTS.map((account) => (
-                        <SelectItem key={account.sig} value={account.sig}>
-                          <div className="flex items-center gap-2 w-full justify-between">
-                            <span>{account.label}</span>
-                            <Image
-                              src={account.icon}
-                              alt={account.label}
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                        </SelectItem>
-                      ))}
+                      <div className="grid grid-cols-3 gap-2">
+                        {filters &&
+                          filters.map((account: FilterType) => (
+                            <SelectItem
+                              key={account.id}
+                              value={account.id}
+                              title={account.name}
+                            >
+                              <div className="flex items-center gap-2 w-full justify-between">
+                                <span>{account.symbol}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </div>
                     </SelectGroup>
                     <SelectSeparator />
                     <Button
@@ -177,7 +192,7 @@ const Transactions = ({ }) => {
               </div>
               <ChartAreaInteractive
                 data={formattedChartData}
-                labels={ACCOUNTS}
+                labels={labels}
                 bucket={bucketSize}
                 timeRange={timeRange}
                 setTimeRange={setTimeRange}

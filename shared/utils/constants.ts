@@ -78,10 +78,10 @@ export const ACCOUNTS_MAP: { [sig: string]: string } = ACCOUNTS.reduce(
 
 export const CACHE_KEYS = {
   TRANSACTIONS: (...args: (string | number)[]) =>
-    `transactions:${args.join(":")}`,
-  TOKEN_PRICE: (tokenAddress: string) => `token_price:${tokenAddress}`,
+    `soldex:transactions:${args.join(":")}`,
+  TOKEN_PRICE: (tokenAddress: string) => `soldex:token_price:${tokenAddress}`,
   CHART_DATA: (...args: (string | number)[]) =>
-    `soldex_chart_data:${args.join(":")}`,
+    `soldex:chart_data:${args.join(":")}`,
 };
 
 export const LOGO_URL = "https://soldex-seven.vercel.app/book-open-check.png";

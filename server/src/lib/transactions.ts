@@ -10,6 +10,7 @@ import {
   TransactionWhereInput,
 } from "@soldex/types";
 import { solana_transactions } from "shared/drizzle/schema";
+import dayjs from "dayjs";
 
 export async function getTransactionsUtil({
   address,
@@ -143,44 +144,79 @@ export async function getTransactionsChartDataUtil(
     const data = JSON.parse(cachedData);
     return data;
   }
+  const diffBetweenStartAndEnd = dayjs(endTime).diff(dayjs(startTime), 'day')
+  let truncType = 'day'
+  switch (diffBetweenStartAndEnd) {
+    case 0:
+      truncType = 'minute'
+      break
+    case 1:
+      truncType = 'hour'
+      break
+    default:
+      truncType = 'day'
+      break
+  }
+  console.log({ diffBetweenStartAndEnd, truncType })
+  const truncExpr = sql.raw(
+    `DATE_TRUNC('${truncType}', "${solana_transactions.blockTime.name}")`
+  );
+
   const transactions: ChartTransactionType[] = await db
     .select({
       address: solana_transactions.address,
-      blockTime:
-        sql`DATE_TRUNC('day', ${solana_transactions.blockTime})`.as<Date>(),
+      blockTime: truncExpr,
       tx_count: sql`COUNT(*)`.as<number>(),
     })
     .from(solana_transactions)
     .where(where)
     .groupBy(
       solana_transactions.address,
-      sql`DATE_TRUNC('day', ${solana_transactions.blockTime})`,
+      truncExpr,
     )
     .orderBy(
-      sql`DATE_TRUNC('day', ${solana_transactions.blockTime}) DESC`,
+      desc(truncExpr),
       solana_transactions.address,
     );
+  const addressTotals = new Map<string, number>();
+
+  for (const tx of transactions) {
+    addressTotals.set(
+      tx.address!,
+      (addressTotals.get(tx.address!) ?? 0) + Number(tx.tx_count),
+    );
+  }
+
+  const top10Addresses = new Set(
+    [...addressTotals.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([address]) => address),
+  );
   const result = transactions.map((tx) => ({
-    address: tx.address,
-    time: new Date(tx.blockTime!),
-    tx_count: Number(tx.tx_count!),
+    address: top10Addresses.has(tx.address!)
+      ? tx.address
+      : "Others",
+    time: new Date(tx.blockTime as number),
+    tx_count: Number(tx.tx_count),
   }));
 
+  console.log({ result })
   const mergedResult = result.reduce((acc: any[], curr) => {
     let existing = acc.find(
       (item) => item.time.getTime() === curr.time.getTime(),
     );
-    if (curr.address) {
-      if (existing) {
-        existing[curr.address] = curr.tx_count;
-      } else {
-        acc.push({ time: curr.time, [curr.address]: curr.tx_count });
-      }
-    }
-    return acc;
-  }, []);
 
-  // for missing dates, fill with 0
+    if (!existing) {
+      existing = { time: curr.time };
+      acc.push(existing);
+    }
+
+    existing[curr.address!] =
+      (existing[curr.address!] ?? 0) + curr.tx_count;
+
+    return acc;
+  }, []);  // for missing dates, fill with 0
   const dateSet = new Set(result.map((item) => item.time.getTime()));
   const startDate = new Date(
     Math.min(...result.map((item) => item.time.getTime())),
@@ -188,6 +224,8 @@ export async function getTransactionsChartDataUtil(
   const endDate = new Date(
     Math.max(...result.map((item) => item.time.getTime())),
   );
+  console.log({ top10Addresses })
+  const chartSeries = [...top10Addresses, "Others"];
 
   for (
     let dt = new Date(startDate);
@@ -196,8 +234,9 @@ export async function getTransactionsChartDataUtil(
   ) {
     if (!dateSet.has(dt.getTime())) {
       const zeroEntry: any = { time: new Date(dt) };
-      ACCOUNTS.forEach((tx) => {
-        zeroEntry[tx.sig] = 0;
+
+      chartSeries.forEach((address) => {
+        zeroEntry[address] = 0;
       });
       mergedResult.push(zeroEntry);
     } else {
@@ -205,14 +244,15 @@ export async function getTransactionsChartDataUtil(
         (item) => item.time.getTime() === dt.getTime(),
       );
       if (existingEntry) {
-        ACCOUNTS.forEach((tx) => {
-          if (!(tx.sig in existingEntry)) {
-            existingEntry[tx.sig] = 0;
+        chartSeries.forEach((address) => {
+          if (!(address in existingEntry)) {
+            existingEntry[address] = 0;
           }
         });
       }
     }
   }
+
   mergedResult.sort((a, b) => a.time.getTime() - b.time.getTime());
 
   return mergedResult;

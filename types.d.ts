@@ -33,7 +33,7 @@ export type TransactionType = {
 
 export type ChartTransactionType = {
   address: string | null;
-  blockTime: Date | null;
+  blockTime: Date | null | unknown;
   tx_count: number;
 };
 export type TransactionsResponse = {

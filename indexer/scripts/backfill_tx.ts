@@ -1,29 +1,35 @@
-import { solanaClient } from "../src/lib/sol";
-import { extractFromAndToAddresses, getTransactionType } from "../src/utils";
-import { db } from "@/shared/drizzle/db";
 import {
-  solana_indexer_state,
-  solana_transactions,
-} from "@/shared/drizzle/schema";
-import { ACCOUNTS } from "@/shared/utils/constants";
-import { ParsedTransactionWithMeta } from "@solana/web3.js";
+  ConfirmedSignatureInfo,
+  ParsedTransactionWithMeta,
+} from "@solana/web3.js";
+import { AxiosError } from "axios";
 import { eq } from "drizzle-orm";
 import { BatchItem } from "drizzle-orm/batch";
 import fetch from "node-fetch";
+import { db } from "shared/drizzle/db";
+import {
+  solana_indexer_state,
+  solana_transactions,
+} from "shared/drizzle/schema";
+import { ACCOUNTS } from "shared/utils/constants";
+import { solanaClient } from "../src/lib/sol";
+import { extractFromAndToAddresses, getTransactionType } from "../src/utils";
 
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const HELIUS_RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 
+//------------------------------------------------------------------------------
+
 async function getSignaturesForAddress(
   address: string,
-  beforeSignature = null,
+  beforeSignature: string | null = null,
   limit = 1000,
-) {
+): Promise<Array<ConfirmedSignatureInfo>> {
   const params: { limit: number; commitment: string; before?: string | null } =
-    {
-      limit,
-      commitment: "confirmed",
-    };
+  {
+    limit,
+    commitment: "confirmed",
+  };
 
   if (beforeSignature) {
     params.before = beforeSignature;
@@ -44,7 +50,9 @@ async function getSignaturesForAddress(
   return data.result || [];
 }
 
-async function getParsedTransactions(signatures) {
+//------------------------------------------------------------------------------
+
+async function getParsedTransactions(signatures: string[]) {
   const response = await solanaClient.getTransactions(
     undefined,
     null,
@@ -55,7 +63,9 @@ async function getParsedTransactions(signatures) {
   return response;
 }
 
-async function getEnhancedTransactions(signatures) {
+//------------------------------------------------------------------------------
+
+async function getEnhancedTransactions(signatures: string[]) {
   // Helius enhanced transactions endpoint (batch)
   const response = await fetch(
     `https://api.helius.xyz/v0/transactions?api-key=${HELIUS_API_KEY}`,
@@ -70,6 +80,8 @@ async function getEnhancedTransactions(signatures) {
 
   return await response.json();
 }
+
+//------------------------------------------------------------------------------
 
 async function fetchTransactionsForPeriod(
   address: string,
@@ -100,7 +112,7 @@ async function fetchTransactionsForPeriod(
 
     // Filter by time
     const recentSignatures = signatures.filter(
-      (sig) => sig.blockTime >= cutoffTime,
+      (sig) => sig.blockTime && sig.blockTime >= cutoffTime,
     );
 
     if (recentSignatures.length === 0) {
@@ -123,7 +135,10 @@ async function fetchTransactionsForPeriod(
       try {
         // Use Helius enhanced transactions API for parsed data
         const transactions = await getParsedTransactions(sigs);
-        allTransactions.push(...(transactions || []));
+        if (transactions && transactions.length > 0) {
+          const filteredTransactions = transactions.filter((tx) => tx != null);
+          allTransactions.push(...(filteredTransactions || []));
+        }
 
         // console.log(
         //   `Processed batch ${Math.floor(i / batchSize) + 1} (${
@@ -134,13 +149,15 @@ async function fetchTransactionsForPeriod(
         // Rate limiting
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
-        console.error(`Error fetching batch: ${error.message}`);
+        if (error instanceof AxiosError) {
+          console.error(`Error fetching batch: ${error.message}`);
+        }
       }
     }
 
     // Check if we should continue pagination
     const oldestSignature = signatures[signatures.length - 1];
-    if (oldestSignature.blockTime < cutoffTime) {
+    if (oldestSignature.blockTime && oldestSignature.blockTime < cutoffTime) {
       hasMore = false;
     } else {
       beforeSignature = oldestSignature.signature;
@@ -188,6 +205,8 @@ async function fetchTransactionsForPeriod(
 //   return await response.json();
 // }
 
+//------------------------------------------------------------------------------
+
 async function main() {
   const now = new Date().valueOf();
 
@@ -219,25 +238,21 @@ async function main() {
         `Total valid transactions to save: ${filteredTransactions.length}`,
       );
 
-      // TODO: Use batch inserts for better performance
-      //     const batchResponse: BatchResponse = await db.batch([
-      // 	db.insert(usersTable).values({ id: 1, name: 'John' }).returning({ id: usersTable.id }),
-      // 	db.update(usersTable).set({ name: 'Dan' }).where(eq(usersTable.id, 1)),
-      // 	db.query.usersTable.findMany({}),
-      // 	db.select().from(usersTable).where(eq(usersTable.id, 1)),
-      // 	db.select({ id: usersTable.id, invitedBy: usersTable.invitedBy }).from(usersTable),
-      // ]);
       const inserts: BatchItem<"pg">[] = [];
       for (const tx of transactions) {
         const { to_address, from_address } = extractFromAndToAddresses(tx, "");
+
         const toSave: typeof solana_transactions.$inferInsert = {
           address: targetAddress,
           from_address,
           to_address,
           signature: tx.transaction.signatures[0],
-          blockTime: new Date(tx?.blockTime * 1000),
           slot: tx?.slot,
         };
+
+        if (tx.blockTime) {
+          toSave.blockTime = new Date(tx?.blockTime * 1000);
+        }
 
         try {
           inserts.push(
@@ -259,9 +274,10 @@ async function main() {
         } catch (error) {
           console.error("Error inserting transaction:", toSave);
           console.error("Full error:", error);
-          console.error("Error message:", error.message);
-          console.error("Error code:", error.code);
-          console.error("Error detail:", error.detail);
+          if (error instanceof AxiosError) {
+            console.error("Error message:", error.message);
+            console.error("Error code:", error.code);
+          }
         }
       }
       if (inserts.length > 0) {
@@ -287,6 +303,9 @@ async function main() {
   const end = new Date().valueOf();
   const timeTaken = (end - now) / 1000;
   console.log(`\nScript completed in ${timeTaken}s`);
+  return process.exit(0);
 }
+
+//------------------------------------------------------------------------------
 
 main();

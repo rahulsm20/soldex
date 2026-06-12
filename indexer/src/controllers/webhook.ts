@@ -37,6 +37,7 @@ export const webhookController = {
       });
     } catch (err) {
       if (err instanceof Error) {
+        logger.error("Error in handleWebhook: ", err);
         return res
           .status(404)
           .json({ message: "failed to push tx", err: err.message });

@@ -14,7 +14,9 @@
     "test:e2e": "turbo run test:e2e",
     "build": "turbo run build",
     "dev": "cd client && bun dev & cd server && bun dev & wait",
-    "start": "cd server && bun start & cd client && bun start & wait"
+    "start": "cd server && bun start & cd client && bun start & wait",
+    "prepare": "husky",
+    "lint": "turbo run lint"
   },
   "dependencies": {
     "bun-types": "^0.1.0",
@@ -32,6 +34,7 @@
     "@types/node-fetch": "^2.6.13",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
+    "husky": "^9.1.7",
     "typescript": "^5.4.5"
   },
   "packageManager": "bun@1.2.18"

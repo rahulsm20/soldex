@@ -26,14 +26,15 @@ import {
   generateTimeRange,
   getRandomColor,
 } from "@/lib/utils";
-import { FilterType } from "@soldex/types";
+import { FilterTransformedType, FilterType } from "@soldex/types";
+import dayjs from "dayjs";
 import { Filter } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 //--------------------------------
 
-const Transactions = ({}) => {
+const Transactions = ({ }) => {
   const [pageSize] = useQueryState("pageSize", {
     defaultValue: "20",
   });
@@ -46,7 +47,7 @@ const Transactions = ({}) => {
   });
   const { timeRange, setTimeRange } = useTimeRange();
   const { from, to } = useMemo(() => generateTimeRange(timeRange), [timeRange]);
-  const { data: filters } = useFilters();
+  //const { data: filters } = useFilters({ dateRange: [from, to] });
   const { data, isLoading, error, isFetching } = useTransactions({
     page: queryPage ? parseInt(queryPage, 10) : 1,
     pageSize: pageSize ? parseInt(pageSize, 10) : 20,
@@ -72,10 +73,9 @@ const Transactions = ({}) => {
     address,
   });
   const transactions = data?.transactions || [];
-  const toUnix = transactions?.[0]?.blockTime?.valueOf();
-  const fromUnix =
-    transactions?.[transactions.length - 1]?.blockTime?.valueOf();
-
+  const toUnix = dayjs(to).toDate().valueOf();
+  const fromUnix = dayjs(from).toDate().valueOf();
+  const filters = useMemo(() => data?.filters || [], [data?.filters]);
   const [showToast, setShowToast] = useState(true);
   const [open, setOpen] = useState(false);
   const [bucketSize, setBucketSize] = useState(
@@ -110,12 +110,35 @@ const Transactions = ({}) => {
   //   );
   // }
   const labels = useMemo(() => {
-    return (filters || []).map((account: FilterType) => ({
+    const rawLabels = (filters || []).map((account: FilterType) => ({
       label: account.name,
       value: account.id,
       sig: account.id,
       color: getRandomColor(),
     }));
+    const withOthers = (filters || []).reduce((acc: FilterTransformedType[], curr: FilterType) => {
+      if (acc.length < 10) {
+        acc.push({
+          label: curr.name,
+          value: curr.id,
+          sig: curr.id,
+          color: getRandomColor(),
+        })
+      }
+      else {
+        const others = acc.find(item => item.label === 'Others')
+        if (!others) {
+          acc.push({
+            label: 'Others',
+            value: 'others',
+            sig: 'others',
+            color: getRandomColor(),
+          })
+        }
+      }
+      return acc
+    }, [])
+    return withOthers
   }, [filters]);
 
   return (

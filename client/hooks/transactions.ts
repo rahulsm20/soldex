@@ -1,5 +1,5 @@
 import { queries } from "@/api/queries";
-import { TransactionType } from "@soldex/types";
+import { TransactionsResponse, TransactionType } from "@soldex/types";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 
 export const useTransactions = ({
@@ -43,10 +43,5 @@ export const useTransactions = ({
   if (endTime) {
     args.endTime = endTime;
   }
-  return useQuery<{
-    transactions: TransactionType[];
-    page: number;
-    pageSize: number;
-    pageCount: number;
-  }>(queries.FETCH_TRANSACTIONS({ variables: args }), queryClient);
+  return useQuery<TransactionsResponse>(queries.FETCH_TRANSACTIONS({ variables: args }), queryClient);
 };

@@ -35,6 +35,7 @@ export const queries = {
         page: variables.page,
         pageSize: variables.pageSize,
         pageCount: 0,
+        filters: []
       },
       queryFn: async (): Promise<TransactionsResponse> => {
         const response = await apiClient.fetchTransactions({ variables });
@@ -43,6 +44,7 @@ export const queries = {
           page: response.page,
           pageSize: response.pageSize,
           pageCount: response.pageCount,
+          filters: response.filters
         };
       },
     }) satisfies DefinedInitialDataOptions<
@@ -149,11 +151,10 @@ export const queries = {
         string | undefined,
       ]
     >,
-  FETCH_FILTERS: () => ({
+  FETCH_FILTERS: ({ dateRange }: { dateRange: string[] }) => ({
     queryKey: ["filters"] as const,
     queryFn: async () => {
-      const response = await apiClient.fetchFilters();
-      console.log({ response });
+      const response = await apiClient.fetchFilters({ dateRange });
       return response;
     },
   }),

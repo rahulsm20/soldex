@@ -11,6 +11,7 @@ import {
 } from "@soldex/types";
 import { solana_transactions } from "shared/drizzle/schema";
 import dayjs from "dayjs";
+import { getFiltersHelper } from "@/controllers/mint";
 
 export async function getTransactionsUtil({
   address,
@@ -93,13 +94,14 @@ export async function getTransactionsUtil({
       const size = pageSize ? Number(pageSize) : 50;
       return Math.ceil(total / size);
     });
-
+  const filters = await getFiltersHelper({ startTime: startTime ?? dayjs().subtract(7, 'days').toDate(), endTime: endTime ?? dayjs().toDate() })
   const size = pageSize ? Number(pageSize) : 50;
   const result: TransactionsResponse = {
     transactions,
     pageCount,
     pageSize: size,
     page: Number(page) || 1,
+    filters
   };
   await cacheData(
     CACHE_KEYS.TRANSACTIONS(...args),
@@ -157,7 +159,7 @@ export async function getTransactionsChartDataUtil(
       truncType = 'day'
       break
   }
-  console.log({ diffBetweenStartAndEnd, truncType })
+  //console.log({ diffBetweenStartAndEnd, truncType })
   const truncExpr = sql.raw(
     `DATE_TRUNC('${truncType}', "${solana_transactions.blockTime.name}")`
   );
@@ -196,12 +198,12 @@ export async function getTransactionsChartDataUtil(
   const result = transactions.map((tx) => ({
     address: top10Addresses.has(tx.address!)
       ? tx.address
-      : "Others",
+      : "others",
     time: new Date(tx.blockTime as number),
     tx_count: Number(tx.tx_count),
   }));
 
-  console.log({ result })
+  //console.log({ result })
   const mergedResult = result.reduce((acc: any[], curr) => {
     let existing = acc.find(
       (item) => item.time.getTime() === curr.time.getTime(),
@@ -224,7 +226,7 @@ export async function getTransactionsChartDataUtil(
   const endDate = new Date(
     Math.max(...result.map((item) => item.time.getTime())),
   );
-  console.log({ top10Addresses })
+  //console.log({ top10Addresses })
   const chartSeries = [...top10Addresses, "Others"];
 
   for (

@@ -1,7 +1,9 @@
 import { generateLink } from "@/lib/utils";
 import {
   ChartDataResponse,
+  FilterType,
   TokenPriceResponse,
+  TransactionsResponse,
   TransactionType,
 } from "@soldex/types";
 
@@ -26,12 +28,7 @@ class ApiClient {
       startTime?: string;
       endTime?: string;
     };
-  }): Promise<{
-    transactions: TransactionType[];
-    page: number;
-    pageSize: number;
-    pageCount: number;
-  }> {
+  }): Promise<TransactionsResponse> {
     const url = generateLink(this.baseUrl, "/transactions", {
       page: variables.page,
       pageSize: variables.pageSize,
@@ -50,6 +47,7 @@ class ApiClient {
       page: number;
       pageSize: number;
       pageCount: number;
+      filters: FilterType[];
     } = await response.json();
 
     return data;
@@ -134,8 +132,8 @@ class ApiClient {
     return data;
   }
 
-  async fetchFilters() {
-    const url = `${this.baseUrl}/token/filters`;
+  async fetchFilters({ dateRange }: { dateRange: string[] }) {
+    const url = `${this.baseUrl}/token/filters?startTime=${dateRange?.[0]}&endTime=${dateRange?.[1]}`;
     const response = await fetch(url, {
       headers: this.headers,
     });

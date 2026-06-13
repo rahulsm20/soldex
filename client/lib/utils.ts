@@ -11,7 +11,7 @@ export function transactionDataToChartData(
   transactions: TransactionType[],
   bucket: BucketSize,
 ) {
-  const data = new Map<number, { date: number; [key: string]: number }>();
+  const data = new Map<number, { date: number;[key: string]: number }>();
   const allAddresses = new Set<string>();
 
   transactions.forEach((tx) => {
@@ -96,6 +96,8 @@ export function formatDateBasedOnBucket(
       return date.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
+        hour: '2-digit',
+        minute: '2-digit'
       });
     default:
       return date.toLocaleString();

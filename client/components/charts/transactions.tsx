@@ -168,7 +168,7 @@ export function ChartAreaInteractive({
                   <Area
                     key={label.value}
                     dataKey={label.sig}
-                    // type="natural"
+                    type="natural"
                     fill={`url(#${(labels.indexOf(label) + 1) % labels.length})`}
                     stroke={label.color}
                     stackId="a"

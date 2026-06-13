@@ -36,11 +36,28 @@ export type ChartTransactionType = {
   blockTime: Date | null | unknown;
   tx_count: number;
 };
+
+export type FilterType = {
+  id: string;
+  name: string;
+  symbol: string;
+  icon: string;
+};
+
+export type FilterTransformedType = {
+  label: string;
+  value: string;
+  sig: string;
+  color: string;
+  icon?: string;
+};
+
 export type TransactionsResponse = {
   transactions: TransactionType[];
   page: number;
   pageSize: number;
   pageCount: number;
+  filters: FilterType[];
 };
 
 export type ChartDataResponse = {
@@ -76,17 +93,4 @@ export type TimeRange =
   | "180d"
   | "1y";
 
-export type FilterType = {
-  id: string;
-  name: string;
-  symbol: string;
-  icon: string;
-};
 
-export type FilterTransformedType = {
-  label: string;
-  value: string;
-  sig: string;
-  color: string;
-  icon?: string;
-};

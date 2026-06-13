@@ -106,6 +106,7 @@ async function fetchTransactionsForPeriod(
     const signatures = await getSignaturesForAddress(address, beforeSignature);
 
     if (signatures.length === 0) {
+      console.log('no more signatures for: ', address);
       hasMore = false;
       break;
     }
@@ -123,9 +124,8 @@ async function fetchTransactionsForPeriod(
     totalFetched += recentSignatures.length;
     // console.log(
     //   `Fetched ${recentSignatures.length} signatures (total: ${totalFetched})`,
-    //   // { recentSignatures },
+    //   { recentSignatures },
     // );
-
     // Process in batches of 100 for enhanced transactions
     const batchSize = 10;
     for (let i = 0; i < recentSignatures.length; i += batchSize) {
@@ -152,6 +152,7 @@ async function fetchTransactionsForPeriod(
         if (error instanceof AxiosError) {
           console.error(`Error fetching batch: ${error.message}`);
         }
+        console.error(`Error fetching batch: ${error}`);
       }
     }
 
@@ -218,6 +219,7 @@ async function main() {
     }
 
     try {
+      console.log('trying to fetch: ', targetAddress);
       const existingState = await db
         .select()
         .from(solana_indexer_state)

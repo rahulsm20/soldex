@@ -22,7 +22,7 @@ export async function generatePDFBuffer(): Promise<Buffer<ArrayBufferLike>> {
   const chunks: Uint8Array[] = [];
 
   doc.on("data", (chunk) => chunks.push(chunk));
-  doc.on("end", () => {});
+  doc.on("end", () => { });
 
   doc.fontSize(25).text("Hello World!", { align: "center" });
   doc.addPage();
@@ -53,11 +53,11 @@ export async function renderTransactionsReport(
     path.dirname(fileURLToPath(import.meta.url)),
     interFont,
   );
-  const filters: FilterType[] = await getFiltersHelper();
+  const filters: FilterType[] = await getFiltersHelper({ startTime: dayjs(startTime as string).toDate(), endTime: dayjs(endTime as string).toDate() });
   doc.registerFont("Inter", fontPath, "Inter");
   doc.font(fontPath);
   doc.on("data", (chunk) => chunks.push(chunk));
-  doc.on("end", () => {});
+  doc.on("end", () => { });
   const response = await fetch(LOGO_URL);
   const logo = await response.arrayBuffer();
   const y = 45;

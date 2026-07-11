@@ -82,6 +82,8 @@ export const CACHE_KEYS = {
   TOKEN_PRICE: (tokenAddress: string) => `soldex:token_price:${tokenAddress}`,
   CHART_DATA: (...args: (string | number)[]) =>
     `soldex:chart_data:${args.join(":")}`,
+  TOKEN_DATA: (...args: (string | number)[]) =>
+    `soldex:token_data:${args.join(":")}`,
 };
 
 export const LOGO_URL = "https://soldex-seven.vercel.app/book-open-check.png";

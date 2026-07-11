@@ -1,7 +1,7 @@
 import { config } from "@/utils/config";
+import { TokenPriceResponse } from "@soldex/types";
 import { cacheData, getCachedData } from "shared/redis";
 import { CACHE_KEYS } from "shared/utils/constants";
-import { TokenPriceResponse } from "@soldex/types";
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -107,22 +107,64 @@ const jupiterClient = new ApiClient({
     "x-api-key": config.JUPITER_API_KEY,
   },
 });
-export async function getTokenData(ids: string[]) {
-  const response = await jupiterClient.get<
-    {
-      id: string;
-      name: string;
-      symbol: string;
-      decimals: number;
-      icon: string;
-    }[]
-  >(`/tokens/v2/search`, {
-    query: ids.join(","),
-  });
+export async function getTokenData(ids: string[], overrideHardLimit = false) {
+  if (!ids.length) return [];
+  // hard limit
+  const limitedIds = ids.slice(0, overrideHardLimit ? ids.length : 50);
+  const cachedResults = await Promise.all(
+    limitedIds.map(async (id) => {
+      const cacheKey = CACHE_KEYS.TOKEN_DATA(id);
+      const cached = await getCachedData(cacheKey);
 
-  return response;
+      return {
+        id,
+        token: cached ? JSON.parse(cached) : null,
+      };
+    }),
+  );
+
+  const cachedTokens = cachedResults.filter((r) => r.token).map((r) => r.token);
+
+  const missingIds = cachedResults.filter((r) => !r.token).map((r) => r.id);
+
+  if (!missingIds.length) {
+    return cachedTokens;
+  }
+
+  const BATCH_SIZE = 100;
+
+  const fetchedTokens = [];
+
+  for (let i = 0; i < missingIds.length; i += BATCH_SIZE) {
+    const batch = missingIds.slice(i, i + BATCH_SIZE);
+
+    const response = await jupiterClient.get<
+      {
+        id: string;
+        name: string;
+        symbol: string;
+        decimals: number;
+        icon: string;
+      }[]
+    >("/tokens/v2/search", {
+      query: batch.join(","),
+    });
+
+    await Promise.all(
+      response.map((token) =>
+        cacheData(
+          CACHE_KEYS.TOKEN_DATA(token.id),
+          JSON.stringify(token),
+          60 * 60 * 24,
+        ),
+      ),
+    );
+
+    fetchedTokens.push(...response);
+  }
+
+  return [...cachedTokens, ...fetchedTokens];
 }
-
 export async function getTokenPrice(
   ids: string[],
 ): Promise<TokenPriceResponse[]> {

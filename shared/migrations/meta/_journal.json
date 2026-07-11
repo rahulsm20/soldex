@@ -148,6 +148,13 @@
       "when": 1780253738136,
       "tag": "0020_yellow_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1783773858438,
+      "tag": "0021_cooing_reaper",
+      "breakpoints": true
     }
   ]
 }

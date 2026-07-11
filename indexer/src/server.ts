@@ -1,6 +1,5 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
-import { rateLimiter } from "shared/middleware/rate-limit";
 import { apiRoutes } from "./routes/api";
 import { config } from "./utils/config";
 
@@ -24,7 +23,7 @@ app.use(
   }),
 );
 app.use(express.json());
-app.use(rateLimiter);
+// app.use(rateLimiter);
 // app.use("/wallet", transactionRoutes);
 app.use("/api", apiRoutes);
 

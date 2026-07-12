@@ -8,7 +8,6 @@ export const webhookController = {
     try {
       const events = req.body;
       for (const event of events) {
-        logger.info(JSON.stringify({ event }));
         const to_address =
           event.nativeTransfers?.[0]?.toUserAccount ||
           event?.tokenTransfers?.[0]?.toUserAccount;

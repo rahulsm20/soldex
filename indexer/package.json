@@ -15,7 +15,7 @@
     "@neondatabase/serverless": "^1.0.2",
     "@solana/web3.js": "^1.98.4",
     "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.45.1"
+    "drizzle-orm": "0.45.2"
   },
   "devDependencies": {
     "@types/bun": "latest",

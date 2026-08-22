@@ -1,6 +1,6 @@
 import { getTokenData } from "@/lib/jupiter";
 import dayjs from "dayjs";
-import { and, gte, lte } from "drizzle-orm";
+import { and, count, desc, gte, lte } from "drizzle-orm";
 import { Request, Response } from "express";
 import { db } from "shared/drizzle/db";
 import { solana_transactions } from "shared/drizzle/schema";
@@ -20,7 +20,9 @@ export const getFiltersHelper = async ({
   }
 
   const addresses = await db
-    .selectDistinct({ address: solana_transactions.address })
+    .select({
+      address: solana_transactions.address,
+    })
     .from(solana_transactions)
     .where(
       and(
@@ -33,13 +35,15 @@ export const getFiltersHelper = async ({
           endTime instanceof Date ? endTime : dayjs(endTime).toDate(),
         ),
       ),
-    );
-
+    )
+    .groupBy(solana_transactions.address)
+    .orderBy(desc(count(solana_transactions.address)));
   const queries = addresses
     .map(({ address }) => address)
     .filter((a) => a != undefined);
 
   const data = await getTokenData(queries);
+  console.log({ data });
   const mappedData = (data ?? []).map(
     ({ id, name, symbol, icon, decimals }) => ({
       id,

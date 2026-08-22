@@ -20,7 +20,6 @@ import {
 import { useChart, useTimeRange } from "@/hooks/charts";
 import { useExportTransactionsPDF } from "@/hooks/pdf";
 import { useTransactions } from "@/hooks/transactions";
-import { useFilters } from "@/hooks/useFilters";
 import {
   determineBucketSize,
   generateTimeRange,
@@ -116,29 +115,31 @@ const Transactions = ({ }) => {
       sig: account.id,
       color: getRandomColor(),
     }));
-    const withOthers = (filters || []).reduce((acc: FilterTransformedType[], curr: FilterType) => {
-      if (acc.length < 10) {
-        acc.push({
-          label: curr.name,
-          value: curr.id,
-          sig: curr.id,
-          color: getRandomColor(),
-        })
-      }
-      else {
-        const others = acc.find(item => item.label === 'Others')
-        if (!others) {
+    const withOthers = (filters || []).reduce(
+      (acc: FilterTransformedType[], curr: FilterType) => {
+        if (acc.length < 10) {
           acc.push({
-            label: 'Others',
-            value: 'others',
-            sig: 'others',
+            label: curr.name,
+            value: curr.id,
+            sig: curr.id,
             color: getRandomColor(),
-          })
+          });
+        } else {
+          const others = acc.find((item) => item.label === "Others");
+          if (!others) {
+            acc.push({
+              label: "Others",
+              value: "others",
+              sig: "others",
+              color: getRandomColor(),
+            });
+          }
         }
-      }
-      return acc
-    }, [])
-    return withOthers
+        return acc;
+      },
+      [],
+    );
+    return withOthers;
   }, [filters]);
 
   return (

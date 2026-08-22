@@ -7,6 +7,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+const TIME_DIFFERENCE = {
+  hour: 60 * 60,
+  day: 24 * 60 * 60,
+}
 export function transactionDataToChartData(
   transactions: TransactionType[],
   bucket: BucketSize,
@@ -48,9 +52,9 @@ export function determineBucketSize(
 ): BucketSize {
   if (!fromUnix || !toUnix) return "1d";
   const diffSeconds = toUnix - fromUnix;
-  if (diffSeconds <= 60 * 60) return "1m"; // <= 1h
-  if (diffSeconds <= 6 * 60 * 60) return "5m"; // <= 6h
-  if (diffSeconds <= 24 * 60 * 60) return "1h"; // <= 1d
+  if (diffSeconds <= TIME_DIFFERENCE.hour) return "1m"; // <= 1h
+  if (diffSeconds <= 6 * TIME_DIFFERENCE.hour) return "5m"; // <= 6h
+  if (diffSeconds <= TIME_DIFFERENCE.day) return "1h"; // <= 1d
   return "1d";
 }
 
@@ -96,8 +100,6 @@ export function formatDateBasedOnBucket(
       return date.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
-        hour: '2-digit',
-        minute: '2-digit'
       });
     default:
       return date.toLocaleString();

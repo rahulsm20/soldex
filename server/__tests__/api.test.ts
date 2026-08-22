@@ -1,6 +1,7 @@
 import app from "@/app";
 import { ChartDataResponse, TransactionsResponse } from "@soldex/types";
 import { expect, test } from "bun:test";
+import dayjs from "dayjs";
 import request from "supertest";
 
 test("health check", async () => {
@@ -11,7 +12,9 @@ test("health check", async () => {
 });
 
 test("chart data", async () => {
-  const response = await request(app).get("/charts").send();
+  const today = dayjs();
+  const date30DaysPrior = dayjs().subtract(30, 'days');
+  const response = await request(app).get(`/charts?startTime=${date30DaysPrior.toISOString()}&endTime=${today.toISOString()}`).send();
   const data = response.body as ChartDataResponse[];
   expect(response.status).toBe(200);
   expect(Array.isArray(data)).toBe(true);

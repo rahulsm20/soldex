@@ -82,6 +82,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cca-lite.coinbase.com",
+        port: "",
+        pathname: "/**",
+      }
     ],
     localPatterns: [
       {

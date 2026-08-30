@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, Github, Home, LucideProps } from "lucide-react";
+import { ArrowRightCircle, ArrowUpDown, ArrowUpRight, Github, Home, LucideProps, Workflow } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,6 +53,8 @@ const Navbar = () => {
   const navItems = [
     { name: "Home", href: "/", icon: Home },
     { name: "Transactions", href: "/transactions", icon: ArrowUpDown },
+    { name: "Payments", href: "/payments", icon: ArrowUpRight },
+    { name: "Integrations", href: '/integrations', icon: Workflow },
     {
       name: "Github",
       href: "https://github.com/rahulsm20/soldex",

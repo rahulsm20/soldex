@@ -14,9 +14,14 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
-    "@tanstack/react-query": "^5.90.14",
+    "@reown/appkit": "^1.8.23",
+    "@reown/appkit-adapter-wagmi": "^1.8.23",
+    "@tanstack/react-query": "^5.102.7",
     "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^1.6.1",
+    "@x402/core": "^2.23.0",
+    "@x402/evm": "^2.23.0",
+    "@x402/svm": "^2.23.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -31,7 +36,9 @@
     "react-fast-marquee": "^1.6.5",
     "recharts": "2.15.4",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "viem": "^2.56.0",
+    "wagmi": "2.x"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

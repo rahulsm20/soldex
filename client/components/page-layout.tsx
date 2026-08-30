@@ -8,7 +8,7 @@ import Footer from "./footer";
 import Marquee from "./marquee";
 import Navbar from "./navbar";
 
-const PageLayout = ({ children }: { children?: React.ReactNode }) => {
+const PageLayout = ({ children, className }: { children?: React.ReactNode, className?: string }) => {
   const tokenSigs = useMemo(() => TOKENS.map((acc) => acc.sig), []);
 
   const {
@@ -35,7 +35,7 @@ const PageLayout = ({ children }: { children?: React.ReactNode }) => {
       });
   }
   return (
-    <div className="flex flex-col min-h-screen gap-5">
+    <div className={`flex flex-col min-h-screen gap-5 ${className ? className : ''}`}>
       <section className="flex flex-col">
         <Marquee tokens={tokenData} isLoading={isLoading} />
         <Navbar />

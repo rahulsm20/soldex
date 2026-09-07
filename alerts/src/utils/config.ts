@@ -2,6 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const config = {
-  DATABASE_URL: process.env.DATABASE_URL || "",
+export const appConfig = {
+  ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY ?? "",
 };

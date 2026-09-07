@@ -1,10 +1,11 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   bigint,
   doublePrecision,
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -118,5 +119,30 @@ export const IntegrationAuths = pgTable("integration_auths", {
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
+
+export const UserAlerts = pgTable(
+  "user_alerts",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => Users.id, { onDelete: "cascade" }),
+
+    alertId: uuid("alert_id")
+      .notNull()
+      .references(() => Alerts.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.userId, table.alertId],
+    }),
+  ],
+);
+export const usersRelations = relations(Users, ({ many }) => ({
+  alerts: many(Alerts),
+}));
+
+export const alertsRelations = relations(Alerts, ({ many }) => ({
+  user: many(Users),
+}));
 
 //--------------------------------------------------------

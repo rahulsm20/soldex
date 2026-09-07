@@ -162,6 +162,20 @@
       "when": 1788784445320,
       "tag": "0022_needy_captain_midlands",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1788786358644,
+      "tag": "0023_ancient_changeling",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1788787522545,
+      "tag": "0024_smiling_fixer",
+      "breakpoints": true
     }
   ]
 }

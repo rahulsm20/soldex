@@ -10,7 +10,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-
+import { createInsertSchema } from "drizzle-zod"
 //--------------------------------
 
 export const TransactionTypeEnum = pgEnum("transaction_type", [
@@ -83,11 +83,14 @@ export const IntegrationTypeEnum = pgEnum("integration_type", ['telegram', 'disc
 
 export const Alerts = pgTable("alerts", {
   id: uuid("id").primaryKey().defaultRandom(),
+  tokenId: text("token_id").notNull(),
   type: AlertTypeEnum("type").notNull(),
   changeType: AlertChangeTypeEnum("change_type").notNull(),
   changeUnit: AlertChangeUnitEnum("change_unit").notNull(),
   changeValue: doublePrecision("change_value"),
   actionType: AlertActionTypeEnum("action_type"),
+  actionUnit: AlertChangeUnitEnum("action_unit"),
+  actionValue: doublePrecision("action_value"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
@@ -95,6 +98,7 @@ export const Alerts = pgTable("alerts", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
+export const AlertInsertSchema = createInsertSchema(Alerts);
 export const Users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name"),
@@ -108,6 +112,7 @@ export const Users = pgTable("users", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
+export const UsertsInsertSchema = createInsertSchema(Users);
 
 export const IntegrationAuths = pgTable("integration_auths", {
   id: uuid("id").primaryKey().defaultRandom(),

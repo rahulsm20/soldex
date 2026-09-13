@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { AuthResult } from "express-oauth2-jwt-bearer";
+import { alertRoutes } from "./routes/alerts";
 
 const app = express();
 const port = process.env.PORT || 3003;
@@ -14,6 +15,7 @@ declare global {
 
 app.use(express.json());
 
+app.use("/api", alertRoutes);
 app.get("/", async (req: Request, res: Response) => {
   return res.status(200).json({ message: "alerts service running", status: "ok" });
 });

@@ -20,7 +20,6 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^4.19.2",
-    "express-oauth2-jwt-bearer": "^1.10.0",
     "redis": "^4.6.14"
   },
   "devDependencies": {

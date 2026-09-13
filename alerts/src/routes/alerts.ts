@@ -1,12 +1,17 @@
+import { createAlert, deleteAlertById, evaluateWebhook, getAlertById, getAlerts, updateAlert } from "@/controllers/alerts";
 import { Router } from "express";
 const router = Router();
 
-router.get("/view");
-router.post("/create");
-router.put("/update");
-router.delete("/delete");
-router.get("/view/:id");
-router.delete("/delete/:id");
-router.get("/query");
+router.get('/', (req, res) => {
+  return res.status(200).json({ message: 'Alerts API' })
+})
+router.get("/view", getAlerts);
+router.post("/create", createAlert);
+router.put("/update", updateAlert);
+// router.delete("/delete")h
+router.get("/view/:id", getAlertById);
+router.delete("/delete/:id", deleteAlertById);
+// router.get("/query");
+router.post("/webhook", evaluateWebhook);
 
-export const routes = router;
+export const alertRoutes = router;

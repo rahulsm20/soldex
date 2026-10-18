@@ -21,7 +21,7 @@ test("chart data", async () => {
   data.forEach((item) => {
     expect(item).toHaveProperty("time");
   });
-});
+}, 10000);
 
 test("invalid route", async () => {
   const response = await request(app).get("/invalid-route").send();

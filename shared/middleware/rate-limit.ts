@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import ip from "ip";
 import { cacheData, getCachedData } from "../redis";
+import { config } from "@/config";
 
 export const rateLimiter = async (
   req: Request,
@@ -12,7 +13,7 @@ export const rateLimiter = async (
   //   }
   const address = ip.address();
   const encryptedAddress = Buffer.from(address).toString("base64");
-  const cacheKey = `soldex_server:ip:${encryptedAddress}`;
+  const cacheKey = `${config.service}:ip:${encryptedAddress}`;
   const data = await getCachedData(cacheKey);
   if (data) {
     if (parseInt(data) > 5) {

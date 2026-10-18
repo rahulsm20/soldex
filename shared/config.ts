@@ -11,7 +11,9 @@ export const config = {
   elasticIndexPrefix: process.env.ELASTIC_INDEX_PREFIX || "app-logs",
   loggerApiKey: process.env.LOKI_API_KEY || "",
   nodeEnv: process.env.NODE_ENV || "development",
-  service: process.env.SERVICE || "",
+  service: process.env.SERVICE || "soldex_worker",
   lokiHost: process.env.LOKI_HOST || "",
   lokiUserId: process.env.LOKI_USER_ID || "",
+  AUTH0_BASE_URL: process.env.AUTH0_BASE_URL || "",
+  AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || "",
 };

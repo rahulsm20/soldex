@@ -1,6 +1,9 @@
+import { config } from "@/config";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import dayjs from "dayjs";
 import PDFKit from "pdfkit";
+import { Auth0User } from "./types";
+import { Request } from "express";
 
 //----------------------------------------------
 
@@ -103,3 +106,33 @@ export async function renderLineChart(
 
   doc.image(image, { width: 500 });
 }
+
+export const getUserInfo = async (token: string) => {
+  if (!token) return null;
+  const response = await fetch(`${config.AUTH0_BASE_URL}/userinfo`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const user = (await response.json()) as Auth0User;
+
+  return user;
+};
+
+export const generateDocKey = (id: string, fileName: string) => {
+  return `${id}_${fileName}`;
+};
+
+export const getTokenFromHeader = (req: Request) => {
+  if (!req.headers) return null;
+  const AUTH_FORWARDED_TOKEN_HEADER = "x-forwarded-authorization";
+  const isProduction = config.nodeEnv === "production";
+  if (isProduction) {
+    const tokens = req.headers?.[AUTH_FORWARDED_TOKEN_HEADER];
+    if (!tokens) return null;
+    const token = (Array.isArray(tokens) ? tokens?.[0] : tokens)?.split(" ")[1];
+    return token;
+  }
+  const token = req.headers?.authorization?.split(" ")[1];
+  return token;
+};

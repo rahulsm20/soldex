@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get("/", async (req: Request, res: Response) => {
-  return res.status(200).json({ message: "Service running", status: "ok" });
+  return res.status(200).json({ message: "notification service running", status: "ok" });
 });
 
 app.get("*", async (req: Request, res: Response) => {

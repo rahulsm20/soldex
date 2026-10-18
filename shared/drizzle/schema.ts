@@ -75,21 +75,21 @@ export const solana_tokens = pgTable("solana_tokens", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const AlertTypeEnum = pgEnum("alert_type", ['price_change', 'market_cap_change']);
-export const AlertChangeTypeEnum = pgEnum("alert_change_type", ['increase', 'decrease']);
-export const AlertChangeUnitEnum = pgEnum("alert_change_unit", ['percent', 'dollars']);
-export const AlertActionTypeEnum = pgEnum("alert_action_type", ['sell', 'buy']);
-export const IntegrationTypeEnum = pgEnum("integration_type", ['telegram', 'discord', 'email']);
+export const alertTypeEnum = pgEnum("alert_type", ['price_change', 'market_cap_change']);
+export const alertChangeTypeEnum = pgEnum("alert_change_type", ['increase', 'decrease']);
+export const alertChangeUnitEnum = pgEnum("alert_change_unit", ['percent', 'dollars']);
+export const alertActionTypeEnum = pgEnum("alert_action_type", ['sell', 'buy']);
+export const integrationTypeEnum = pgEnum("integration_type", ['telegram', 'discord', 'email']);
 
-export const Alerts = pgTable("alerts", {
+export const alerts = pgTable("alerts", {
   id: uuid("id").primaryKey().defaultRandom(),
   tokenId: text("token_id").notNull(),
-  type: AlertTypeEnum("type").notNull(),
-  changeType: AlertChangeTypeEnum("change_type").notNull(),
-  changeUnit: AlertChangeUnitEnum("change_unit").notNull(),
+  type: alertTypeEnum("type").notNull(),
+  changeType: alertChangeTypeEnum("change_type").notNull(),
+  changeUnit: alertChangeUnitEnum("change_unit").notNull(),
   changeValue: doublePrecision("change_value"),
-  actionType: AlertActionTypeEnum("action_type"),
-  actionUnit: AlertChangeUnitEnum("action_unit"),
+  actionType: alertActionTypeEnum("action_type"),
+  actionUnit: alertChangeUnitEnum("action_unit"),
   actionValue: doublePrecision("action_value"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
@@ -98,8 +98,8 @@ export const Alerts = pgTable("alerts", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const AlertInsertSchema = createInsertSchema(Alerts);
-export const Users = pgTable("users", {
+export const alertInsertSchema = createInsertSchema(alerts);
+export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name"),
   email: text("email"),
@@ -112,12 +112,12 @@ export const Users = pgTable("users", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const UsertsInsertSchema = createInsertSchema(Users);
+export const usertsInsertSchema = createInsertSchema(users);
 
-export const IntegrationAuths = pgTable("integration_auths", {
+export const integrationAuths = pgTable("integration_auths", {
   id: uuid("id").primaryKey().defaultRandom(),
-  integration: IntegrationTypeEnum('integration').notNull(),
-  userId: uuid("user_id").notNull().references(() => Users.id),
+  integration: integrationTypeEnum('integration').notNull(),
+  userId: uuid("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp('updated_at')
     .notNull()
@@ -125,16 +125,16 @@ export const IntegrationAuths = pgTable("integration_auths", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const UserAlerts = pgTable(
+export const userAlerts = pgTable(
   "user_alerts",
   {
     userId: uuid("user_id")
       .notNull()
-      .references(() => Users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" }),
 
     alertId: uuid("alert_id")
       .notNull()
-      .references(() => Alerts.id, { onDelete: "cascade" }),
+      .references(() => alerts.id, { onDelete: "cascade" }),
   },
   (table) => [
     primaryKey({
@@ -142,12 +142,12 @@ export const UserAlerts = pgTable(
     }),
   ],
 );
-export const usersRelations = relations(Users, ({ many }) => ({
-  alerts: many(Alerts),
+export const usersRelations = relations(users, ({ many }) => ({
+  alerts: many(alerts),
 }));
 
-export const alertsRelations = relations(Alerts, ({ many }) => ({
-  user: many(Users),
+export const alertsRelations = relations(alerts, ({ many }) => ({
+  user: many(users),
 }));
 
 //--------------------------------------------------------

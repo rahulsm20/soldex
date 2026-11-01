@@ -109,30 +109,30 @@ export function TransactionColumns(
         );
       },
     },
-    {
-      header: "From",
-      accessorKey: "from_address",
-      cell: ({ row }) => (
-        <div className="flex w-42 items-center justify-between underline">
-          {row.original.from_address ? (
-            <>
-              <TxLink
-                title={
-                  <span>
-                    {row.original.from_address?.slice(0, 5)}...
-                    {row.original.from_address?.slice(-5)}
-                  </span>
-                }
-                text={row.original.from_address}
-                url={generateSolscanLink("account", row.original.from_address)}
-              />
-            </>
-          ) : (
-            <span>N/A</span>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   header: "From",
+    //   accessorKey: "from_address",
+    //   cell: ({ row }) => (
+    //     <div className="flex w-42 items-center justify-between underline">
+    //       {row.original.from_address ? (
+    //         <>
+    //           <TxLink
+    //             title={
+    //               <span>
+    //                 {row.original.from_address?.slice(0, 5)}...
+    //                 {row.original.from_address?.slice(-5)}
+    //               </span>
+    //             }
+    //             text={row.original.from_address}
+    //             url={generateSolscanLink("account", row.original.from_address)}
+    //           />
+    //         </>
+    //       ) : (
+    //         <span>N/A</span>
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       header: "To",
       accessorKey: "to_address",

@@ -2,22 +2,23 @@ import { appConfig } from "@/utils/config";
 import axios, { AxiosInstance } from "axios";
 import { Request, Response } from "express";
 
-class AlchemyApiClientClass {
-  constructor(apiKey: string, authToken: string) {
-    this.apiKey = apiKey;
-    this.authToken = authToken;
+/**
+  *
+  *
+  *
+  *
+**/
+class IndexerClientClass {
+  constructor() {
     this.defaultHeaders = {
-      "X-Alchemy-Token": this.authToken,
       "Content-Type": "application/json",
     }
     this.client = axios.create({
-      baseURL: "https://eth-mainnet.alchemyapi.io/v2",
+      baseURL: appConfig.INDEXER_URL,
       headers: this.defaultHeaders,
     });
   }
 
-  apiKey: string;
-  authToken: string;
   defaultHeaders: Record<string, string>;
   client: AxiosInstance;
 
@@ -47,33 +48,38 @@ class AlchemyApiClientClass {
   //   .then(res => console.log(res))
   //   .catch(err => console.error(err));
 
-  async createWebhook(webhookUrl: string) {
-
-    const url = `https://dashboard.alchemy.com/api/create-webhook`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Alchemy-Token": this.apiKey,
-      },
-      body: JSON.stringify({
-        url: webhookUrl,
-      }),
-    });
-    const data = await response.json();
-    return data;
+  async createWebhook({ assetType, assetId }: { assetType: string, assetId: string }) {
+    try {
+      const webhook = await this.client.post("/webhook", {
+        data: {
+          assetType,
+          assetId
+        }
+      })
+      return webhook
+    }
+    catch (e) {
+      console.error(e)
+      return null
+    }
   }
 }
 
-const alchemyApiClient = new AlchemyApiClientClass(appConfig.ALCHEMY_API_KEY, appConfig.ALCHEMY_AUTH_TOKEN);
+const indexerApiClient = new IndexerClientClass();
 
 //----------------------------------------------------------------------------
 
 export const createAlert = async (req: Request, res: Response) => {
   try {
-    const alert = await alchemyApiClient.createWebhook()
+    const { assetType, assetId } = req.body
+    const hook = await indexerApiClient.createWebhook({ assetType, assetId })
+    if (!hook) {
+      throw new Error(`Couldn't create webhook`)
+    }
+    return res.status(204).json({ hook })
   }
   catch (err) {
-
+    console.log(err)
+    return res.status(500).json({ message: err })
   }
 }

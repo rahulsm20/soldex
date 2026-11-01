@@ -16,4 +16,5 @@ export const config = {
   lokiUserId: process.env.LOKI_USER_ID || "",
   AUTH0_BASE_URL: process.env.AUTH0_BASE_URL || "",
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || "",
+  INDEXER_URL: process.env.INDEXER_URL || ""
 };
